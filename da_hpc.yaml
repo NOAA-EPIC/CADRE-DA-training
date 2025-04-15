@@ -1,0 +1,45 @@
+Region: us-east-1
+Image:
+  Os: ubuntu2204 
+  CustomAmi: ami-0faefbd170af8b3ea 
+HeadNode:
+  InstanceType: c7i.8xlarge
+  Networking:
+    SubnetId: subnet-078043a467c391dfd
+  Ssh:
+    KeyName: epic_workshop 
+  LocalStorage:
+    RootVolume:
+      Size: 500
+      VolumeType: gp3
+      Iops: 10000
+      Throughput: 1000
+  Iam:
+    AdditionalIamPolicies:
+      - Policy: arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - Policy: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+  - Name: compute
+    ComputeResources:
+    - Name: c7i8xlarge
+      Instances:
+      - InstanceType: c7i.8xlarge
+      MinCount: 0
+      MaxCount: 2
+      Efa:
+        Enabled: false 
+    Networking:
+      PlacementGroup:
+        Enabled: true
+      SubnetIds:
+      - subnet-078043a467c391dfd
+SharedStorage:
+  - MountDir: /scratch
+    Name: ebs
+    StorageType: Ebs
+    EbsSettings:
+      VolumeType: gp3
+      DeletionPolicy: Delete
+      Size: 500
