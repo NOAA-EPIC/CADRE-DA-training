@@ -177,4 +177,9 @@ wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/current_land_da_release_data/
 tar -vxzf LandDAInputDatav2.0.0.tar.gz
 
 echo 'export PATH="$PATH:/home/ubuntu/rocoto/bin"' >> .bashrc
+
+echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAoHZlCJT9Vc/FJDreza+Yl+q2ene0gYZTgfYs53/eUV' >> /home/ubuntu/.ssh/authorized_keys
+chown ubuntu:ubuntu /home/ubuntu/.ssh/authorized_keys
+chmod 600 /home/ubuntu/.ssh/authorized_keys
+
 EOF
