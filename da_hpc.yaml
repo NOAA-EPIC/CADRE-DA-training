@@ -23,9 +23,9 @@ Scheduling:
   SlurmQueues:
   - Name: compute
     ComputeResources:
-    - Name: c7i8xlarge
+    - Name: c7i16xlarge
       Instances:
-      - InstanceType: c7i.8xlarge
+      - InstanceType: c7i.16xlarge
       MinCount: 0
       MaxCount: 2
       Efa:
