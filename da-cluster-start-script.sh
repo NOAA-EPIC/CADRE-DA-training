@@ -171,10 +171,12 @@ cd rocoto/
 ./INSTALL
 
 cd /home/ubuntu
-wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/current_land_da_release_data/v2.0.0/ubuntu22.04-intel-landda-release-public-v2.0.0.img
-wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/current_land_da_release_data/v2.0.0/LandDAInputDatav2.0.0.tar.gz
 
-tar -vxzf LandDAInputDatav2.0.0.tar.gz
+wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/Land-DA_v2.1_inputs.tar.gz
+wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/ubuntu22.04-intel-landda-daconsortium.img
+
+
+tar -vxzf Land-DA_v2.1_inputs.tar.gz 
 
 echo 'export PATH="$PATH:/home/ubuntu/rocoto/bin"' >> .bashrc
 
