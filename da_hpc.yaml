@@ -5,7 +5,7 @@ Image:
 HeadNode:
   InstanceType: c7i.8xlarge
   Networking:
-    SubnetId: subnet-078043a467c391dfd
+    SubnetId: subnet-088f38370a401610e 
   Ssh:
     KeyName: epic_workshop 
   LocalStorage:
@@ -23,7 +23,7 @@ Scheduling:
   SlurmQueues:
   - Name: compute
     ComputeResources:
-    - Name: c7i16xlarge
+    - Name: c7i24xlarge
       Instances:
       - InstanceType: c7i.16xlarge
       MinCount: 0
@@ -34,7 +34,7 @@ Scheduling:
       PlacementGroup:
         Enabled: true
       SubnetIds:
-      - subnet-078043a467c391dfd
+      - subnet-088f38370a401610e
 SharedStorage:
   - MountDir: /scratch
     Name: ebs
