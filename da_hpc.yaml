@@ -1,11 +1,11 @@
 Region: us-east-1
 Image:
   Os: ubuntu2204 
-  CustomAmi: ami-0b22b02b67db0b177 
+  CustomAmi: ami-0af938ee5dbd6f942 
 HeadNode:
   InstanceType: c7i.8xlarge
   Networking:
-    SubnetId: subnet-078043a467c391dfd
+    SubnetId: subnet-088f38370a401610e 
   Ssh:
     KeyName: epic_workshop 
   LocalStorage:
@@ -23,9 +23,9 @@ Scheduling:
   SlurmQueues:
   - Name: compute
     ComputeResources:
-    - Name: c7i8xlarge
+    - Name: c7i16xlarge
       Instances:
-      - InstanceType: c7i.8xlarge
+      - InstanceType: c7i.16xlarge
       MinCount: 0
       MaxCount: 2
       Efa:
@@ -34,7 +34,7 @@ Scheduling:
       PlacementGroup:
         Enabled: true
       SubnetIds:
-      - subnet-078043a467c391dfd
+      - subnet-088f38370a401610e
 SharedStorage:
   - MountDir: /scratch
     Name: ebs
