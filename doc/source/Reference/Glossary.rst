@@ -52,7 +52,7 @@ Glossary
 
    dycore
    dynamical core
-      Global atmospheric model based on fluid dynamics principles, including Euler’s equations of motion.
+      Global atmospheric model based on fluid dynamics principles, including Euler's equations of motion.
 
    ERA5
       The ECMWF Reanalysis v5 (`ERA5 <https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5>`_) dataset "is the fifth generation ECMWF atmospheric reanalysis of the global climate covering the period from January 1940 to present." It "provides hourly estimates of a large number of atmospheric, land and oceanic climate variables."
@@ -93,7 +93,8 @@ Glossary
       The `Interactive Multisensor Snow and Ice Mapping System <https://usicecenter.gov/Products/ImsHome>`_ (IMS) is "an operational software package used to demarcate the presence of snow and ice across the entire northern hemisphere."
 
    IODA
-      The :term:`JEDI` Interface for Observation Data Access (:jedi:`IODA <inside/jedi-components/ioda/index.html>`) provides observation formatting and processing tools for data assimilation applications.  
+      The :term:`JEDI` Interface for Observation Data Access (:jedi:`IODA <inside/jedi-components/ioda/index.html>`) provides observation formatting and processing tools for data assimilation applications. 
+
       .. COMMENT: Add! https://github.com/jcsda/ioda
 
    J-jobs
@@ -102,6 +103,7 @@ Glossary
    JCB
    JEDI Configuration Builder
       The JEDI Configuration Builder (JCB) is a python package used to assemble information on :term:`JEDI` algorithms (e.g., letkf, 3dvar) and data assimilation types (e.g., snow, marine, atmosphere) into one convenient YAML file for use in data assimilation applications. 
+
       .. COMMENT: Add/revise def! 
 
    JEDI
@@ -167,7 +169,8 @@ Glossary
       Numerical Weather Prediction (NWP) takes current observations of weather and processes them with computer models to forecast the future state of the weather. 
 
    OOPS
-      The :term:`JEDI` Object-Oriented Prediction System (:jedi:`OOPS <inside/jedi-components/oops/index.html>`) includes data assimilation algorithms for use in data assimilation applications.  
+      The :term:`JEDI` Object-Oriented Prediction System (:jedi:`OOPS <inside/jedi-components/oops/index.html>`) includes data assimilation algorithms for use in data assimilation applications. 
+
       .. COMMENT: Add! https://github.com/jcsda/oops
 
    RDHPCS
@@ -188,6 +191,7 @@ Glossary
 
    UFO
       The :term:`JEDI` Unified Forward Operator (:jedi:`UFO <inside/jedi-components/ufo/index.html>`) is used to compare model forecasts and observations in data assimilation applications. 
+      
       .. COMMENT: Add! https://github.com/jcsda/ufo.git
 
    UFS
