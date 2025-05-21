@@ -57,7 +57,7 @@ supercooled liquid water in frozen soil, and frozen soil permeability.
 
 The Noah-MP LSM has evolved through community efforts to pursue and refine a modern-era LSM suitable for use in the National Centers for Environmental Prediction (:term:`NCEP`) operational weather and climate prediction models. This collaborative effort continues with participation from entities such as NCAR, NCEP, NASA, and university groups. 
 
-The UFS Weather Model now contains a Noah-MP land component, which is used as the land component in the Land DA System. Details about the model's physical parameterizations can be found in :cite:t:`NiuEtAl2011` (2011), and a full description of the model is available in the `Community Noah-MP Land Surface Modeling System Technical Description Version 5.0 <https://opensky.ucar.edu/islandora/object/technotes:599>`_. 
+The UFS Weather Model now contains a Noah-MP land component, which is used as the land component in the Land DA System. Details about the model's physical parameterizations can be found in :cite:t:`NiuEtAl2011` (2011), and a full description of the model is available in the `Community Noah-MP Land Surface Modeling System Technical Description Version 5.0 <https://opensky.ucar.edu/islandora/object/%3A3912>`_. 
 
 .. _da-components:
 
@@ -105,7 +105,7 @@ The Land DA System includes the ``calcfIMS.fd`` submodule, which points to the l
 IODA Converters
 -----------------
 
-The Land DA System accepts :term:`GHCN`, :term:`IMS`, or :term:`SFCSNO` data as input. The ``prep_data`` task then converts these data from their original format into the format needed by JEDI's :term:`UFO` and :term:`OOPS` components for data assimilation (see :numref:`Table %s: Workflow Tasks <WorkflowTasksTable>`). The Interface for Observation Data Access (:term:`IODA`) is the component of :term:`JEDI` that handles data processing for the data assimilation system (see :ref:`DA Components <da-components>` for more). The ``land-DA_workfow/ush`` directory contains scripts (e.g., ``ghcn_snod2ioda.py`` and ``imsfv3_scf2ioda.py``) that convert :term:`GHCN` and :term:`IMS` data to a JEDI-formatted NetCDF file using IODA. The :ref:`calcfIMS <calcfims>` executable mentioned above is an intermediate converter that converts the raw ASCII files to NetCDF format before performing additional JEDI formatting. 
+The Land DA System accepts :term:`GHCN`, :term:`IMS`, or :term:`SFCSNO` data as input. The ``prep_data`` task then converts these data from their original format into the format needed by JEDI's :term:`UFO` and :term:`OOPS` components for data assimilation (see :ref:`Workflow Tasks <wflow-overview>`). The Interface for Observation Data Access (:term:`IODA`) is the component of :term:`JEDI` that handles data processing for the data assimilation system (see :ref:`DA Components <da-components>` for more). The ``land-DA_workfow/ush`` directory contains scripts (e.g., ``ghcn_snod2ioda.py`` and ``imsfv3_scf2ioda.py``) that convert :term:`GHCN` and :term:`IMS` data to a JEDI-formatted NetCDF file using IODA. The :ref:`calcfIMS <calcfims>` executable mentioned above is an intermediate converter that converts the raw ASCII files to NetCDF format before performing additional JEDI formatting. 
 
 .. _t2tc:
 
@@ -137,7 +137,7 @@ The ``tile2tile_converter`` changes the variable names in two workflow tasks:
 * In the ``pre_anal`` task, it changes from the variable names of UFS Weather Model Noah-MP component to those of JEDI.
 * In the ``post_anal`` task, it changes from the variable names of JEDI to those of the UFS WM Noah-MP component.
 
-See :numref:`Table %s: Workflow Tasks <WorkflowTasksTable>` for more information on these workflow tasks. 
+See :numref:`Section %s: Workflow Tasks <wflow-overview>` for more information on these workflow tasks. 
 
 
 Workflow

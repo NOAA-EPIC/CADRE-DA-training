@@ -22,9 +22,8 @@ The containerized version of Land DA requires:
    * `Installation of Apptainer <https://apptainer.org/docs/admin/latest/installation.html>`_ (or its predecessor, Singularity)
    * At least 26 CPU cores (may be possible to run with 13, but this has not been tested)
    * An **Intel** compiler and :term:`MPI` (available for `free here <https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit-download.html>`_) 
+   * The `Rocoto workflow manager <https://github.com/christopherwharrop/rocoto>`_
    * The `Slurm <https://slurm.schedmd.com/quickstart.html>`_ job scheduler
-
-.. COMMENT: Confirm w/Eddie
 
 Apptainer is preinstalled for users at the CADRE DA training; users do **not** need to install it unless they are attempting to build and run the containerized Land DA System on a different platform. 
 
@@ -38,6 +37,7 @@ Data
    Data is pre-staged for the CADRE DA training, and users at the training may skip this section. 
 
 In order to run the Land DA System, users will need input data in the form of fix files, model forcing files, restart files, and observations for data assimilation. 
+
 Data for the CADRE DA training are already available on the system used for the training. When attempting to replicate the steps on another system, users will need input data in the form of fix files, model forcing files, restart files, and observations for data assimilation. These files can be downloaded from the `Land DA Data Bucket <https://registry.opendata.aws/noaa-ufs-land-da/>`_ into the user's directory of choice. In the working directory, run: 
 
 .. code-block:: console
@@ -74,7 +74,7 @@ The container for the CADRE DA training is already available on the system used 
 
 This will download a container image named ``ubuntu22.04-intel-landda-daconsortium.img``.
 
-.. _SetUpContainerC:
+.. _SetUpContainer:
 
 Set Up the Container
 **********************
@@ -127,6 +127,8 @@ Running this script will print the following messages to the console:
    Done
 
 The user should now see the ``land-DA_workflow`` and ``jedi-bundle`` directories in their working directory. 
+
+Containers come with pre-built executables, so users may continue to the next section to configure the experiment. However, users who are interested in learning how to build the executables can skip to :numref:`Section %s <build-exe>` to learn how to build their own executables to use in their experiment. 
 
 .. _ConfigureExptC:
 
@@ -227,6 +229,18 @@ Uncomment the second-to-last line of the script, which adds the executables to t
 Run the Experiment
 ********************
 
+To run the experiment, users can automate job submission via :term:`crontab` or submit tasks manually via ``rocotorun``. 
+
+.. _WflowOverviewC:
+
+Workflow Overview
+==================
+
+.. include:: ../doc-snippets/wflow-task-table.rst
+
+
+
+
 To run the experiment, navigate to the experiment directory and issue a ``rocotorun`` command: 
 
 .. code-block:: console
@@ -263,4 +277,54 @@ Check Experiment Output
 =========================
 
 Since this experiment in the container is the same experiment explained in the previous document section, it is suggested that users view the :ref:`experiment output structure <land-da-dir-structure>` and :ref:`plotting results <plotting>` sections to learn more about the expected experiment output. 
+
+Appendix
+**********
+
+.. _build-exe:
+
+Building the Executables
+==========================
+
+The executables come pre-built in the Land DA Container. However, users who are curious about building the executables using the ``app_build.sh`` script can follow the instructions here. 
+
+#. Shell into the container.
+   
+   .. code-block:: console 
+      
+      singularity shell -B /home:/home /home/ubuntu/ubuntu22.04-intel-landda-daconsortium.img
+
+#. Go to the ``land-DA_workflow`` directory in the container.
+
+   .. code-block:: console
+
+      cd /home/ubuntu/land-DA_workflow/sorc
+
+#. Set up the environment by sourcing the container's spack-stack installation and loading the container modulefiles. 
+
+   .. code-block:: console
+      
+      source /opt/spack-stack/spack-stack-1.6.0/envs/fms-2024.01/.bashenv-fms
+      module use ../modulefiles
+      module load build_singularity_intel
+
+#. Build the model using ``app_build.sh``. Users must select either the :term:`ATML` configuration (``-a=ATML``) or the :term:`LND` configuration when building. Users indicate that the platform (``-p``) is a container using the ``-p=singularity`` argument. Conda was pre-built in previous steps, so users should include the ``--conda=off`` argument to avoid rebuilding it. The ``--build`` option keeps the executables in the ``build`` directory under ``bin``. 
+
+   .. code-block:: console
+
+      # Build ATML configuration (Noah-MP + FV3)
+      ./app_build.sh -p=singularity -a=ATML --conda=off --build
+
+      # Build LND configuration (Noah-MP + DATM)
+      ./app_build.sh -p=singularity --conda=off --build
+
+
+.. note:: 
+   
+   The ``parm/run_container_executable.sh`` script looks for the executables built by the ``app_build.sh`` script. If users decide not to use this script to build the ATML exectuables, then the ``run_container_executable.sh`` script will need to point to the location of the prebuilt executables: 
+
+   * Pre-built LND executable: ``/opt/land-DA_workflow/install/bin``
+   * Pre-built ATML executable: ``/opt/land-DA_workflow/sorc/build-atml/bin/``. 
+
+After building the executables, continue to :numref:`Section %s: Configure the Experiment <ConfigureExptC>`.
 

@@ -3,7 +3,7 @@
 ==================================
 Rocoto Introductory Information
 ==================================
-The tasks in the Land DA System are typically run using the Rocoto Workflow Manager (see :numref:`Table %s <WorkflowTasksTable>` for default tasks). Rocoto is a Ruby program that communicates with the batch system on an :term:`HPC` system to run and manage dependencies between the tasks. Rocoto submits jobs to the HPC batch system as the task dependencies allow and runs one instance of the workflow for a set of user-defined :term:`cycles <cycle>`. More information about Rocoto can be found on the `Rocoto Wiki <https://github.com/christopherwharrop/rocoto/wiki/documentation>`_.
+The tasks in the Land DA System are typically run using the Rocoto Workflow Manager (see :numref:`Section %s: Workflow Overview <wflow-overview>` for default tasks). Rocoto is a Ruby program that communicates with the batch system on an :term:`HPC` system to run and manage dependencies between the tasks. Rocoto submits jobs to the HPC batch system as the task dependencies allow and runs one instance of the workflow for a set of user-defined :term:`cycles <cycle>`. More information about Rocoto can be found on the `Rocoto Wiki <https://github.com/christopherwharrop/rocoto/wiki/documentation>`_.
 
 The Land DA workflow is defined in a Jinja-enabled Rocoto XML template called ``land_analysis.xml``, which is generated using the contents of ``land_analysis.yaml`` as input to the Unified Workflow's :uw:`Rocoto tool <sections/user_guide/cli/tools/rocoto.html>`. Both files reside in the ``land-DA_workflow/parm`` directory. The completed XML file contains the workflow task names, parameters needed by the job scheduler, and task interdependencies. 
 

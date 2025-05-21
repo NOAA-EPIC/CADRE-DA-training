@@ -6,11 +6,11 @@ Land DA Workflow (Hera/Orion/Hercules/Gaea-C6)
 
 This chapter provides instructions for building and running the Unified Forecast System (:term:`UFS`) Land DA System using a Jan. 19-20, 2025 00z sample :term:`LND` :term:`warmstart` case using :term:`ERA5` and :term:`IMS` data and the 3D-Var algorithm with the UFS Noah-MP land component and data atmosphere (:term:`DATM`) component.
 
+This case corresponds to the January 2025 Gulf Coast Blizzard, which brought unprecedented snowfall to the entire Gulf Coast. Leading up to the event, the polar vortex stretched far south and met with unusually warm Gulf waters. In response, the National Weather Service (NWS) issued a series of winter storm warnings, extreme cold warnings, and even blizzard warnings --- the first ever in some areas. New Orleans, LA received a record 8 inches of snow, and the surrounding coastal areas likewise saw record-breaking snowfall and cold temperatures. 
+
 .. attention::
    
    These steps are designed for use on :ref:`Level 1 <LevelsOfSupport>` systems (e.g., Hera, Orion) and may require significant changes on other systems. It is recommended that users on other systems run the containerized version of Land DA. Users may reference :numref:`Chapter %s: Containerized Land DA Workflow <Container>` for instructions.
-
-.. COMMENT: Check that this is still the sampe case! And/or add others!
 
 .. _create-dir:
 
@@ -50,6 +50,10 @@ To clone the most recent release, run the same command with |branch| in place of
 .. code-block:: console
 
    git clone -b release/public-v2.0.0 --recursive https://github.com/ufs-community/land-DA_workflow.git
+
+.. attention:: 
+
+   When working with a release branch, be sure to follow instructions in the release branch documentation. View the `v2.0.0 release documentation here <https://land-da-workflow.readthedocs.io/en/release-public-v2.0.0/>`_. 
 
 .. _build-land-da:
 
@@ -132,8 +136,6 @@ Copy the experiment settings into ``config.yaml``:
    cd $LANDDAROOT/land-DA_workflow/parm
    cp config_samples/config.LND.era5.3dvar.ims.warmstart.yaml config.yaml
 
-where ``<platform>`` is ``hera``, ``orion``, ``hercules``, or ``gaeac6``.
-   
 Users will need to configure the ``account`` variable in ``config.yaml`` and choose an ``EXP_CASE_NAME`` if a different name for the experiment is desired: 
 
    * ``account:`` A valid account name. Most NOAA :term:`RDHPCS` systems require a valid account name; other systems may not (in which case, any value will do).
@@ -160,11 +162,11 @@ Data
    * - Platform
      - Data Location
    * - Hera
-     - /scratch2/NAGAPE/epic/UFS_Land-DA_|data|/inputs
+     - /scratch2/NAGAPE/epic/UFS_Land-DA_v2.1/inputs
    * - Hercules & Orion
-     - /work/noaa/epic/UFS_Land-DA_|data|/inputs
+     - /work/noaa/epic/UFS_Land-DA_v2.1/inputs
    * - Gaea-C6
-     - /gpfs/f6/bil-fire8/world-shared/UFS_Land-DA_|data|/inputs
+     - /gpfs/f6/bil-fire8/world-shared/UFS_Land-DA_v2.1/inputs
 
 Users who have difficulty accessing the data on Hera, Orion, Hercules, or Gaea-C6 may download it according to the instructions in :numref:`Section %s <GetDataC>`. Its subdirectories are soft-linked to the ``land-DA_workflow/fix`` directory by the build script (``sorc/app_build.sh``); when downloading new data, it should be placed in or linked to the ``fix`` directory.
 
@@ -181,7 +183,7 @@ Generate the experiment directory by running:
 
 where ``<platform>`` is ``hera``, ``orion``, ``hercules``, or ``gaeac6``.
 
-If the command runs without issue, override messages, experiment details, and "0 errors found" messages will be printed to the console, similar to the following excerpts: 
+If the command runs without issue, this script will print override messages, experiment details, and "0 errors found" messages to the console, similar to the following excerpts: 
 
 .. code-block:: console
 
@@ -234,71 +236,27 @@ The setup script (``./setup_wflow_env.py``) will create an experiment directory,
    * - ``tmp_dir``
      - Symlink to the ``ptmp/test_*/tmp`` directory, which contains the working directory and temporary/intermediate files
 
-.. COMMENT: Complete! 
-
 Run the Experiment
 ********************
+
+To run the experiment, users can automate job submission via :term:`crontab` or submit tasks manually via ``rocotorun``. 
 
 .. _wflow-overview:
 
 Workflow Overview
 ==================
 
-Each Land DA experiment includes multiple tasks that must be run in order to satisfy the dependencies of later tasks. These tasks are housed in the :term:`J-job <j-jobs>` scripts contained in the ``jobs`` directory. 
+.. include:: ../doc-snippets/wflow-task-table.rst
 
-.. _WorkflowTasksTable:
 
-.. list-table:: *J-job Tasks in the Land DA Workflow*
-   :header-rows: 1
-
-   * - J-job Task
-     - Description
-     - Application/Configuration
-   * - JLANDDA_PREP_DATA
-     - Prepares the observation / :term:`DATM` forcing data files
-     - LND/ATML
-   * - JLANDDA_FCST_IC 
-     - Generates initial conditions (IC) files for the ATML configuration only
-     - ATML
-   * - JLANDDA_JCB
-     - Generates JEDI configuration YAML file
-     - LND/ATML
-   * - JLANDDA_PRE_ANAL
-     - Transfers the snow depth data from the restart files to the surface data files
-     - LND
-   * - JLANDDA_ANALYSIS
-     - Runs :term:`JEDI` and adds the increment to the surface data files
-     - LND/ATML
-   * - JLANDDA_POST_ANAL
-     - Transfers the JEDI snow depth result from the surface data files to the restart files
-     - LND/ATML
-   * - JLANDDA_FORECAST
-     - Runs the forecast model
-     - LND/ATML
-   * - JLANDDA_PLOT_STATS
-     - Plots the results of the ANALYSIS and FORECAST tasks
-     - LND/ATML
-
-Users may run these tasks :ref:`using the Rocoto workflow manager <run-w-rocoto>`. 
-
-.. _run-w-rocoto:
-
-Run With Rocoto
-=================
-
-To run the experiment, users can automate job submission via :term:`crontab` or submit tasks manually via ``rocotorun``. 
+.. _automated-run:
 
 Automated Run
----------------
+==================
 
 To automate task submission, users must be on a system where :term:`cron` is available. On Orion, cron is only available on the orion-login-1 node, and likewise on Hercules, it is only available on hercules-login-1, so users will need to work on those nodes when running cron jobs on Orion/Hercules.
 
-On all platforms, users should navigate to the experiment directory and launch the workflow: 
-
-.. code-block:: console
-
-   cd ../../exp_case/lnd_era5_warmstart_00/
-   ./launch_rocoto_wflow.sh add
+.. include:: ../doc-snippets/automated-run.rst
 
 To check the status of the experiment, see :numref:`Section %s <VerifySuccess>` on tracking experiment progress.
 
@@ -306,139 +264,32 @@ To check the status of the experiment, see :numref:`Section %s <VerifySuccess>` 
 
    If users run into issues with the launch script, they can run ``conda deactivate`` before running the launch script. 
 
+.. _manual-run:
+
 Manual Submission
--------------------
+==================
 
-To run the experiment, issue a ``rocotorun`` command from the ``parm`` directory: 
+.. include:: ../doc-snippets/manual-run.rst
 
-.. code-block:: console
-
-   rocotorun -w land_analysis.xml -d land_analysis.db
-
-Users will need to issue the ``rocotorun`` command multiple times. The tasks must be run in order, and ``rocotorun`` initiates the next task once its dependencies have completed successfully. Details on checking experiment status are provided in the :ref:`next section <VerifySuccess>`.
+Details on checking experiment status are provided in the :ref:`next section <VerifySuccess>`.
 
 .. _VerifySuccess:
 
-Track Experiment Status
--------------------------
+Track Progress
+=================
 
-To view the experiment status, run: 
-
-.. code-block:: console
-
-   rocotostat -w land_analysis.xml -d land_analysis.db
-
-If ``rocotorun`` was successful, the ``rocotostat`` command will print a status report to the console. For example:
-
-.. code-block:: console
-
-      CYCLE             TASK                        JOBID        STATE  EXIT STATUS   TRIES   DURATION
-   =======================================================================================================
-   202501190000          jcb                      5428846    SUCCEEDED            0       1        3.0
-   202501190000    prep_data                      5428847    SUCCEEDED            0       1       30.0
-   202501190000     pre_anal                      5428848    SUCCEEDED            0       1        8.0
-   202501190000     analysis                      5428985    SUCCEEDED            0       1       72.0
-   202501190000    post_anal                      5429034    SUCCEEDED            0       1        3.0
-   202501190000     forecast                      5429128       QUEUED            -       0        0.0
-   202501190000   plot_stats                            -            -            -       -          -
-   =======================================================================================================
-   202501200000          jcb                      5428849    SUCCEEDED            0       1       11.0
-   202501200000    prep_data                      5428850    SUCCEEDED            0       1       30.0
-   202501200000     pre_anal                      5428851    SUCCEEDED            0       1        3.0
-   202501200000     analysis                      5428986    SUCCEEDED            0       1       71.0
-   202501200000    post_anal                      5429035    SUCCEEDED            0       1        3.0
-   202501200000     forecast  druby://130.18.14.151:46755   SUBMITTING            -       0        0.0
-   202501200000   plot_stats                            -            -            -       -          -
-
-Note that the status table printed by ``rocotostat`` only updates after each ``rocotorun`` command (whether issued manually or via cron automation). For each task, a log file is generated. These files are stored in ``$LANDDAROOT/ptmp/test/com/output/logs``. 
-
-The experiment has successfully completed when all tasks say SUCCEEDED under STATE. Other potential statuses are: QUEUED, SUBMITTING, RUNNING, and DEAD. Users may view the log files to determine why a task may have failed.
+.. include:: ../doc-snippets/track-progress.rst
 
 .. _check-output:
 
 Check Experiment Output
 =========================
 
-As the experiment progresses, it will generate a number of directories to hold intermediate and output files. The structure of those files and directories appears below:
-
-.. _land-da-dir-structure:
-
-.. code-block:: console
-
-   $LANDDAROOT (<EXP_BASEDIR>): Base directory
-    ├── land-DA_workflow (<HOMElandda> or <CYCLEDIR>): Home directory of the land DA workflow
-    │     ├── jobs 
-    │     ├── modulefiles
-    │     ├── parm
-    │     ├── scripts
-    │     ├── sorc
-    │     └── ush
-    ├── exp_case
-    │     ├── com_dir --> symlinked to ptmp/test_*/com/landda/v2.1.0
-    │     ├── land_analysis.yaml
-    │     ├── land_analysis.xml
-    │     ├── launch_rocoto_wflow.sh
-    │     ├── log_dir --> symlinked to ptmp/test_*/com/output/logs
-    │     └── tmp_dir --> symlinked to ptmp/test_*/com/tmp
-    └── ptmp (<PTMP>)
-          └── test_* (<envir> or <OPSROOT>)
-                └── com (<COMROOT>)
-                │     ├── landda (<NET>)
-                │     │     └── vX.Y.Z (<model_ver>)
-                │     │           └── landda.YYYYMMDD (<RUN>.<PDY>): Directory containing the output files
-                │     │                 ├── hofx
-                │     │                 └── plot
-                │     └── output
-                │           └── logs (<LOGDIR>): Directory containing the log files for the Rocoto workflow
-                └── tmp (<DATAROOT>)
-                     ├── <jobid> (<DATA>): Working directory
-                     └── DATA_SHARE
-                           ├── YYYYMMDD (<PDY>): Directory containing the intermediate or temporary files
-                           ├── hofx: Directory containing the soft links to the results of the analysis task for plotting
-                           └── DATA_RESTART: Directory containing the soft links to the restart files for the next cycles
-
-Each variable in parentheses and angle brackets (e.g., ``(<VAR>)``) is the name for the directory defined in the file ``land_analysis.yaml`` (derived from ``template.land_analysis.yaml`` or ``parm_xml.yaml``) or in the NCO Implementation Standards. For example, the ``<envir>`` variable is set to "test" (i.e., ``envir: "test"``) in ``template.land_analysis.yaml``. In the future, this directory structure will be further modified to meet the :nco:`NCO Implementation Standards<>`.
-
-Check for the output files for each cycle in the experiment directory:
-
-.. code-block:: console
-
-   ls -l $LANDDAROOT/ptmp/test/com/landda/<model_ver>/landda.YYYYMMDD
-
-where ``YYYYMMDD`` is the cycle date, and ``<model_ver>`` is the model version (currently |latestr| in the ``develop`` branch). The experiment should generate several restart files. 
+.. include:: ../doc-snippets/check-output.rst
 
 .. _plotting:
 
 Plotting Results
 -----------------
 
-Additionally, in the ``plot`` subdirectory, users will find images depicting the results of the ``analysis`` task for each cycle as a scatter plot (``hofx_oma_YYYYMMDD_scatter.png``) and as a histogram (``hofx_oma_YYYYMMDD_histogram.png``). 
-
-The scatter plot is named OBS-ANA (i.e., Observation Minus Analysis [OMA]), and it depicts a map of snow depth results. Blue points indicate locations where the observed values are less than the analysis values, and red points indicate locations where the observed values are greater than the analysis values. The title lists the mean and standard deviation of the absolute value of the OMA values. 
-
-The histogram plots OMA values on the x-axis and frequency density values on the y-axis. The title of the histogram lists the mean and standard deviation of the real value of the OMA values. 
-
-.. |logo1| image:: https://raw.githubusercontent.com/wiki/ufs-community/land-DA_workflow/images/LandDAScatterPlot.png
-   :alt: Map of snow depth in millimeters (observation minus analysis)
-
-.. |logo2| image:: https://raw.githubusercontent.com/wiki/ufs-community/land-DA_workflow/images/LandDAHistogram.png 
-   :alt: Histogram of snow depth in millimeters (observation minus analysis) on the x-axis and frequency density on the y-axis
-
-.. _sample-plots:
-
-.. list-table:: Snow Depth Plots for 2000-01-04
-
-   * - |logo1|
-     - |logo2|
-
-.. note::
-
-   There are many options for viewing plots, and instructions for this are highly machine dependent. Users should view the data transfer documentation for their system to secure copy files from a remote system (such as :term:`RDHPCS`) to their local system. 
-   Another option is to download `Xming <https://sourceforge.net/projects/xming/>`_ (for Windows) or `XQuartz <https://www.xquartz.org/>`_ (for Mac), use the ``-X`` option when connecting to a remote system via SSH, and run:
-
-   .. code-block:: console
-
-      module load imagemagick
-      display file_name.png
-
-   where ``file_name.png`` is the name of the file to display/view. Depending on the system, users may need to install imagemagick and/or adjust other settings (e.g., for X11 forwarding). Users should contact their machine administrator with any questions. 
+.. include:: ../doc-snippets/plotting.rst

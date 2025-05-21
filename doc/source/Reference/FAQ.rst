@@ -21,7 +21,7 @@ In particular, ``exp_basedir`` must be set to the directory above ``land-DA_work
    uw template render --input-file templates/template.land_analysis.yaml --values-file parm_xml.yaml --output-file land_analysis.yaml
    uw rocoto realize --input-file land_analysis.yaml --output-file land_analysis.xml
 
-Then, rewind the DEAD tasks as described :ref:`below <RestartTask>` using ``rocotorewind``, and use ``rocotorun``/``rocotostat`` to advance/check on the workflow (see :numref:`Section %s <run-w-rocoto>` for how to do this). 
+Then, rewind the DEAD tasks as described :ref:`below <RestartTask>` using ``rocotorewind``, and use ``rocotorun``/``rocotostat`` to advance/check on the workflow (see :numref:`Section %s <automated-run>` for how to do this). 
 
 If the first few tasks run successfully, but future tasks go DEAD, users will need to check the experiment log files, located at ``$EXP_BASEDIR/ptmp/test/com/output/logs``. It may also be useful to check that the JEDI directory and other paths and values are correct in ``parm_xml.yaml``. 
 

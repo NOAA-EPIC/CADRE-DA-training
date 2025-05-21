@@ -13,7 +13,7 @@ Input Files
 **************
 
 The UFS land model requires multiple input files to run, including static datasets (fix files containing climatological information, terrain, and land use data), initial conditions files, and forcing files. 
-Users may reference the `Community Noah-MP Land Surface Modeling System Technical Description Version 5.0 <https://opensky.ucar.edu/islandora/object/technotes:599>`_ (2023) for a detailed technical description of certain elements of the Noah-MP model.
+Users may reference the `Community Noah-MP Land Surface Modeling System Technical Description Version 5.0 <https://opensky.ucar.edu/islandora/object/%3A3912>`_ (2023) for a detailed technical description of certain elements of the Noah-MP model.
 
 In Noah-MP, the static file(s) and initial conditions file(s) specify model parameters. 
 These files are publicly available in the `Land DA data bucket <https://registry.opendata.aws/noaa-ufs-land-da/>`_. 
