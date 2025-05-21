@@ -239,7 +239,25 @@ Workflow Overview
 .. include:: ../doc-snippets/wflow-task-table.rst
 
 
+.. _automated-run-c:
 
+Automated Run
+==================
+
+To automate task submission, users must be on a system where :term:`cron` is available. To submit jobs automatically via crontab, users should navigate to the experiment directory and launch the workflow with the ``add`` argument. For example: 
+
+
+.. code-block:: console
+
+   cd ../../exp_case/cadre2_config.LND.gswp3.letkf.ghcn.warmstart
+   ./launch_rocoto_wflow.sh add
+
+To check the status of the experiment, see :numref:`Section %s <TrackProgressC>` on tracking experiment progress.
+
+.. _manual-run-c:
+
+Manual Submission
+==================
 
 To run the experiment, navigate to the experiment directory and issue a ``rocotorun`` command: 
 
@@ -250,33 +268,36 @@ To run the experiment, navigate to the experiment directory and issue a ``rocoto
 
 Users will need to issue the ``rocotorun`` command multiple times. The tasks must be run in order, and ``rocotorun`` initiates the next task once its dependencies have completed successfully. 
 
-See the :ref:`Workflow Overview <wflow-overview>` section to learn more about the steps in the workflow process.
+See the :ref:`Workflow Overview <WflowOverviewC>` section to learn more about the steps in the workflow process.
 
-.. _TrackProgress:
+.. _TrackProgressC:
 
 Track Progress
 ================
 
-To check on the job status, users on a system with a Slurm job scheduler may run: 
+.. include:: ../doc-snippets/track-progress.rst
 
-.. code-block:: console
+.. COMMENT: ref to LANDDAROOT in this snippet - factor out? reword?
 
-   squeue -u $USER
-
-To view the experiment status, run:
-
-.. code-block:: console
-
-   rocotostat -w land_analysis.xml -d land_analysis.db
-
-See the :ref:`Track Experiment Status <VerifySuccess>` section to learn more about the ``rocotostat`` output.
-
-.. _CheckExptOutput:
+.. _check-output-c:
 
 Check Experiment Output
 =========================
 
-Since this experiment in the container is the same experiment explained in the previous document section, it is suggested that users view the :ref:`experiment output structure <land-da-dir-structure>` and :ref:`plotting results <plotting>` sections to learn more about the expected experiment output. 
+.. include:: ../doc-snippets/check-output.rst
+
+.. COMMENT: ref to LANDDAROOT in this snippet - factor out? reword?
+
+
+.. _plotting-c:
+
+Plotting Results
+------------------
+
+.. include:: ../doc-snippets/plotting.rst
+
+.. COMMENT: Rewrite to include actual plots from the case and scp instructions? 
+
 
 Appendix
 **********
