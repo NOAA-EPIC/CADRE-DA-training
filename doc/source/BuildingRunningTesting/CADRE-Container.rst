@@ -48,18 +48,8 @@ Data for the CADRE DA training are already available on the system used for the 
 
 .. _DownloadContainer:
 
-Build the Container
-**********************
-
-
-.. COMMENT
-   .. _ContainerBuild:
-
-   Build the Container
-   ======================
-
 Download the Container
-========================
+***********************
 
 .. attention:: 
 
@@ -249,7 +239,7 @@ To automate task submission, users must be on a system where :term:`cron` is ava
 
 .. code-block:: console
 
-   cd ../../exp_case/cadre2_config.LND.gswp3.letkf.ghcn.warmstart
+   cd ../../exp_case/cadre2_lnd_gswp3_ghcn
    ./launch_rocoto_wflow.sh add
 
 To check the status of the experiment, see :numref:`Section %s <TrackProgressC>` on tracking experiment progress.
@@ -263,7 +253,7 @@ To run the experiment, navigate to the experiment directory and issue a ``rocoto
 
 .. code-block:: console
 
-   cd ../../exp_case/cadre2_config.LND.gswp3.letkf.ghcn.warmstart
+   cd ../../exp_case/cadre2_lnd_gswp3_ghcn
    rocotorun -w land_analysis.xml -d land_analysis.db
 
 Users will need to issue the ``rocotorun`` command multiple times. The tasks must be run in order, and ``rocotorun`` initiates the next task once its dependencies have completed successfully. 
