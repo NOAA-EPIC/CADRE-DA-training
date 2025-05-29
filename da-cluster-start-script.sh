@@ -173,7 +173,7 @@ cd rocoto/
 cd /home/ubuntu
 
 wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/Land-DA_v2.1_inputs.tar.gz
-wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/ubuntu22.04-intel-landda-daconsortium.img
+wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/ubuntu22.04-intel-landda-cadre25.img
 
 
 tar -vxzf Land-DA_v2.1_inputs.tar.gz 
