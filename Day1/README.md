@@ -54,7 +54,7 @@ vim /Users/<username>/.ssh/id_ed25519_student(n).pub
 ```
 (when using vim, press `:q` to quit the editor)
 
-Copy and paste the contents of the public key to the workshop administrator via the Slack workspace channel `#publickeys` and inform them of which student number you were assigned (i.e., student 5).  
+Copy and paste the contents of the public key to the workshop administrator via the Slack workspace channel `#cadre-epic-data-assimilation-training` and inform them of which student number you were assigned (i.e., student 5).  
 
 NOTE: There will be 2 keys generated, a public and a private key. DO NOT SEND THE PRIVATE KEY! A public key (the correct one) will end in `.pub` and will start like this: 
 
@@ -142,7 +142,7 @@ Use a text editor of your choice to view the public key file or view it in the c
 type /Users/<username>/.ssh/id_ed25519_student(n).pub
 ```
 
-Copy-paste the public key contents to the workshop administrator via the Slack workspace channel `#publickeys` and inform them of your student number (i.e., student 5).
+Copy-paste the public key contents to the workshop administrator via the Slack workspace channel `#cadre-epic-data-assimilation-training` and inform them of your student number (i.e., student 5).
 NOTE: Two (2) keys are generated: a public and a private key. DO NOT SEND THE PRIVATE KEY! 
 A public key will end in `.pub` and will start something like this: 
 ```
