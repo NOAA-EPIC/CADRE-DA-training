@@ -98,7 +98,7 @@ where:
                   .. COMMENT previously intel/2022.1.2
 
    * ``-m`` is the :term:`MPI` on the user's local machine (e.g., ``intelmpi/2021.13``)
-   * ``-i`` is the full path to the container image ( e.g., ``/home/ubuntu/ubuntu22.04-intel-landda-release-public-v2.0.0.img``).
+   * ``-i`` is the full path to the container image ( e.g., ``/home/ubuntu/ubuntu22.04-intel-landda-cadre25.img``).
 
 Running this script will print the following messages to the console:
 
