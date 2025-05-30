@@ -60,9 +60,9 @@ The container for the CADRE DA training is already available on the system used 
 
 .. code-block:: console 
    
-   wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/ubuntu22.04-intel-landda-daconsortium.img
+   wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/CADRE-2025/ubuntu22.04-intel-landda-cadre25.img
 
-This will download a container image named ``ubuntu22.04-intel-landda-daconsortium.img``.
+This will download a container image named ``ubuntu22.04-intel-landda-cadre25.img``.
 
 .. _SetUpContainer:
 
@@ -74,7 +74,7 @@ Create experiment variables that point to the location of the data (``${LANDDA_I
 .. code-block:: console
 
    export LANDDA_INPUTS=/home/ubuntu/inputs
-   export img=/home/ubuntu/ubuntu22.04-intel-landda-daconsortium.img
+   export img=/home/ubuntu/ubuntu22.04-intel-landda-cadre25.img
 
 From your working directory, copy the ``setup_container.sh`` script out of the container. 
 
@@ -98,7 +98,7 @@ where:
                   .. COMMENT previously intel/2022.1.2
 
    * ``-m`` is the :term:`MPI` on the user's local machine (e.g., ``intelmpi/2021.13``)
-   * ``-i`` is the full path to the container image ( e.g., ``$LANDDAROOT/ubuntu22.04-intel-landda-release-public-v2.0.0.img``).
+   * ``-i`` is the full path to the container image ( e.g., ``/home/ubuntu/ubuntu22.04-intel-landda-release-public-v2.0.0.img``).
 
 Running this script will print the following messages to the console:
 
@@ -142,12 +142,12 @@ Then navigate to the ``parm`` directory and copy the desired case into ``config.
 
 where ``cadre<case_name>.yaml`` is the name of one of the sample case files in the `samples_cadre <https://github.com/ufs-community/land-DA_workflow/tree/develop/parm/config_samples/samples_cadre>`_ directory. 
 
-For example, when running the **cadre2** case, run:
+For example, when running the **cadre1** case, run:
 
 .. code-block:: console
 
    cd parm
-   cp config_samples/samples_cadre/cadre2_config.LND.gswp3.letkf.ghcn.warmstart.yaml config.yaml
+   cp config_samples/samples_cadre/cadre1_config.LND.era5.3dvar.ims.warmstart.yaml config.yaml
 
 Generate the experiment directory by running:
 
@@ -174,24 +174,18 @@ If the command runs without issue, this script will print override messages, exp
    Overriding        queue_default = batch
    Overriding               res_p1 = 97
    **************************************************
-                   KEEPDATA: YES
-                        RUN: landda
-        nprocs_forecast_lnd: 36
-          MED_COUPLING_MODE: ufs.nfrac.aoflux
-              EXP_CASE_NAME: cadre1_lnd_era5_ims
-                        NPZ: 127
+              model_ver: v2.1.0
+                    IMO: 384
+              FRAC_GRID: NO
+         NPROCS_FCST_IC: 36
+              OUTPUT_FH: 1 -1
+       DATE_FIRST_CYCLE: 2025012000
    ...
-                exp_basedir: /home/ubuntu
-                        RES: 96
-               ATM_LAYOUT_X: 3
-             native_default: None
-               ATM_LAYOUT_Y: 8
-   DATM_STREAM_FN_LAST_DATE: 
-               LND_LAYOUT_Y: 3
-        LND_OUTPUT_FREQ_SEC: 21600
+          LND_CALC_SNET: .true.
+                ACCOUNT: epic
+               KEEPDATA: YES
    INFO::/home/ubuntu/land-DA_workflow/sorc/conda/envs/land_da/lib/python3.12/site-packages/uwtools/config/validator.py::L76::0 schema-validation errors found in Rocoto config
    INFO::/home/ubuntu/land-DA_workflow/sorc/conda/envs/land_da/lib/python3.12/site-packages/uwtools/rocoto.py::L66::0 Rocoto XML validation errors found
-   ubuntu@ip-10-29-93-226:~/land-DA_workflow/parm$ 
 
 ATML Configurations Only
 ==========================
@@ -219,7 +213,7 @@ Uncomment the second-to-last line of the script, which adds the executables to t
 Run the Experiment
 ********************
 
-To run the experiment, users can automate job submission via :term:`crontab` or submit tasks manually via ``rocotorun``. 
+To run the experiment, must submit tasks manually via rocotorun. :term:`cron` automation is not yet supported for containers.
 
 .. _WflowOverviewC:
 
@@ -228,21 +222,6 @@ Workflow Overview
 
 .. include:: ../doc-snippets/wflow-task-table.rst
 
-
-.. _automated-run-c:
-
-Automated Run
-==================
-
-To automate task submission, users must be on a system where :term:`cron` is available. To submit jobs automatically via crontab, users should navigate to the experiment directory and launch the workflow with the ``add`` argument. For example: 
-
-
-.. code-block:: console
-
-   cd ../../exp_case/cadre2_lnd_gswp3_ghcn
-   ./launch_rocoto_wflow.sh add
-
-To check the status of the experiment, see :numref:`Section %s <TrackProgressC>` on tracking experiment progress.
 
 .. _manual-run-c:
 
@@ -253,7 +232,7 @@ To run the experiment, navigate to the experiment directory and issue a ``rocoto
 
 .. code-block:: console
 
-   cd ../../exp_case/cadre2_lnd_gswp3_ghcn
+   cd ../../exp_case/cadre1_lnd_era5_ims
    rocotorun -w land_analysis.xml -d land_analysis.db
 
 Users will need to issue the ``rocotorun`` command multiple times. The tasks must be run in order, and ``rocotorun`` initiates the next task once its dependencies have completed successfully. 
@@ -284,10 +263,48 @@ Check Experiment Output
 Plotting Results
 ------------------
 
-.. include:: ../doc-snippets/plotting.rst
+Additionally, in the ``plot`` subdirectory, users will find images depicting the results of the ``analysis`` task for each cycle as a scatter plot (``hofx_oma_YYYYMMDD_scatter.png``) and as a histogram (``hofx_oma_YYYYMMDD_histogram.png``). 
 
-.. COMMENT: Rewrite to include actual plots from the case and scp instructions? 
+The scatter plot is named OBS-BKG (i.e., Observation Minus Background [OMB]), and it depicts a map of snow depth results. Blue points indicate locations where the observed values are less than the background values, and red points indicate locations where the observed values are greater than the background values. The title lists the mean and standard deviation of the absolute value of the OMB values. 
 
+The histogram plots OMB values on the x-axis and frequency density values on the y-axis. The title of the histogram lists the mean and standard deviation of the real value of the OMB values. 
+
+.. |logo1| image:: https://raw.githubusercontent.com/wiki/ufs-community/land-DA_workflow/images/LandDAScatterPlot.png
+   :alt: Map of snow depth in millimeters (observation minus analysis)
+
+.. |logo2| image:: https://raw.githubusercontent.com/wiki/ufs-community/land-DA_workflow/images/LandDAHistogram.png 
+   :alt: Histogram of snow depth in millimeters (observation minus analysis) on the x-axis and frequency density on the y-axis
+
+.. COMMENT: Update plots to OMB!
+
+.. list-table:: Snow Depth Plots for 2000-01-04
+
+   * - |logo1|
+     - |logo2|
+
+Downloading the Plots
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note::
+
+   There are many options for viewing plots, and instructions for this are highly machine dependent. Users should view the data transfer documentation for their system to secure copy files from a remote system (such as :term:`RDHPCS`) to their local system. The instructions provided here apply to the Land DA training platform and may not be relevant on other platforms. 
+
+#. Open a new terminal window.
+#. Type ``bash`` to ensure a bash shell.
+#. Add your private key (e.g., ``ssh-add ~/.ssh/id_ed25519_student1``).
+#. For each directory of plots, run: 
+
+   .. code-block:: console
+
+      rsync -v --rsh "ssh student#@137.75.93.46 ssh" ubuntu@controller:/home/ubuntu/exp_case/cadre1_lnd_era5_ims/com_dir/landda.2025012#/plot/* plots/2025012#
+
+   In the command, replace:
+
+   * ``student#`` with your actual student number,
+   * ``landda.2025012#`` with the cycle date, and
+   * ``plots/2025012#/`` with the correct cycle date.
+
+This will create a ``plots`` directory and cycle subdirectory in your current working directory and download the plots.  
 
 Appendix
 **********
@@ -303,7 +320,7 @@ The executables come pre-built in the Land DA Container. However, users who are 
    
    .. code-block:: console 
       
-      singularity shell -B /home:/home /home/ubuntu/ubuntu22.04-intel-landda-daconsortium.img
+      singularity shell -B /home:/home /home/ubuntu/ubuntu22.04-intel-landda-cadre25.img
 
 #. Go to the ``land-DA_workflow`` directory in the container.
 
