@@ -1,0 +1,123 @@
+geometry:
+  fms initialization:
+    namelist filename: Data/fv3files/fmsmpp.nml
+    field table filename: Data/fv3files/field_table
+  akbk: Data/fv3files/akbk.nc4
+  npx: 97
+  npy: 97
+  npz: 127
+  field metadata override: Data/fv3files/fv3jedi_fieldmetadata_restart.yaml
+  time invariant fields:
+    state fields:
+      datetime: '2025-01-18T00:00:00Z'
+      filetype: fms restart
+      skip coupler file: true
+      state variables:
+      - orog_filt
+      datapath: /scratch2/NAGAPE/epic/Chan-hoo.Jeon/landda_test/land-DA_workflow/fix/FV3_fix_tiled/C96
+      filename_orog: C96_oro_data.nc
+    derived fields:
+    - nominal_surface_pressure
+time window:
+  begin: '2025-01-17T12:00:00Z'
+  length: PT24H
+  bound to include: begin
+background:
+  members:
+  - datetime: '2025-01-18T00:00:00Z'
+    filetype: fms restart
+    state variables:
+    - snwdph
+    - vtype
+    - slmsk
+    datapath: mem1
+    filename_sfcd: 20250118.000000.sfc_data.nc
+    filename_cplr: 20250118.000000.coupler.res
+  - datetime: '2025-01-18T00:00:00Z'
+    filetype: fms restart
+    state variables:
+    - snwdph
+    - vtype
+    - slmsk
+    datapath: mem2
+    filename_sfcd: 20250118.000000.sfc_data.nc
+    filename_cplr: 20250118.000000.coupler.res
+observations:
+  observers:
+  - obs space:
+      name: ghcn_snow
+      distribution:
+        name: InefficientDistribution
+      obsdatain:
+        engine:
+          type: H5File
+          obsfile: obs/obs.20250118.t00z.ghcn_snow.nc
+          missing file action: warn
+      obsdataout:
+        engine:
+          type: H5File
+          obsfile: diags/diag.ghcn_snow_2025011800.nc
+      simulated variables:
+      - totalSnowDepth
+    obs operator:
+      name: Identity
+    obs localizations:
+    - localization method: Horizontal SOAR
+      lengthscale: 250e3
+      soar horizontal decay: 2.1e-05
+      max nobs: 50
+    - localization method: Vertical Brasnett
+      vertical lengthscale: 700
+    obs filters:
+    - filter: Bounds Check
+      filter variables:
+      - name: totalSnowDepth
+      minvalue: 0.0
+      maxvalue: 10000.0
+    - filter: Domain Check
+      where:
+      - variable:
+          name: MetaData/stationElevation
+        minvalue: -999.0
+        maxvalue: 10000.0
+    - filter: Domain Check
+      where:
+      - variable:
+          name: GeoVaLs/slmsk
+        minvalue: 0.5
+        maxvalue: 1.5
+    - filter: RejectList
+      where:
+      - variable:
+          name: GeoVaLs/vtype
+        minvalue: 14.5
+        maxvalue: 15.5
+    - filter: Background Check
+      filter variables:
+      - name: totalSnowDepth
+      threshold: 6.25
+      action:
+        name: reject
+local ensemble DA:
+  solver: LETKF
+  inflation:
+    rtps: 0.0
+    rtpp: 0.0
+    mult: 1.0
+driver:
+  update obs config with geometry info: false
+  do test prints: false
+  read HX from disk: false
+  run as observer only: false
+  save posterior mean: false
+  save posterior ensemble: false
+  save prior mean: false
+  save posterior mean increment: true
+  save posterior ensemble increments: false
+  save prior variance: false
+  save posterior variance: false
+  do posterior observer: false
+  use control member: false
+output increment:
+  filetype: fms restart
+  filename_sfcd: snowinc.sfc_data.nc
