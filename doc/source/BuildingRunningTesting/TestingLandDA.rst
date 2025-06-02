@@ -27,7 +27,7 @@ From the working directory (``$LANDDAROOT``), navigate to ``build`` and run:
    module load build_<platform>_intel 
    ctest
 
-where ``<account_name>`` corresponds to the user's actual account name, ``<partition>`` is a valid partition on the platform of choice (e.g., ``debug`` or ``orion``), and ``<platform>`` is ``hera``, ``orion``, ``hercules``, or ``gaea-C6``.
+where ``<account_name>`` corresponds to the user's actual account name, ``<partition>`` is a valid partition on the platform of choice (e.g., ``debug`` or ``orion``), and ``<platform>`` is ``hera``, ``orion``, ``hercules``, or ``gaeac6``.
 
 This will submit an interactive job, load the appropriate modulefiles, and run the CTests. 
 

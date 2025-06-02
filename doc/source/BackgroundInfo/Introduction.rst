@@ -52,8 +52,7 @@ Background Information
 ========================
    * This chapter (Introduction) provides user support information and background information on the Unified Forecast System (:term:`UFS`) and the Noah-MP model. 
    * :numref:`Chapter %s <TechOverview>` (Technical Overview) outlines prerequisites, supported systems, and directory structure. 
-
-.. COMMENT: Add Components chapter?
+   * :numref:`Chapter %s <Components>` (Components) describes the components that comprise the Land DA System. 
 
 Building, Running, and Testing the Land DA System
 ===================================================
@@ -61,8 +60,6 @@ Building, Running, and Testing the Land DA System
    * :numref:`Chapter %s: Land DA Workflow <BuildRunLandDA>` explains how to build and run the Land DA System on :ref:`Level 1 <LevelsOfSupport>` systems (currently Hera, Orion, Hercules, and Gaea-C6).
    * :numref:`Chapter %s: Containerized Land DA Workflow <Container>` explains how to build and run the containerized Land DA System on non-Level 1 systems. 
    * :numref:`Chapter %s: Testing the Land DA Workflow <TestingLandDA>` explains how to run Land DA System tests. 
-
-.. COMMENT: Add workflow overview chapter?
 
 Customizing the Workflow
 =========================

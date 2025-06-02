@@ -26,8 +26,6 @@ Additionally, users will need:
 
    * 26 CPU cores (13 CPUs may be possible, but it has not been tested)
 
-.. COMMENT: Update! 
-
 Software Prerequisites
 ========================
 

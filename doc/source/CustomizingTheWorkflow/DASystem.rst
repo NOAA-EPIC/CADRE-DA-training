@@ -4,7 +4,7 @@
 Input/Output Files for the JEDI DA System 
 ******************************************
 
-This chapter describes the configuration of the offline Land :term:`Data Assimilation` (DA) System, which utilizes the UFS Noah-MP component together with the ``jedi-bundle`` (|skylabv|) to enable cycled model forecasts. The data assimilation framework applies the Local Ensemble Transform Kalman Filter (LETKF) algorithm with pseudo-ensemble error covariance.
+This chapter describes the configuration of the offline Land :term:`Data Assimilation` (DA) System, which utilizes the UFS Noah-MP component together with the ``jedi-bundle`` to enable cycled model forecasts. The data assimilation framework applies the Local Ensemble Transform Kalman Filter (LETKF) algorithm with pseudo-ensemble error covariance.
 
 Joint Effort for Data Assimilation Integration (JEDI)
 ********************************************************
@@ -671,7 +671,7 @@ GHCN files for 2000 and 2019 are already provided in IODA format for the |latest
 
 In each experiment, the ``template.land_analysis.yaml`` file sets the type of observation file (e.g., ``OBS_TYPES: "GHCN"``). Before assimilation, if "GHCN" was specified as the observation type, the ``ghcn_snwd_ioda_${YYYY}${MM}${DD}.nc`` file corresponding to the specified cycle date is copied to the run directory (usually ``$LANDDAROOT/ptmp/test/com/landda/$model_ver/landda.$PDY$cyc/obs`` by default --- see :numref:`Section %s <nco-dir-entities>` for more on these variables) with a naming-convention change (i.e., ``GHCN_${YYYY}${MM}${DD}${HH}.nc``). 
 
-Prior to ingesting the GHCN IODA files via the LETKF at the DA analysis time, the observations are combined into a single ``letkf_land.yaml`` file, which is a concatenation of ``letkfoi_snow.yaml`` and ``GHCN.yaml`` (see :numref:`Section %s <jedi-config-and-params>` for further explanation). The GHCN-specific observation filters, domain checks, and quality control parameters from ``GHCN.yaml`` ensure that only snow depth observations which meet specific criteria are assimilated (the rest are rejected). View the contents of ``GHCN.yaml`` :github:`on GitHub <blob/develop/parm/jedi/GHCN.yaml>`. 
+Prior to ingesting the GHCN IODA files via the LETKF at the DA analysis time, the observations are combined into a single ``letkf_land.yaml`` file, which is a concatenation of ``letkfoi_snow.yaml`` and ``GHCN.yaml`` (see :numref:`Section %s <jedi-config-and-params>` for further explanation). The GHCN-specific observation filters, domain checks, and quality control parameters from ``GHCN.yaml`` ensure that only snow depth observations which meet specific criteria are assimilated (the rest are rejected). 
 
 Restart Files
 ================

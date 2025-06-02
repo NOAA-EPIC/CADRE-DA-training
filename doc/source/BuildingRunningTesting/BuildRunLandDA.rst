@@ -6,7 +6,7 @@ Land DA Workflow (Hera/Orion/Hercules/Gaea-C6)
 
 This chapter provides instructions for building and running the Unified Forecast System (:term:`UFS`) Land DA System using a Jan. 19-20, 2025 00z sample :term:`LND` :term:`warmstart` case using :term:`ERA5` and :term:`IMS` data and the 3D-Var algorithm with the UFS Noah-MP land component and data atmosphere (:term:`DATM`) component.
 
-This case corresponds to the January 2025 Gulf Coast Blizzard, which brought unprecedented snowfall to the entire Gulf Coast. Leading up to the event, the polar vortex stretched far south and met with unusually warm Gulf waters. In response, the National Weather Service (NWS) issued a series of winter storm warnings, extreme cold warnings, and even blizzard warnings --- the first ever in some areas. New Orleans, LA received a record 8 inches of snow, and the surrounding coastal areas likewise saw record-breaking snowfall and cold temperatures. 
+.. include:: ../doc-snippets/gcblizzard-desc.rst
 
 .. attention::
    
@@ -17,22 +17,7 @@ This case corresponds to the January 2025 Gulf Coast Blizzard, which brought unp
 Create a Working Directory
 *****************************
 
-Users can either create a new directory for their Land DA work (e.g., ``landda``) or choose an existing directory, depending on preference. Then, users should navigate to this directory. For example, to create a new directory and navigate to it, run: 
-
-.. code-block:: console
-
-   mkdir /path/to/landda
-   cd /path/to/landda
-
-where ``/path/to/landda`` is the path to the directory where the user plans to run Land DA experiments. In the experiment configuration file, this directory is referred to as ``$EXP_BASEDIR``. 
-
-Optionally, users can save this directory path in an environment variable (e.g., ``$LANDDAROOT``) to avoid typing out full path names later. 
-
-.. code-block:: console
-
-   export LANDDAROOT=`pwd`
-
-In this documentation, ``$LANDDAROOT`` is used, but users are welcome to choose another name for this variable if they prefer. 
+.. include:: ../doc-snippets/create-work-dir.rst
 
 .. _GetCode:
 
@@ -94,7 +79,7 @@ Build the Land DA System
 Configure an Experiment
 *************************
 
-Several sample experiment configurations come with the Land DA System. Although this chapter outlines how to run the ``config.ATML.3dvar.ghcn.coldstart.yaml`` case, the following cases are available for use in the ``land-DA_workflow/parm/config_samples`` directory:
+Several sample experiment configurations come with the Land DA System. Although this chapter outlines how to run the ``config.LND.era5.3dvar.ims.warmstart.yaml`` case, the following cases are available for use in the ``land-DA_workflow/parm/config_samples`` directory:
 
 * ``config.ATML.3dvar.ghcn.coldstart.yaml``
 * ``config.LND.era5.letkf.ghcn.coldstart.yaml``
@@ -235,6 +220,8 @@ The setup script (``./setup_wflow_env.py``) will create an experiment directory,
      - Symlink to the directory containing log files for the Rocoto workflow (``ptmp/test_*/com/output/logs``)
    * - ``tmp_dir``
      - Symlink to the ``ptmp/test_*/tmp`` directory, which contains the working directory and temporary/intermediate files
+
+For a deeper understanding of the ``setup_wflow_env.py`` script, see :numref:`Figure %s <setup-wflow-script>`.
 
 Run the Experiment
 ********************

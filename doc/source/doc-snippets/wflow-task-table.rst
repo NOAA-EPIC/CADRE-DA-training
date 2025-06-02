@@ -6,27 +6,27 @@ Each Land DA experiment includes multiple tasks that must be run in order to sat
    * - J-job Task
      - Description
      - Application/Configuration
-   * - JLANDDA_PREP_DATA
+   * - PREP_DATA
      - Prepares the observation / :term:`DATM` forcing data files
      - LND/ATML
-   * - JLANDDA_FCST_IC 
+   * - FCST_IC 
      - Generates initial conditions (IC) files for the ATML configuration only
      - ATML
-   * - JLANDDA_JCB
-     - Generates JEDI configuration YAML file
+   * - JCB
+     - Generates :term:`JEDI` configuration YAML file
      - LND/ATML
-   * - JLANDDA_PRE_ANAL
+   * - PRE_ANAL
      - Transfers the snow depth data from the restart files to the surface data files
      - LND
-   * - JLANDDA_ANALYSIS
-     - Runs :term:`JEDI` and adds the increment to the surface data files
+   * - ANALYSIS
+     - Runs JEDI and adds the increment to the surface data files
      - LND/ATML
-   * - JLANDDA_POST_ANAL
+   * - POST_ANAL
      - Transfers the JEDI snow depth result from the surface data files to the restart files
      - LND/ATML
-   * - JLANDDA_FORECAST
+   * - FORECAST
      - Runs the forecast model
      - LND/ATML
-   * - JLANDDA_PLOT_STATS
+   * - PLOT_STATS
      - Plots the results of the ANALYSIS and FORECAST tasks
      - LND/ATML
