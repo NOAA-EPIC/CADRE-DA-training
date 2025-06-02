@@ -1,0 +1,20 @@
+CADRE Container Initial Setup Commands
+=======================================
+
+ # Ensure you are in the home directory (i.e /home/ubuntu) 
+ # Note: If you are in the container, please exit it by typing "exit"
+ 
+ cd ~
+ 
+ # Export variables needed for the setup_container.sh script
+ 
+ export LANDDA_INPUTS=/home/ubuntu/inputs
+ export img=/home/ubuntu/ubuntu22.04-intel-landda-cadre25.img
+ 
+ # Copy out setup_container.sh script
+ 
+ singularity exec -H $PWD $img cp -r /opt/land-DA_workflow/setup_container.sh .
+ 
+ # Run setup_container.sh script
+ 
+ ./setup_container.sh -c=intelmpi/2021.13 -m=intelmpi/2021.13 -i=$img
