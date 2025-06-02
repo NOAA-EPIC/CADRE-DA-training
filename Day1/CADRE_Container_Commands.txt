@@ -1,0 +1,42 @@
+Common Container Commands Examples (optional)
+==============================================
+
+  # Build the singularity image
+ 
+  singularity build --force ubuntu22.04-intel-landda-cadre25.img docker://noaaepic/ubuntu22.04-intel21.10-landda:ue160-fms202401-cadre25
+ 
+  # Build the singularity sandbox
+ 
+  singularity build --sandbox ubuntu22.04-intel-landda-cadre25 ubuntu22.04-intel-landda-cadre25.img
+ 
+  # Shell into container
+ 
+  singularity shell -B /home /home/ubuntu/ubuntu22.04-intel-landda-cadre25.img
+ 
+  # Execute a command in a container
+ 
+  singularity exec -H $PWD ubuntu22.04-intel-landda-cadre25.img /usr/bin/which python
+  singularity exec -H $PWD ubuntu22.04-intel-landda-cadre25.img sh -c 'echo $PATH'
+  singularity exec -H $PWD ubuntu22.04-intel-landda-cadre25.img cp -r /opt/land-DA_workflow/setup_container.sh .
+ 
+  
+CADRE Container Initial Setup Commands
+=======================================
+
+  # Ensure you are in the home directory (i.e /home/ubuntu)
+  # Note: If you are in the container, please exit it by issuing the "exit" command
+ 
+  cd ~
+ 
+  # Export variables needed for the setup_container.sh script
+ 
+  export LANDDA_INPUTS=/home/ubuntu/inputs
+  export img=/home/ubuntu/ubuntu22.04-intel-landda-cadre25.img
+ 
+  # Copy out setup_container.sh script
+ 
+  singularity exec -H $PWD $img cp -r /opt/land-DA_workflow/setup_container.sh .
+ 
+  # Run setup_container.sh script
+ 
+  ./setup_container.sh -c=intelmpi/2021.13 -m=intelmpi/2021.13 -i=$img
