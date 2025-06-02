@@ -138,9 +138,9 @@ Then navigate to the ``parm`` directory and copy the desired case into ``config.
 .. code-block:: console
 
    cd parm
-   cp config_samples/samples_cadre/cadre<case_name>.yaml config.yaml
+   cp config_samples/samples_cadre/<cadre#_case_name>.yaml config.yaml
 
-where ``cadre<case_name>.yaml`` is the name of one of the sample case files in the `samples_cadre <https://github.com/ufs-community/land-DA_workflow/tree/develop/parm/config_samples/samples_cadre>`_ directory. 
+where ``<cadre#_case_name>.yaml`` is the name of one of the sample case files in the `samples_cadre <https://github.com/ufs-community/land-DA_workflow/tree/develop/parm/config_samples/samples_cadre>`_ directory. 
 
 For example, when running the **cadre1** case, run:
 
@@ -148,6 +148,22 @@ For example, when running the **cadre1** case, run:
 
    cd parm
    cp config_samples/samples_cadre/cadre1_config.LND.era5.3dvar.ims.warmstart.yaml config.yaml
+
+Modify variables in ``config.yaml`` as needed. For example, in **cadre1**, the Gulf Coast Blizzard hit the Gulf Coast late on January 20, 2025 and left land by January 23, 2025. To reduce the duration of the default forecast and save computational resources, users can change ``DATE_LAST_CYCLE`` to from January 25 to January 22 (``2025012200``):
+
+.. code-block:: console 
+
+   ACCOUNT: epic
+   APP: LND
+   ATMOS_FORC: era5
+   COLDSTART: 'NO'
+   COUPLER_CALENDAR: 2
+   DATE_CYCLE_FREQ_HR: 24
+   DATE_FIRST_CYCLE: 2025011900
+   DATE_LAST_CYCLE: 2025012200
+   ...
+
+Users may configure other elements of an experiment in ``config.yaml`` if desired. For example, users may wish to choose a different ``EXP_CASE_NAME``or DA algorithm (via the ``JEDI_ALGORITHM`` variable). Users who wish to run a more complex experiment may change the values in ``config.yaml`` using information from Section :numref:`%s: Workflow Configuration Parameters <ConfigWorkflow>`. 
 
 Generate the experiment directory by running:
 
