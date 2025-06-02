@@ -7,5 +7,3 @@ Customizing the Workflow
    :maxdepth: 3
 
    ConfigWorkflow
-   Model
-   DASystem

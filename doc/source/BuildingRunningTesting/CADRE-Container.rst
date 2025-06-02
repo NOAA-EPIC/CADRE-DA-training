@@ -213,7 +213,7 @@ Uncomment the second-to-last line of the script, which adds the executables to t
 Run the Experiment
 ********************
 
-To run the experiment, must submit tasks manually via rocotorun. :term:`cron` automation is not yet supported for containers.
+To run the experiment, users must submit tasks manually via ``rocotorun``. :term:`cron` automation is not yet supported for containers.
 
 .. _WflowOverviewC:
 
