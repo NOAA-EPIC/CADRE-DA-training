@@ -1,0 +1,429 @@
+cost function:
+  cost type: 3D-Var
+  jb evaluation: false
+  time window:
+    begin: '2025-01-18T12:00:00Z'
+    length: PT24H
+    bound to include: begin
+  geometry:
+    fms initialization:
+      namelist filename: Data/fv3files/fmsmpp.nml
+      field table filename: Data/fv3files/field_table
+    akbk: Data/fv3files/akbk.nc4
+    layout:
+    - 1
+    - 1
+    npx: 97
+    npy: 97
+    npz: 127
+    field metadata override: Data/fv3files/fv3jedi_fieldmetadata_restart.yaml
+  analysis variables:
+  - totalSnowDepth
+  background:
+    datapath: bkg
+    filetype: fms restart
+    skip coupler file: true
+    datetime: '2025-01-19T00:00:00Z'
+    state variables:
+    - snwdph
+    - vtype
+    - slmsk
+    - sheleg
+    - orog_filt
+    filename_sfcd: 20250119.000000.sfc_data.nc
+    filename_cplr: 20250119.000000.coupler.res
+    filename_orog: C96_oro_data.nc
+  background error:
+    covariance model: SABER
+    saber central block:
+      saber block name: BUMP_NICAS
+      read:
+        general:
+          universe length-scale: 300000.0
+        drivers:
+          multivariate strategy: univariate
+          read global nicas: true
+        nicas:
+          explicit length-scales: true
+          horizontal length-scale:
+          - groups:
+            - totalSnowDepth_shadowLevels
+            value: 250000.0
+          vertical length-scale:
+          - groups:
+            - totalSnowDepth_shadowLevels
+            value: 0.0
+          interpolation type:
+          - groups:
+            - totalSnowDepth_shadowLevels
+            type: c0
+          same horizontal convolution: true
+        io:
+          data directory: berror
+          files prefix: snow_bump_nicas_250km_shadowlevels
+    saber outer blocks:
+    - saber block name: ShadowLevels
+      fields metadata:
+        totalSnowDepth:
+          vert_coord: filtered_orography
+      calibration:
+        number of shadow levels: 50
+        lowest shadow level: -450.0
+        highest shadow level: 8850.0
+        vertical length-scale: 2000.0
+    - saber block name: BUMP_StdDev
+      read:
+        drivers:
+          compute variance: true
+        variance:
+          explicit stddev: true
+          stddev:
+          - variables:
+            - totalSnowDepth
+            value: 30.0
+  observations:
+    obs perturbations: false
+    observers:
+    - obs space:
+        name: ims_snow
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: obs/obs.20250119.t00z.ims_snow.tm00.nc
+            missing file action: warn
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: diags/diag.ims_snow_2025011900.nc
+        simulated variables:
+        - totalSnowDepth
+      obs operator:
+        name: Identity
+      obs pre filters:
+      - filter: Perform Action
+        filter variables:
+        - name: totalSnowDepth
+        action:
+          name: assign error
+          error parameter: 80.0
+      obs prior filters:
+      - filter: Domain Check
+        where:
+        - variable:
+            name: GeoVaLs/slmsk
+          minvalue: 0.5
+          maxvalue: 1.5
+      - filter: RejectList
+        where:
+        - variable:
+            name: GeoVaLs/vtype
+          minvalue: 14.5
+          maxvalue: 15.5
+      obs post filters:
+      - filter: Background Check
+        filter variables:
+        - name: totalSnowDepth
+        threshold: 3.0
+        action:
+          name: reject
+      - filter: Gaussian Thinning
+        horizontal_mesh: 40.0
+      - filter: Bounds Check
+        filter variables:
+        - name: totalSnowDepth
+        minvalue: 0.0
+    - obs space:
+        name: sfcsno
+        obsdatain:
+          engine:
+            type: bufr
+            obsfile: obs/obs.20250119.t00z.sfcsno.tm00.bufr_d
+            mapping file: obs/bufr_sfcsno_mapping.yaml
+            missing file action: warn
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: diags/diag.sfcsno_2025011900.nc
+        simulated variables:
+        - totalSnowDepth
+      obs operator:
+        name: Composite
+        components:
+        - name: Identity
+        - name: BackgroundErrorIdentity
+      linear obs operator:
+        name: Identity
+      obs pre filters:
+      - filter: Create Diagnostic Flags
+        flags:
+        - name: missing_snowdepth
+          initial value: false
+        - name: missing_elevation
+          initial value: false
+        - name: temporal_thinning
+          initial value: false
+        - name: invalid_snowdepth
+          initial value: false
+        - name: invalid_elevation
+          initial value: false
+        - name: land_check
+          initial value: false
+        - name: landice_check
+          initial value: false
+        - name: elevation_bkgdiff
+          initial value: false
+        - name: rejectlist
+          initial value: false
+        - name: background_check
+          initial value: false
+        - name: buddy_check
+          initial value: false
+      - filter: Perform Action
+        filter variables:
+        - name: totalSnowDepth
+        action:
+          name: assign error
+          error parameter: 40.0
+      - filter: Variable Assignment
+        assignments:
+        - name: GrossErrorProbability/totalSnowDepth
+          type: float
+          value: 0.02
+        - name: BkgError/totalSnowDepth_background_error
+          type: float
+          value: 30.0
+      - filter: Domain Check
+        where:
+        - variable:
+            name: ObsValue/totalSnowDepth
+          value: is_valid
+        actions:
+        - name: set
+          flag: missing_snowdepth
+          ignore: rejected observations
+        - name: reject
+      - filter: Domain Check
+        where:
+        - variable:
+            name: MetaData/stationElevation
+          value: is_valid
+        actions:
+        - name: set
+          flag: missing_elevation
+          ignore: rejected observations
+        - name: reject
+      - filter: Temporal Thinning
+        min_spacing: PT24H
+        seed_time: '2025-01-19T00:00:00Z'
+        category_variable:
+          name: MetaData/stationIdentification
+        actions:
+        - name: set
+          flag: temporal_thinning
+          ignore: rejected observations
+        - name: reject
+      obs prior filters:
+      - filter: Bounds Check
+        filter variables:
+        - name: totalSnowDepth
+        minvalue: 0.0
+        maxvalue: 20000.0
+        actions:
+        - name: set
+          flag: invalid_snowdepth
+          ignore: rejected observations
+        - name: reject
+      - filter: Domain Check
+        where:
+        - variable:
+            name: GeoVaLs/slmsk
+          minvalue: 0.5
+          maxvalue: 1.5
+        actions:
+        - name: set
+          flag: land_check
+          ignore: rejected observations
+        - name: reject
+      - filter: Domain Check
+        where:
+        - variable:
+            name: MetaData/stationElevation
+          minvalue: -200.0
+          maxvalue: 9900.0
+        actions:
+        - name: set
+          flag: invalid_elevation
+          ignore: rejected observations
+        - name: reject
+      - filter: RejectList
+        where:
+        - variable:
+            name: GeoVaLs/vtype
+          minvalue: 14.5
+          maxvalue: 15.5
+        actions:
+        - name: set
+          flag: landice_check
+          ignore: rejected observations
+        - name: reject
+      - filter: Difference Check
+        reference: MetaData/stationElevation
+        value: GeoVaLs/filtered_orography
+        threshold: 200.0
+        actions:
+        - name: set
+          flag: elevation_bkgdiff
+          ignore: rejected observations
+        - name: reject
+      - filter: BlackList
+        where:
+        - variable:
+            name: MetaData/stationIdentification
+          is_in:
+          - 71621
+          - 10863
+          - 16179
+          - 40550
+          - 40580
+          - 40582
+          - 40587
+          - 40592
+          - 47005
+          - 47008
+          - 47014
+          - 47016
+          - 47020
+          - 47022
+          - 47025
+          - 47028
+          - 47031
+          - 47035
+          - 47037
+          - 47039
+          - 47041
+          - 47046
+          - 47050
+          - 47052
+          - 47055
+          - 47058
+          - 47060
+          - 47061
+          - 47065
+          - 47067
+          - 47068
+          - 47069
+          - 47070
+          - 47069
+          - 47070
+          - 47075
+          - 47090
+          - 48698
+          - 48830
+          - 65250
+          - 47095
+          - 47098
+          - 47101
+          - 47102
+        actions:
+        - name: set
+          flag: rejectlist
+          ignore: rejected observations
+        - name: reject
+      obs post filters:
+      - filter: Background Check
+        filter variables:
+        - name: totalSnowDepth
+        threshold: 6.25
+        actions:
+        - name: set
+          flag: background_check
+          ignore: rejected observations
+        - name: reject
+      - filter: Met Office Buddy Check
+        filter variables:
+        - name: totalSnowDepth
+          rejection_threshold: 0.5
+          traced_boxes:
+            min_latitude: -90
+            max_latitude: 90
+            min_longitude: -180
+            max_longitude: 180
+          search_radius: 150
+          station_id_variable:
+            name: MetaData/stationIdentification
+          num_zonal_bands: 24
+          sort_by_pressure: false
+          max_total_num_buddies: 15
+          max_num_buddies_from_single_band: 10
+          max_num_buddies_with_same_station_id: 5
+          use_legacy_buddy_collector: false
+          horizontal_correlation_scale:
+            '-90': 150
+            '90': 150
+          temporal_correlation_scale: PT6H
+          damping_factor_1: 1.0
+          damping_factor_2: 1.0
+          background_error_group: BkgError
+        actions:
+        - name: set
+          flag: buddy_check
+          ignore: rejected observations
+        - name: reject
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - ninner: 50
+    gradient norm reduction: 1e-10
+    test: true
+    geometry:
+      fms initialization:
+        namelist filename: Data/fv3files/fmsmpp.nml
+        field table filename: Data/fv3files/field_table
+      akbk: Data/fv3files/akbk.nc4
+      layout:
+      - 1
+      - 1
+      npx: 97
+      npy: 97
+      npz: 127
+      field metadata override: Data/fv3files/fv3jedi_fieldmetadata_restart.yaml
+      time invariant fields:
+        state fields:
+          datetime: '2025-01-19T00:00:00Z'
+          filetype: fms restart
+          skip coupler file: true
+          state variables:
+          - orog_filt
+          datapath: /scratch2/NAGAPE/epic/Chan-hoo.Jeon/landda_test/land-DA_workflow/fix/FV3_fix_tiled/C96/
+          filename_orog: C96_oro_data.nc
+    diagnostics:
+      departures: bkgmob
+final:
+  diagnostics:
+    departures: anlmob
+  increment:
+    output:
+      state component:
+        datapath: ./anl
+        prefix: snowinc
+        filetype: fms restart
+        filename_sfcd: 20250119.000000.sfc_data.nc
+        filename_cplr: 20250119.000000.coupler.res
+        state variables:
+        - snwdph
+        - vtype
+        - slmsk
+    geometry:
+      fms initialization:
+        namelist filename: Data/fv3files/fmsmpp.nml
+        field table filename: Data/fv3files/field_table
+      akbk: Data/fv3files/akbk.nc4
+      layout:
+      - 1
+      - 1
+      npx: 97
+      npy: 97
+      npz: 127
+      field metadata override: Data/fv3files/fv3jedi_fieldmetadata_restart.yaml
+final j evaluation: false
