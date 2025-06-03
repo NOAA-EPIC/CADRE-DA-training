@@ -229,7 +229,7 @@ Uncomment the second-to-last line of the script, which adds the executables to t
 Run the Experiment
 ********************
 
-To run the experiment, users must submit tasks manually via ``rocotorun``. :term:`cron` automation is not yet supported for containers.
+To run the experiment, users may submit tasks manually via ``rocotorun`` or use a script to automate submission.
 
 .. _WflowOverviewC:
 
@@ -238,13 +238,30 @@ Workflow Overview
 
 .. include:: ../doc-snippets/wflow-task-table.rst
 
+.. _automated-run:
+
+Automated Run
+==================
+
+To submit jobs automatically, users should navigate to the experiment directory, download the ``run_expt.sh`` script, modify permissions, and run the script: 
+
+.. code-block:: console
+
+   cd /home/ubuntu/exp_case/<EXP_CASE_NAME>
+   wget https://raw.githubusercontent.com/NOAA-EPIC/CADRE-DA-training/refs/heads/main/Day2/run_expt.sh .
+   chmod 755 run_expt.sh
+   ./run_expt.sh
+
+where ``<EXP_CASE_NAME>`` is replaced with the actual name of the experiment directory (e.g., ``cadre1_lnd_era5_ims``).
+
+To check the status of the experiment, see :numref:`Section %s <VerifySuccess>` on tracking experiment progress.
 
 .. _manual-run-c:
 
 Manual Submission
 ==================
 
-To run the experiment, navigate to the experiment directory and issue a ``rocotorun`` command: 
+To run the experiment manually, navigate to the experiment directory and issue a ``rocotorun`` command. For example: 
 
 .. code-block:: console
 
@@ -260,9 +277,60 @@ See the :ref:`Workflow Overview <WflowOverviewC>` section to learn more about th
 Track Progress
 ================
 
-.. include:: ../doc-snippets/track-progress.rst
+To check on the job status, users on a system with a Slurm job scheduler may run: 
 
-.. COMMENT: ref to LANDDAROOT in this snippet - factor out? reword?
+.. code-block:: console
+
+   squeue -u $USER
+
+To view the experiment status, run:
+
+.. code-block:: console
+
+   rocotostat -w land_analysis.xml -d land_analysis.db
+
+If ``rocotorun`` was successful, the ``rocotostat`` command will print a status report to the console. For example:
+
+.. code-block:: console
+
+          CYCLE         TASK                        JOBID        STATE  EXIT STATUS   TRIES   DURATION
+   ===================================================================================================
+   202501190000          jcb                            1    SUCCEEDED            0       1       16.0
+   202501190000    prep_data                            2    SUCCEEDED            0       1       42.0
+   202501190000     pre_anal                            3    SUCCEEDED            0       1       17.0
+   202501190000     analysis                            7    SUCCEEDED            0       1       80.0
+   202501190000    post_anal                            8    SUCCEEDED            0       1        4.0
+   202501190000     forecast   druby://10.29.93.209:38153   SUBMITTING            -       0          0
+   202501190000   plot_stats                            -            -            -       -          -
+   ===================================================================================================
+   202501200000          jcb                            4    SUCCEEDED            0       1       16.0
+   202501200000    prep_data                            -            -            -       -          -
+   202501200000     pre_anal                            -            -            -       -          -
+   202501200000     analysis                            -            -            -       -          -
+   202501200000    post_anal                            -            -            -       -          -
+   202501200000     forecast                            -            -            -       -          -
+   202501200000   plot_stats                            -            -            -       -          -
+   ===================================================================================================
+   202501210000          jcb                            5    SUCCEEDED            0       1       16.0
+   202501210000    prep_data                            -            -            -       -          -
+   202501210000     pre_anal                            -            -            -       -          -
+   202501210000     analysis                            -            -            -       -          -
+   202501210000    post_anal                            -            -            -       -          -
+   202501210000     forecast                            -            -            -       -          -
+   202501210000   plot_stats                            -            -            -       -          -
+   ===================================================================================================
+   202501220000          jcb                            6    SUCCEEDED            0       1       16.0
+   202501220000    prep_data                            -            -            -       -          -
+   202501220000     pre_anal                            -            -            -       -          -
+   202501220000     analysis                            -            -            -       -          -
+   202501220000    post_anal                            -            -            -       -          -
+   202501220000     forecast                            -            -            -       -          -
+   202501220000   plot_stats                            -            -            -       -          -
+
+Note that the status table printed by ``rocotostat`` only updates after each ``rocotorun`` command (whether issued manually or automatically). For each task, a log file is generated. These files are stored in ``/home/ubuntu/ptmp/test_*/com/output/logs``. 
+
+The experiment has successfully completed when all tasks say SUCCEEDED under STATE. Other potential statuses are: QUEUED, SUBMITTING, RUNNING, DEAD, and UNAVAILABLE. Users may view the log files to determine why a task may have failed.
+
 
 .. _check-output-c:
 
@@ -291,8 +359,6 @@ The histogram plots OMB values on the x-axis and frequency density values on the
 .. |logo2| image:: https://raw.githubusercontent.com/wiki/ufs-community/land-DA_workflow/images/LandDAHistogram.png 
    :alt: Histogram of snow depth in millimeters (observation minus analysis) on the x-axis and frequency density on the y-axis
 
-.. COMMENT: Update plots to OMB!
-
 .. list-table:: Snow Depth Plots for 2000-01-04
 
    * - |logo1|
@@ -312,13 +378,13 @@ Downloading the Plots
 
    .. code-block:: console
 
-      rsync -v --rsh "ssh student#@137.75.93.46 ssh" ubuntu@controller:/home/ubuntu/exp_case/cadre1_lnd_era5_ims/com_dir/landda.2025012#/plot/* plots/2025012#
+      rsync -v --rsh "ssh student#@137.75.93.46 ssh" ubuntu@controller:/home/ubuntu/exp_case/cadre1_lnd_era5_ims/com_dir/landda.202501##/plot/* plots/202501##
 
    In the command, replace:
 
    * ``student#`` with your actual student number,
-   * ``landda.2025012#`` with the cycle date, and
-   * ``plots/2025012#/`` with the correct cycle date.
+   * ``landda.202501##`` with the cycle date, and
+   * ``plots/202501##/`` with the correct cycle date.
 
 This will create a ``plots`` directory and cycle subdirectory in your current working directory and download the plots.  
 
@@ -370,5 +436,5 @@ The executables come pre-built in the Land DA Container. However, users who are 
    * Pre-built LND executable: ``/opt/land-DA_workflow/install/bin``
    * Pre-built ATML executable: ``/opt/land-DA_workflow/sorc/build-atml/bin/``. 
 
-After building the executables, continue to :numref:`Section %s: Configure the Experiment <ConfigureExptC>`.
+After building the executables, type ``exit`` and continue to :numref:`Section %s: Configure the Experiment <ConfigureExptC>`.
 
