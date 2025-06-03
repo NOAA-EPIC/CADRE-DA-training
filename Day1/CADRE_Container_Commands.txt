@@ -1,11 +1,11 @@
 Common Container Commands Examples (optional)
 ==============================================
 
-  # Build the singularity image
+  # Build the Apptainer SIF file
  
   singularity build --force ubuntu22.04-intel-landda-cadre25.img docker://noaaepic/ubuntu22.04-intel21.10-landda:ue160-fms202401-cadre25
  
-  # Build the singularity sandbox
+  # Build the sandbox
  
   singularity build --sandbox ubuntu22.04-intel-landda-cadre25 ubuntu22.04-intel-landda-cadre25.img
  
