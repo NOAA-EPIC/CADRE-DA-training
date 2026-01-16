@@ -1,0 +1,790 @@
+========================================================================
+READ_ASCII_FILE: unknown
+READ_ASCII_FILE: File: ./fv3jedi/fmsmpp.nml
+========================================================================
+READ_INPUT_NML: unknown
+READ_INPUT_NML: ./fv3jedi/fmsmpp.nml 
+ &fms_io_nml
+        checksum_required       = F
+ /
+ 
+ &fms_nml
+        print_memory_usage=.false.
+        domains_stack_size = 24000000
+ /
+ 
+ &mpp_io_nml
+        header_buffer_val       = 16384
+        global_field_on_root_pe = T
+        io_clocks_on            = F
+        shuffle                 = 0
+        deflate_level           = -1
+        cf_compliance           = F
+ /
+ 
+ &fms2_io_nml
+   ncchksz               = 65536
+   netcdf_default_format = "netcdf4"
+   header_buffer_val     = 16384
+   deflate_level         = 0
+   shuffle               = .false.
+ /
+
+MPP module unknown
+MPP started with NPES=    96
+Using MPI library for message passing...
+Realtime clock resolution=  4.1667E-10 sec (2399978673 ticks/sec)
+Clock rolls over after   3.8431E+09 sec ( 9223372036854775806 ticks)
+
+MPP Parameter module unknown
+
+MPP Data module unknown
+
+MPP_DOMAINS module unknown
+ &MPP_IO_NML
+ HEADER_BUFFER_VAL       =       16384,
+ GLOBAL_FIELD_ON_ROOT_PE = T,
+ IO_CLOCKS_ON    = F,
+ SHUFFLE =           0,
+ DEFLATE_LEVEL   =          -1,
+ CF_COMPLIANCE   = F
+ /
+
+MPP_IO module unknown
+
+Using netCDF library version 4.9.2 of Jul 11 2025 23:34:25 $
+
+================================================================================
+FMS_IO_MOD
+unknown
+
+================================================================================
+FMS_MOD
+unknown
+ &FMS_NML
+ READ_ALL_PE     = T,
+ CLOCK_GRAIN     = NONE            ,
+ CLOCK_FLAGS     = NONE            ,
+ WARNING_LEVEL   = warning ,
+ STACK_SIZE      =           0,
+ DOMAINS_STACK_SIZE      =    24000000,
+ PRINT_MEMORY_USAGE      = F
+ /
+ nml_error_codes=
+
+================================================================================
+CONSTANTS_MOD
+FMSConstants: GFS
+ &FIELD_MANAGER_NML
+ USE_FIELD_TABLE_YAML    = F
+ /
+
+================================================================================
+FIELD_MANAGER_MOD
+unknown
+# added by FRE: sphum must be present in atmos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+# specific humidity for moist runs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+ "TRACER", "atmos_mod", "sphum"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+# prognostic cloud water mixing ratio                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+ "TRACER", "atmos_mod", "liq_wat"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+ "TRACER", "atmos_mod", "rainwat"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+ "TRACER", "atmos_mod", "ice_wat"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+ "TRACER", "atmos_mod", "snowwat"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+ "TRACER", "atmos_mod", "graupel"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+# prognostic ozone mixing ratio tracer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+ "TRACER", "atmos_mod", "o3mr"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+# non-prognostic cloud amount                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+ "TRACER", "atmos_mod", "cld_amt"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+
+================================================================================
+FV_CONTROL_MOD
+unknown
+ &FV_GRID_NML
+ GRID_NAME       =                                                                                 ,
+ GRID_FILE       =                                                                                                                         
+ /
+
+================================================================================
+FV_CONTROL_MOD
+unknown
+ &FV_CORE_NML
+ NPX     =          97,
+ NPY     =          97,
+ NTILES  =           6,
+ NPZ     =         127,
+ NPZ_TYPE        =                         ,
+ FV_ETA_FILE     = global_hyblev_fcst.txt                                                                                                  ,
+ NPZ_RST =           0,
+ LAYOUT  = 2*4,
+ IO_LAYOUT       = 2*1,
+ NCNST   =           0,
+ NWAT    =           1,
+ USE_LOGP        = F,
+ P_FAC   =  5.000000000000000E-002,
+ A_IMP   =  0.750000000000000     ,
+ K_SPLIT =           1,
+ N_SPLIT =           0,
+ M_SPLIT =           0,
+ Q_SPLIT =           0,
+ PRINT_FREQ      =           0,
+ WRITE_3D_DIAGS  = T,
+ DO_SCHMIDT      = F,
+ DO_CUBE_TRANSFORM       = F,
+ HORD_MT =          10,
+ HORD_VT =          10,
+ HORD_TM =          10,
+ HORD_DP =          10,
+ HORD_TR =           8,
+ SHIFT_FAC       =   18.0000000000000     ,
+ STRETCH_FAC     =  0.000000000000000E+000,
+ TARGET_LAT      =  0.000000000000000E+000,
+ TARGET_LON      =  0.000000000000000E+000,
+ KORD_MT =           8,
+ KORD_WZ =           8,
+ KORD_TM =          -8,
+ KORD_TR =           8,
+ FV_DEBUG        = F,
+ FV_TIMERS       = F,
+ FV_LAND = F,
+ NUDGE   = F,
+ DO_SAT_ADJ      = F,
+ DO_INLINE_MP    = F,
+ DO_F3D  = F,
+ EXTERNAL_IC     = F,
+ READ_INCREMENT  = F,
+ NCEP_IC = F,
+ NGGPS_IC        = F,
+ HRRRV3_IC       = F,
+ ECMWF_IC        = F,
+ USE_NEW_NCEP    = F,
+ USE_NCEP_PHY    = F,
+ FV_DIAG_IC      = F,
+ EXTERNAL_ETA    = F,
+ RES_LATLON_DYNAMICS     =                                                                                                                                 ,
+ RES_LATLON_TRACERS      =                                                                                                                                 ,
+ SCALE_Z =  0.000000000000000E+000,
+ W_MAX   =   75.0000000000000     ,
+ Z_MIN   =  5.000000000000000E-002,
+ LIM_FAC =   1.00000000000000     ,
+ DDDMP   =  0.000000000000000E+000,
+ D2_BG   =  0.000000000000000E+000,
+ D4_BG   =  0.160000000000000     ,
+ VTDM4   =  0.000000000000000E+000,
+ TRDM2   =  0.000000000000000E+000,
+ D_EXT   =  2.000000000000000E-002,
+ DELT_MAX        =   1.00000000000000     ,
+ BETA    =  0.000000000000000E+000,
+ NON_ORTHO       = T,
+ N_SPONGE        =           1,
+ WARM_START      = T,
+ ADJUST_DRY_MASS = F,
+ MOUNTAIN        = T,
+ D_CON   =  0.000000000000000E+000,
+ KE_BG   =  0.000000000000000E+000,
+ NORD    =           1,
+ NORD_TR =           0,
+ CONVERT_KE      = F,
+ USE_OLD_OMEGA   = T,
+ DRY_MASS        =   98290.0000000000     ,
+ GRID_TYPE       =           0,
+ DO_HELD_SUAREZ  = F,
+ DO_REED_PHYSICS = F,
+ REED_COND_ONLY  = F,
+ CONSV_TE        =  0.000000000000000E+000,
+ FILL    = F,
+ FILTER_PHYS     = F,
+ FILL_DP = F,
+ FILL_WZ = F,
+ FILL_GFS        = T,
+ CONSV_AM        = F,
+ RF_FAST = F,
+ RANGE_WARN      = F,
+ DWIND_2D        = F,
+ INLINE_Q        = F,
+ Z_TRACER        = F,
+ REPRODUCE_SUM   = T,
+ ADIABATIC       = F,
+ DO_VORT_DAMP    = F,
+ NO_DYCORE       = F,
+ TAU     =  0.000000000000000E+000,
+ TAU_W   =  0.000000000000000E+000,
+ FAST_TAU_W_SEC  =  0.000000000000000E+000,
+ TAU_H2O =  0.000000000000000E+000,
+ RF_CUTOFF       =   3000.00000000000     ,
+ NF_OMEGA        =           1,
+ HYDROSTATIC     = T,
+ FV_SG_ADJ       =          -1,
+ SG_CUTOFF       =  -1.00000000000000     ,
+ BREED_VORTEX_INLINE     = F,
+ NA_INIT =           0,
+ NUDGE_DZ        = F,
+ HYBRID_Z        = F,
+ MAKE_NH = F,
+ N_ZS_FILTER     =           0,
+ NORD_ZS_FILTER  =           4,
+ FULL_ZS_FILTER  = F,
+ RESET_ETA       = F,
+ PNATS   =           0,
+ DNATS   =           0,
+ DNRTS   =          -1,
+ A2B_ORD =           4,
+ REMAP_T = T,
+ P_REF   =   100000.000000000     ,
+ D2_BG_K1        =   4.00000000000000     ,
+ D2_BG_K2        =   2.00000000000000     ,
+ C2L_ORD =           4,
+ DX_CONST        =   1000.00000000000     ,
+ DY_CONST        =   1000.00000000000     ,
+ UMAX    =   350.000000000000     ,
+ DEGLAT  =   15.0000000000000     ,
+ DEGLON_START    =  -30.0000000000000     ,
+ DEGLON_STOP     =   30.0000000000000     ,
+ DEGLAT_START    =  -30.0000000000000     ,
+ DEGLAT_STOP     =   30.0000000000000     ,
+ PHYS_HYDROSTATIC        = T,
+ USE_HYDRO_PRESSURE      = F,
+ MAKE_HYBRID_Z   = F,
+ OLD_DIVG_DAMP   = F,
+ ADD_NOISE       =  -1.00000000000000     ,
+ BUTTERFLY_EFFECT        = F,
+ MOLECULAR_DIFFUSION     = F,
+ DZ_MIN  =   2.00000000000000     ,
+ PSM_BC  =           0,
+ NESTED  = F,
+ TWOWAYNEST      = T,
+ NUDGE_QV        = F,
+ NESTBCTYPE      =           1,
+ NESTUPDATE      =           7,
+ UPOFF   =           1,
+ NSPONGE =           0,
+ S_WEIGHT        =  1.000000000000000E-006,
+ CHECK_NEGATIVE  = F,
+ NUDGE_IC        = F,
+ HALO_UPDATE_TYPE        =           1,
+ GFS_PHIL        = F,
+ AGRID_VEL_RST   = F,
+ DO_UNI_ZFULL    = F,
+ ADJ_MASS_VMR    = F,
+ FAC_N_SPL       =   1.00000000000000     ,
+ FHOURI  =  0.000000000000000E+000,
+ UPDATE_BLEND    =   1.00000000000000     ,
+ REGIONAL        = F,
+ BC_UPDATE_INTERVAL      =           3,
+ REGIONAL_BCS_FROM_GSI   = F,
+ WRITE_RESTART_WITH_BCS  = F,
+ NROWS_BLEND     =           0,
+ WRITE_COARSE_RESTART_FILES      = F,
+ WRITE_COARSE_DIAGNOSTICS        = F,
+ WRITE_ONLY_COARSE_INTERMEDIATE_RESTARTS = F,
+ WRITE_COARSE_AGRID_VEL_RST      = F,
+ WRITE_COARSE_DGRID_VEL_RST      = T,
+ INCREMENT_FILE_ON_NATIVE_GRID   = F,
+ PASS_FULL_OMEGA_TO_PHYSICS_IN_NON_HYDROSTATIC_MODE      = F,
+ IGNORE_RST_CKSUM        = F
+ /
+ &TEST_CASE_NML
+ TEST_CASE       =          11,
+ BUBBLE_DO       = F,
+ ALPHA   =  0.000000000000000E+000,
+ NSOLITONS       =           1,
+ SOLITON_UMAX    =   50.0000000000000     ,
+ SOLITON_SIZE    =   750000.000000000     
+ /
+
+Cubic: cubed-sphere domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+Cubic: cubed-sphere domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+================================================================================
+TRACER_MANAGER_MOD
+unknown
+ ----------------------------------------------------
+ Contents of tracer entry            1
+ Model type and field name
+ Model                :            1
+ Field name           : sphum
+ Tracer units         : kg/kg
+ Tracer longname      : specific humidity
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            2
+ Model type and field name
+ Model                :            1
+ Field name           : liq_wat
+ Tracer units         : kg/kg
+ Tracer longname      : cloud water mixing ratio
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            3
+ Model type and field name
+ Model                :            1
+ Field name           : rainwat
+ Tracer units         : kg/kg
+ Tracer longname      : rain mixing ratio
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            4
+ Model type and field name
+ Model                :            1
+ Field name           : ice_wat
+ Tracer units         : kg/kg
+ Tracer longname      : cloud ice mixing ratio
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            5
+ Model type and field name
+ Model                :            1
+ Field name           : snowwat
+ Tracer units         : kg/kg
+ Tracer longname      : snow mixing ratio
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            6
+ Model type and field name
+ Model                :            1
+ Field name           : graupel
+ Tracer units         : kg/kg
+ Tracer longname      : graupel mixing ratio
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            7
+ Model type and field name
+ Model                :            1
+ Field name           : o3mr
+ Tracer units         : kg/kg
+ Tracer longname      : ozone mixing ratio
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+ ----------------------------------------------------
+ Contents of tracer entry            8
+ Model type and field name
+ Model                :            1
+ Field name           : cld_amt
+ Tracer units         : 1
+ Tracer longname      : cloud amount
+ Tracer is_prognostic :  T
+ ----------------------------------------------------
+Number of tracers in field table for atmospheric model =    8
+Number of tracers in field table for oceanic model =    0
+Number of tracers in field table for land model =    0
+Number of tracers in field table for ice model =    0
+Number of tracers in field table for coupler model =    0
+
+cubic_grid domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+================================================================================
+FV_CONTROL_MOD
+unknown
+ &FV_GRID_NML
+ GRID_NAME       =                                                                                 ,
+ GRID_FILE       =                                                                                                                         
+ /
+
+================================================================================
+FV_CONTROL_MOD
+unknown
+ &FV_CORE_NML
+ NPX     =          97,
+ NPY     =          97,
+ NTILES  =           6,
+ NPZ     =         127,
+ NPZ_TYPE        =                         ,
+ FV_ETA_FILE     = global_hyblev_fcst.txt                                                                                                  ,
+ NPZ_RST =           0,
+ LAYOUT  = 2*4,
+ IO_LAYOUT       = 2*1,
+ NCNST   =           0,
+ NWAT    =           1,
+ USE_LOGP        = F,
+ P_FAC   =  5.000000000000000E-002,
+ A_IMP   =  0.750000000000000     ,
+ K_SPLIT =           1,
+ N_SPLIT =           0,
+ M_SPLIT =           0,
+ Q_SPLIT =           0,
+ PRINT_FREQ      =           0,
+ WRITE_3D_DIAGS  = T,
+ DO_SCHMIDT      = F,
+ DO_CUBE_TRANSFORM       = F,
+ HORD_MT =          10,
+ HORD_VT =          10,
+ HORD_TM =          10,
+ HORD_DP =          10,
+ HORD_TR =           8,
+ SHIFT_FAC       =   18.0000000000000     ,
+ STRETCH_FAC     =  0.000000000000000E+000,
+ TARGET_LAT      =  0.000000000000000E+000,
+ TARGET_LON      =  0.000000000000000E+000,
+ KORD_MT =           8,
+ KORD_WZ =           8,
+ KORD_TM =          -8,
+ KORD_TR =           8,
+ FV_DEBUG        = F,
+ FV_TIMERS       = F,
+ FV_LAND = F,
+ NUDGE   = F,
+ DO_SAT_ADJ      = F,
+ DO_INLINE_MP    = F,
+ DO_F3D  = F,
+ EXTERNAL_IC     = F,
+ READ_INCREMENT  = F,
+ NCEP_IC = F,
+ NGGPS_IC        = F,
+ HRRRV3_IC       = F,
+ ECMWF_IC        = F,
+ USE_NEW_NCEP    = F,
+ USE_NCEP_PHY    = F,
+ FV_DIAG_IC      = F,
+ EXTERNAL_ETA    = F,
+ RES_LATLON_DYNAMICS     =                                                                                                                                 ,
+ RES_LATLON_TRACERS      =                                                                                                                                 ,
+ SCALE_Z =  0.000000000000000E+000,
+ W_MAX   =   75.0000000000000     ,
+ Z_MIN   =  5.000000000000000E-002,
+ LIM_FAC =   1.00000000000000     ,
+ DDDMP   =  0.000000000000000E+000,
+ D2_BG   =  0.000000000000000E+000,
+ D4_BG   =  0.160000000000000     ,
+ VTDM4   =  0.000000000000000E+000,
+ TRDM2   =  0.000000000000000E+000,
+ D_EXT   =  2.000000000000000E-002,
+ DELT_MAX        =   1.00000000000000     ,
+ BETA    =  0.000000000000000E+000,
+ NON_ORTHO       = T,
+ N_SPONGE        =           1,
+ WARM_START      = T,
+ ADJUST_DRY_MASS = F,
+ MOUNTAIN        = T,
+ D_CON   =  0.000000000000000E+000,
+ KE_BG   =  0.000000000000000E+000,
+ NORD    =           1,
+ NORD_TR =           0,
+ CONVERT_KE      = F,
+ USE_OLD_OMEGA   = T,
+ DRY_MASS        =   98290.0000000000     ,
+ GRID_TYPE       =           0,
+ DO_HELD_SUAREZ  = F,
+ DO_REED_PHYSICS = F,
+ REED_COND_ONLY  = F,
+ CONSV_TE        =  0.000000000000000E+000,
+ FILL    = F,
+ FILTER_PHYS     = F,
+ FILL_DP = F,
+ FILL_WZ = F,
+ FILL_GFS        = T,
+ CONSV_AM        = F,
+ RF_FAST = F,
+ RANGE_WARN      = F,
+ DWIND_2D        = F,
+ INLINE_Q        = F,
+ Z_TRACER        = F,
+ REPRODUCE_SUM   = T,
+ ADIABATIC       = F,
+ DO_VORT_DAMP    = F,
+ NO_DYCORE       = F,
+ TAU     =  0.000000000000000E+000,
+ TAU_W   =  0.000000000000000E+000,
+ FAST_TAU_W_SEC  =  0.000000000000000E+000,
+ TAU_H2O =  0.000000000000000E+000,
+ RF_CUTOFF       =   3000.00000000000     ,
+ NF_OMEGA        =           1,
+ HYDROSTATIC     = T,
+ FV_SG_ADJ       =          -1,
+ SG_CUTOFF       =  -1.00000000000000     ,
+ BREED_VORTEX_INLINE     = F,
+ NA_INIT =           0,
+ NUDGE_DZ        = F,
+ HYBRID_Z        = F,
+ MAKE_NH = F,
+ N_ZS_FILTER     =           0,
+ NORD_ZS_FILTER  =           4,
+ FULL_ZS_FILTER  = F,
+ RESET_ETA       = F,
+ PNATS   =           0,
+ DNATS   =           0,
+ DNRTS   =          -1,
+ A2B_ORD =           4,
+ REMAP_T = T,
+ P_REF   =   100000.000000000     ,
+ D2_BG_K1        =   4.00000000000000     ,
+ D2_BG_K2        =   2.00000000000000     ,
+ C2L_ORD =           4,
+ DX_CONST        =   1000.00000000000     ,
+ DY_CONST        =   1000.00000000000     ,
+ UMAX    =   350.000000000000     ,
+ DEGLAT  =   15.0000000000000     ,
+ DEGLON_START    =  -30.0000000000000     ,
+ DEGLON_STOP     =   30.0000000000000     ,
+ DEGLAT_START    =  -30.0000000000000     ,
+ DEGLAT_STOP     =   30.0000000000000     ,
+ PHYS_HYDROSTATIC        = T,
+ USE_HYDRO_PRESSURE      = F,
+ MAKE_HYBRID_Z   = F,
+ OLD_DIVG_DAMP   = F,
+ ADD_NOISE       =  -1.00000000000000     ,
+ BUTTERFLY_EFFECT        = F,
+ MOLECULAR_DIFFUSION     = F,
+ DZ_MIN  =   2.00000000000000     ,
+ PSM_BC  =           0,
+ NESTED  = F,
+ TWOWAYNEST      = T,
+ NUDGE_QV        = F,
+ NESTBCTYPE      =           1,
+ NESTUPDATE      =           7,
+ UPOFF   =           1,
+ NSPONGE =           0,
+ S_WEIGHT        =  1.000000000000000E-006,
+ CHECK_NEGATIVE  = F,
+ NUDGE_IC        = F,
+ HALO_UPDATE_TYPE        =           1,
+ GFS_PHIL        = F,
+ AGRID_VEL_RST   = F,
+ DO_UNI_ZFULL    = F,
+ ADJ_MASS_VMR    = F,
+ FAC_N_SPL       =   1.00000000000000     ,
+ FHOURI  =  0.000000000000000E+000,
+ UPDATE_BLEND    =   1.00000000000000     ,
+ REGIONAL        = F,
+ BC_UPDATE_INTERVAL      =           3,
+ REGIONAL_BCS_FROM_GSI   = F,
+ WRITE_RESTART_WITH_BCS  = F,
+ NROWS_BLEND     =           0,
+ WRITE_COARSE_RESTART_FILES      = F,
+ WRITE_COARSE_DIAGNOSTICS        = F,
+ WRITE_ONLY_COARSE_INTERMEDIATE_RESTARTS = F,
+ WRITE_COARSE_AGRID_VEL_RST      = F,
+ WRITE_COARSE_DGRID_VEL_RST      = T,
+ INCREMENT_FILE_ON_NATIVE_GRID   = F,
+ PASS_FULL_OMEGA_TO_PHYSICS_IN_NON_HYDROSTATIC_MODE      = F,
+ IGNORE_RST_CKSUM        = F
+ /
+ &TEST_CASE_NML
+ TEST_CASE       =          11,
+ BUBBLE_DO       = F,
+ ALPHA   =  0.000000000000000E+000,
+ NSOLITONS       =           1,
+ SOLITON_UMAX    =   50.0000000000000     ,
+ SOLITON_SIZE    =   750000.000000000     
+ /
+
+Cubic: cubed-sphere domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+Cubic: cubed-sphere domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+cubic_grid domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+================================================================================
+FV_CONTROL_MOD
+unknown
+ &FV_GRID_NML
+ GRID_NAME       =                                                                                 ,
+ GRID_FILE       =                                                                                                                         
+ /
+
+================================================================================
+FV_CONTROL_MOD
+unknown
+ &FV_CORE_NML
+ NPX     =          97,
+ NPY     =          97,
+ NTILES  =           6,
+ NPZ     =         127,
+ NPZ_TYPE        =                         ,
+ FV_ETA_FILE     = global_hyblev_fcst.txt                                                                                                  ,
+ NPZ_RST =           0,
+ LAYOUT  = 2*4,
+ IO_LAYOUT       = 2*1,
+ NCNST   =           0,
+ NWAT    =           1,
+ USE_LOGP        = F,
+ P_FAC   =  5.000000000000000E-002,
+ A_IMP   =  0.750000000000000     ,
+ K_SPLIT =           1,
+ N_SPLIT =           0,
+ M_SPLIT =           0,
+ Q_SPLIT =           0,
+ PRINT_FREQ      =           0,
+ WRITE_3D_DIAGS  = T,
+ DO_SCHMIDT      = F,
+ DO_CUBE_TRANSFORM       = F,
+ HORD_MT =          10,
+ HORD_VT =          10,
+ HORD_TM =          10,
+ HORD_DP =          10,
+ HORD_TR =           8,
+ SHIFT_FAC       =   18.0000000000000     ,
+ STRETCH_FAC     =  0.000000000000000E+000,
+ TARGET_LAT      =  0.000000000000000E+000,
+ TARGET_LON      =  0.000000000000000E+000,
+ KORD_MT =           8,
+ KORD_WZ =           8,
+ KORD_TM =          -8,
+ KORD_TR =           8,
+ FV_DEBUG        = F,
+ FV_TIMERS       = F,
+ FV_LAND = F,
+ NUDGE   = F,
+ DO_SAT_ADJ      = F,
+ DO_INLINE_MP    = F,
+ DO_F3D  = F,
+ EXTERNAL_IC     = F,
+ READ_INCREMENT  = F,
+ NCEP_IC = F,
+ NGGPS_IC        = F,
+ HRRRV3_IC       = F,
+ ECMWF_IC        = F,
+ USE_NEW_NCEP    = F,
+ USE_NCEP_PHY    = F,
+ FV_DIAG_IC      = F,
+ EXTERNAL_ETA    = F,
+ RES_LATLON_DYNAMICS     =                                                                                                                                 ,
+ RES_LATLON_TRACERS      =                                                                                                                                 ,
+ SCALE_Z =  0.000000000000000E+000,
+ W_MAX   =   75.0000000000000     ,
+ Z_MIN   =  5.000000000000000E-002,
+ LIM_FAC =   1.00000000000000     ,
+ DDDMP   =  0.000000000000000E+000,
+ D2_BG   =  0.000000000000000E+000,
+ D4_BG   =  0.160000000000000     ,
+ VTDM4   =  0.000000000000000E+000,
+ TRDM2   =  0.000000000000000E+000,
+ D_EXT   =  2.000000000000000E-002,
+ DELT_MAX        =   1.00000000000000     ,
+ BETA    =  0.000000000000000E+000,
+ NON_ORTHO       = T,
+ N_SPONGE        =           1,
+ WARM_START      = T,
+ ADJUST_DRY_MASS = F,
+ MOUNTAIN        = T,
+ D_CON   =  0.000000000000000E+000,
+ KE_BG   =  0.000000000000000E+000,
+ NORD    =           1,
+ NORD_TR =           0,
+ CONVERT_KE      = F,
+ USE_OLD_OMEGA   = T,
+ DRY_MASS        =   98290.0000000000     ,
+ GRID_TYPE       =           0,
+ DO_HELD_SUAREZ  = F,
+ DO_REED_PHYSICS = F,
+ REED_COND_ONLY  = F,
+ CONSV_TE        =  0.000000000000000E+000,
+ FILL    = F,
+ FILTER_PHYS     = F,
+ FILL_DP = F,
+ FILL_WZ = F,
+ FILL_GFS        = T,
+ CONSV_AM        = F,
+ RF_FAST = F,
+ RANGE_WARN      = F,
+ DWIND_2D        = F,
+ INLINE_Q        = F,
+ Z_TRACER        = F,
+ REPRODUCE_SUM   = T,
+ ADIABATIC       = F,
+ DO_VORT_DAMP    = F,
+ NO_DYCORE       = F,
+ TAU     =  0.000000000000000E+000,
+ TAU_W   =  0.000000000000000E+000,
+ FAST_TAU_W_SEC  =  0.000000000000000E+000,
+ TAU_H2O =  0.000000000000000E+000,
+ RF_CUTOFF       =   3000.00000000000     ,
+ NF_OMEGA        =           1,
+ HYDROSTATIC     = T,
+ FV_SG_ADJ       =          -1,
+ SG_CUTOFF       =  -1.00000000000000     ,
+ BREED_VORTEX_INLINE     = F,
+ NA_INIT =           0,
+ NUDGE_DZ        = F,
+ HYBRID_Z        = F,
+ MAKE_NH = F,
+ N_ZS_FILTER     =           0,
+ NORD_ZS_FILTER  =           4,
+ FULL_ZS_FILTER  = F,
+ RESET_ETA       = F,
+ PNATS   =           0,
+ DNATS   =           0,
+ DNRTS   =          -1,
+ A2B_ORD =           4,
+ REMAP_T = T,
+ P_REF   =   100000.000000000     ,
+ D2_BG_K1        =   4.00000000000000     ,
+ D2_BG_K2        =   2.00000000000000     ,
+ C2L_ORD =           4,
+ DX_CONST        =   1000.00000000000     ,
+ DY_CONST        =   1000.00000000000     ,
+ UMAX    =   350.000000000000     ,
+ DEGLAT  =   15.0000000000000     ,
+ DEGLON_START    =  -30.0000000000000     ,
+ DEGLON_STOP     =   30.0000000000000     ,
+ DEGLAT_START    =  -30.0000000000000     ,
+ DEGLAT_STOP     =   30.0000000000000     ,
+ PHYS_HYDROSTATIC        = T,
+ USE_HYDRO_PRESSURE      = F,
+ MAKE_HYBRID_Z   = F,
+ OLD_DIVG_DAMP   = F,
+ ADD_NOISE       =  -1.00000000000000     ,
+ BUTTERFLY_EFFECT        = F,
+ MOLECULAR_DIFFUSION     = F,
+ DZ_MIN  =   2.00000000000000     ,
+ PSM_BC  =           0,
+ NESTED  = F,
+ TWOWAYNEST      = T,
+ NUDGE_QV        = F,
+ NESTBCTYPE      =           1,
+ NESTUPDATE      =           7,
+ UPOFF   =           1,
+ NSPONGE =           0,
+ S_WEIGHT        =  1.000000000000000E-006,
+ CHECK_NEGATIVE  = F,
+ NUDGE_IC        = F,
+ HALO_UPDATE_TYPE        =           1,
+ GFS_PHIL        = F,
+ AGRID_VEL_RST   = F,
+ DO_UNI_ZFULL    = F,
+ ADJ_MASS_VMR    = F,
+ FAC_N_SPL       =   1.00000000000000     ,
+ FHOURI  =  0.000000000000000E+000,
+ UPDATE_BLEND    =   1.00000000000000     ,
+ REGIONAL        = F,
+ BC_UPDATE_INTERVAL      =           3,
+ REGIONAL_BCS_FROM_GSI   = F,
+ WRITE_RESTART_WITH_BCS  = F,
+ NROWS_BLEND     =           0,
+ WRITE_COARSE_RESTART_FILES      = F,
+ WRITE_COARSE_DIAGNOSTICS        = F,
+ WRITE_ONLY_COARSE_INTERMEDIATE_RESTARTS = F,
+ WRITE_COARSE_AGRID_VEL_RST      = F,
+ WRITE_COARSE_DGRID_VEL_RST      = T,
+ INCREMENT_FILE_ON_NATIVE_GRID   = F,
+ PASS_FULL_OMEGA_TO_PHYSICS_IN_NON_HYDROSTATIC_MODE      = F,
+ IGNORE_RST_CKSUM        = F
+ /
+ &TEST_CASE_NML
+ TEST_CASE       =          11,
+ BUBBLE_DO       = F,
+ ALPHA   =  0.000000000000000E+000,
+ NSOLITONS       =           1,
+ SOLITON_UMAX    =   50.0000000000000     ,
+ SOLITON_SIZE    =   750000.000000000     
+ /
+
+Cubic: cubed-sphere domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+Cubic: cubed-sphere domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
+
+cubic_grid domain decomposition:     4 X    4
+   pe,   is,  ie,  js,  je,    isd, ied, jsd, jed
