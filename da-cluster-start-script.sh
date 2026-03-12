@@ -383,13 +383,16 @@ spack:
       prefer: ['%oneapi']
       providers:
         mpi: [intel-oneapi-mpi]
+  - zlib@1.2.13
+  - py-click@8.1.7
 EOF
 
 cd /opt/spack-stack/envs/ue-oneapi-2024.2.1
 spack env activate -p .
 spack compiler find 
-pack compiler rm gcc@12.3.0
+spack compiler rm gcc@12.3.0
 spack compiler rm oneapi@2024.2.1
+spack compiler add `spack location -i intel-oneapi-compilers` $ONEAPIPATH/compiler/latest/bin/
 spack concretize 2>&1 | tee log.concretize
 spack install --verbose --fail-fast --show-log-on-error --no-check-signature 2>&1 | tee log.install
 
@@ -418,6 +421,7 @@ cd /home/ubuntu
 echo 'export PATH="$PATH:/home/ubuntu/rocoto/bin"' >> .bashrc
 echo 'module use /opt/modulefiles' >> .bashrc
 echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/Core' >> .bashrc
+echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/gcc' >> .bashrc
 echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/intel-oneapi-mpi/2021.13-dsdmcwn/gcc/11.4.0' >> .bashrc
 
 
