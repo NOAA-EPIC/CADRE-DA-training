@@ -378,13 +378,13 @@ spack:
     - ai-env%oneapi
     - jedi-tools-env%intel
     - jedi-tools-env%oneapi
+  - zlib@1.2.13
+  - py-click@8.1.7
   packages:
     all:
       prefer: ['%oneapi']
       providers:
         mpi: [intel-oneapi-mpi]
-  - zlib@1.2.13
-  - py-click@8.1.7
 EOF
 
 cd /opt/spack-stack/envs/ue-oneapi-2024.2.1
