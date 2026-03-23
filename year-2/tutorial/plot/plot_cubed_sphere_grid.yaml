@@ -1,0 +1,28 @@
+work_dir: './'
+path_data: '../bkg'
+fn_data_atm: 'ufsda.t18z.atm.f006.cubed_sphere_grid.nc'
+fn_data_sfc: 'ufsda.t18z.sfc.f006.cubed_sphere_grid.nc'
+path_data_inc: '../output'
+fn_data_inc_atm: 'cubed_sphere_grid_atminc.jedi.nc'
+fn_data_inc_sfc: 'cubed_sphere_grid_sfcinc.jedi.nc'
+plot_increment_atm: 'YES'
+plot_increment_sfc: 'NO'
+PY_LOG_LEVEL: 'INFO'
+cartopy_ne_path: '../py_ne'
+colorbar_option: 'fixed'
+var_list_atm:
+  - o3mr
+  - spfh
+  - tmp
+  - ugrd
+  - vgrd
+var_list_sfc:
+  - snod
+  - soilm
+  - spfh2m
+  - tmp2m
+zlevel_number_atm: '1'
+zlevel_number_sfc: '1'
+out_title_base: 'CADRE::FV3-JEDI::2024-02-24-00::'
+out_fn_base: 'cadre_fv3jedi_2024022400_'
+

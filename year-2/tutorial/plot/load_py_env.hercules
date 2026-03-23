@@ -1,0 +1,6 @@
+# Source this file to load python environemnt pre-built on machine
+module purge
+module use /work/noaa/epic/UFS-conda-v2/modulefiles
+module load python-ufs-land-da-wflow
+module load imagemagick
+module list

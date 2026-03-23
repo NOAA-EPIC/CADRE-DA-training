@@ -1,0 +1,488 @@
+cost function:
+  cost type: 3D-Var
+  jb evaluation: false
+  time window:
+    begin: '2024-02-23T21:00:00Z'
+    length: PT6H
+    bound to include: begin
+  geometry:
+    fms initialization:
+      namelist filename: ./fv3jedi/fmsmpp.nml
+      field table filename: ./fv3jedi/field_table
+    akbk: ./fv3jedi/akbk.nc4
+    layout:
+    - 4
+    - 4
+    npx: 97
+    npy: 97
+    npz: 127
+  analysis variables:
+  - eastward_wind
+  - northward_wind
+  - air_temperature
+  - air_pressure_at_surface
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - cloud_liquid_ice
+  - cloud_liquid_water
+  - snow_water
+  - rain_water
+  - graupel
+  - ozone_mass_mixing_ratio
+  background:
+    datapath: ./bkg
+    filetype: cube sphere history
+    provider: ufs
+    datetime: '2024-02-24T00:00:00Z'
+    filenames:
+    - ufsda.t18z.atm.f006.cubed_sphere_grid.nc
+    - ufsda.t18z.sfc.f006.cubed_sphere_grid.nc
+    max allowable geometry difference: 1e-4
+    state variables:
+    - eastward_wind
+    - northward_wind
+    - air_temperature
+    - air_pressure_thickness
+    - air_pressure_at_surface
+    - water_vapor_mixing_ratio_wrt_moist_air
+    - cloud_liquid_ice
+    - cloud_liquid_water
+    - snow_water
+    - rain_water
+    - graupel
+    - cloud_ice_number_concentration
+    - rain_number_concentration
+    - ozone_mass_mixing_ratio
+    - geopotential_height_at_surface
+    - slmsk
+    - sheleg
+    - skin_temperature_at_surface
+    - vtype
+    - stype
+    - vfrac
+    - soilt
+    - soilm
+    - totalSnowDepthMeters
+    - eastward_wind_at_surface
+    - northward_wind_at_surface
+    - f10m
+    field io names:
+      eastward_wind: ugrd
+      northward_wind: vgrd
+      air_temperature: tmp
+      layer_thickness: delz
+      air_pressure_thickness: dpres
+      air_pressure_at_surface: pressfc
+      water_vapor_mixing_ratio_wrt_moist_air: spfh
+      cloud_liquid_ice: icmr
+      cloud_liquid_water: clwmr
+      snow_water: snmr
+      rain_water: rwmr
+      graupel: grle
+      cloud_ice_number_concentration: nccice
+      rain_number_concentration: nconrd
+      ozone_mass_mixing_ratio: o3mr
+      geopotential_height_at_surface: hgtsfc
+      slmsk: land
+      sheleg: weasd
+      skin_temperature_at_surface: tmpsfc
+      stype: sotyp
+      vfrac: veg
+      totalSnowDepthMeters: snod
+      eastward_wind_at_surface: ugrd_hyblev1
+      northward_wind_at_surface: vgrd_hyblev1
+      soilm: soilw1
+      soilt: soilt1
+  background error:
+    covariance model: hybrid
+    components:
+    - covariance:
+        covariance model: SABER
+        saber central block:
+          saber block name: gsi static covariance
+          read:
+            gsi akbk: ./fv3jedi/akbk.nc4
+            gsi error covariance file: ./berror/gsi-coeffs-gfs-global.nc
+            gsi berror namelist file: ./berror/gfs_gsi_global.nml
+            processor layout x direction: 12
+            processor layout y direction: 8
+            debugging mode: false
+        saber outer blocks:
+        - saber block name: interpolation
+          inner geometry:
+            function space: StructuredColumns
+            custom grid matching gsi:
+              type: gaussian
+              lats: 98
+              lons: 192
+            custom partitioner matching gsi:
+              bands: 8
+            halo: 1
+          forward interpolator:
+            local interpolator type: oops unstructured grid interpolator
+          inverse interpolator:
+            local interpolator type: oops unstructured grid interpolator
+          state variables to inverse:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - mole_fraction_of_ozone_in_air
+          output variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+      weight:
+        value: 0.125
+    - covariance:
+        covariance model: ensemble
+        members from template:
+          template:
+            datetime: '2024-02-24T00:00:00Z'
+            filetype: cube sphere history
+            provider: ufs
+            state variables:
+            - eastward_wind
+            - northward_wind
+            - air_temperature
+            - air_pressure_at_surface
+            - water_vapor_mixing_ratio_wrt_moist_air
+            - cloud_liquid_ice
+            - cloud_liquid_water
+            - snow_water
+            - rain_water
+            - graupel
+            - ozone_mass_mixing_ratio
+            field io names:
+              eastward_wind: ugrd
+              northward_wind: vgrd
+              air_temperature: tmp
+              air_pressure_at_surface: pressfc
+              water_vapor_mixing_ratio_wrt_moist_air: spfh
+              cloud_liquid_ice: icmr
+              cloud_liquid_water: clwmr
+              snow_water: snmr
+              rain_water: rwmr
+              graupel: grle
+              ozone_mass_mixing_ratio: o3mr
+            datapath: ./ens/mem%mem%
+            filename is datetime templated: true
+            filenames:
+            - ufsda.t18z.enkf.atm.f006.cubed_sphere_grid.nc
+            - ufsda.t18z.enkf.sfc.f006.cubed_sphere_grid.nc
+            max allowable geometry difference: 1e-4
+          pattern: '%mem%'
+          nmembers: 2
+          zero padding: 3
+        localization:
+          localization method: SABER
+          saber central block:
+            saber block name: BUMP_NICAS
+            active variables:
+            - eastward_wind
+            - northward_wind
+            - air_temperature
+            - air_pressure_at_surface
+            - water_vapor_mixing_ratio_wrt_moist_air
+            - cloud_liquid_ice
+            - cloud_liquid_water
+            - snow_water
+            - rain_water
+            - graupel
+            - ozone_mass_mixing_ratio
+            read:
+              general:
+                universe length-scale: 4641.0e3
+              drivers:
+                multivariate strategy: duplicated
+                compute nicas: true
+              model:
+                level for 2d variables: last
+              nicas:
+                resolution: 6
+                explicit length-scales: true
+                horizontal length-scale:
+                - groups:
+                  - common
+                  profile:
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4462500.0
+                  - 4462500.0
+                  - 4284000.0
+                  - 4284000.0
+                  - 4105500.0
+                  - 4105500.0
+                  - 3927000.0
+                  - 3927000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3391500.0
+                  - 3391500.0
+                  - 3213000.0
+                  - 3213000.0
+                  - 3034500.0
+                  - 3034500.0
+                  - 2856000.0
+                  - 2856000.0
+                  - 2677500.0
+                  - 2677500.0
+                  - 2374050.0
+                  - 2374050.0
+                  - 2088450.0
+                  - 2088450.0
+                  - 1820700.0
+                  - 1820700.0
+                  - 1570800.0
+                  - 1570800.0
+                  - 1392300.0
+                  - 1392300.0
+                  - 1356600.0
+                  - 1356600.0
+                  - 1320900.0
+                  - 1320900.0
+                  - 1285200.0
+                  - 1285200.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                vertical length-scale:
+                - groups:
+                  - common
+                  value: 1.8
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+          output variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+      weight:
+        value: 0.875
+  observations:
+    obs perturbations: false
+    observers:
+##########################################################################
+# Add obs spaces from 
+##########################################################################
+
+##########################################################################
+# Add obs spaces to
+##########################################################################
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - ninner: 2
+    gradient norm reduction: 1e-10
+    test: true
+    geometry:
+      fms initialization:
+        namelist filename: ./fv3jedi/fmsmpp.nml
+        field table filename: ./fv3jedi/field_table
+      akbk: ./fv3jedi/akbk.nc4
+      layout:
+      - 4
+      - 4
+      npx: 49
+      npy: 49
+      npz: 127
+      vert coordinate: logp
+    diagnostics:
+      departures: bkgmob
+  - ninner: 4
+    gradient norm reduction: 1e-10
+    test: true
+    geometry:
+      fms initialization:
+        namelist filename: ./fv3jedi/fmsmpp.nml
+        field table filename: ./fv3jedi/field_table
+      akbk: ./fv3jedi/akbk.nc4
+      layout:
+      - 4
+      - 4
+      npx: 49
+      npy: 49
+      npz: 127
+      vert coordinate: logp
+    diagnostics:
+      departures: bkgmob1
+final:
+  diagnostics:
+    departures: anlmob
+  prints:
+    frequency: PT3H
+  increment:
+    output:
+      state component:
+        filetype: cube sphere history
+        filename: ./output/cubed_sphere_grid_atminc.jedi.nc
+        provider: ufs
+        fields to write:
+        - eastward_wind
+        - northward_wind
+        - air_temperature
+        - air_pressure_at_surface
+        - water_vapor_mixing_ratio_wrt_moist_air
+        - cloud_liquid_ice
+        - cloud_liquid_water
+        - snow_water
+        - rain_water
+        - graupel
+        - ozone_mass_mixing_ratio
+        field io names:
+          eastward_wind: ugrd
+          northward_wind: vgrd
+          air_temperature: tmp
+          air_pressure_at_surface: pressfc
+          water_vapor_mixing_ratio_wrt_moist_air: spfh
+          cloud_liquid_ice: icmr
+          cloud_liquid_water: clwmr
+          snow_water: snmr
+          rain_water: rwmr
+          graupel: grle
+          ozone_mass_mixing_ratio: o3mr
+    geometry:
+      fms initialization:
+        namelist filename: ./fv3jedi/fmsmpp.nml
+        field table filename: ./fv3jedi/field_table
+      akbk: ./fv3jedi/akbk.nc4
+      layout:
+      - 4
+      - 4
+      npx: 97
+      npy: 97
+      npz: 127
+final j evaluation: false

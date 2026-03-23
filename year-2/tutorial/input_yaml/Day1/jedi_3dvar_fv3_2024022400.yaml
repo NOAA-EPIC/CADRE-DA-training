@@ -34,8 +34,8 @@ cost function:
     provider: ufs
     datetime: '2024-02-24T00:00:00Z'
     filenames:
-    - gdas.t18z.cubed_sphere_grid_atmf006.nc
-    - gdas.t18z.cubed_sphere_grid_sfcf006.nc
+    - ufsda.t18z.atm.f006.cubed_sphere_grid.nc
+    - ufsda.t18z.sfc.f006.cubed_sphere_grid.nc
     max allowable geometry difference: 1e-4
     state variables:
     - eastward_wind
@@ -101,8 +101,8 @@ cost function:
           saber block name: gsi static covariance
           read:
             gsi akbk: ./fv3jedi/akbk.nc4
-            gsi error covariance file: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/berror/gsi-coeffs-gfs-global.nc4
-            gsi berror namelist file: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/berror/gfs_gsi_global.nml
+            gsi error covariance file: ./berror/gsi-coeffs-gfs-global.nc
+            gsi berror namelist file: ./berror/gfs_gsi_global.nml
             processor layout x direction: 12
             processor layout y direction: 8
             debugging mode: false
@@ -195,8 +195,8 @@ cost function:
             datapath: ./ens/mem%mem%
             filename is datetime templated: true
             filenames:
-            - enkfgdas.t18z.cubed_sphere_grid_atmf006.nc
-            - enkfgdas.t18z.cubed_sphere_grid_sfcf006.nc
+            - ufsda.t18z.enkf.atm.f006.cubed_sphere_grid.nc
+            - ufsda.t18z.enkf.sfc.f006.cubed_sphere_grid.nc
             max allowable geometry difference: 1e-4
           pattern: '%mem%'
           nmembers: 2
@@ -395,216 +395,418 @@ cost function:
     obs perturbations: false
     observers:
     - obs space:
-        name: ascatw_ascat_metop-b
+        name: conventional_ps
         obsdatain:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.scatwnd.ascat_metop-b.nc
+            obsfile: ./obs/obs.20240224.t00z.conventional_ps.nc
             missing file action: warn
         obsdataout:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_scatwnd.ascat_metop-b_2024022400.nc
+            obsfile: ./output/diag.conventional_ps_2024022400.nc
         io pool:
           max pool size: 1
         simulated variables:
-        - windEastward
-        - windNorthward
+        - stationPressure
       obs operator:
-        name: VertInterp
-        vertical coordinate: geopotential_height
-        observation vertical coordinate group: DerivedVariables
-        observation vertical coordinate: adjustedHeight
-        interpolation method: linear
-        hofx scaling field: SurfaceWindScalingHeight
-        hofx scaling field group: DerivedVariables
+        name: SfcCorrected
+        variables:
+        - name: stationPressure
+        correction scheme to use: GSL
+        station_altitude: height
+        geovar_sfc_geomz: height_above_mean_sea_level_at_surface
+        geovar_geomz: geopotential_height
       linear obs operator:
-        name: VertInterp
-        vertical coordinate: geopotential_height
-        observation vertical coordinate group: DerivedVariables
-        observation vertical coordinate: adjustedHeight
-        interpolation method: linear
-      obs pre filters:
-      - filter: Gaussian Thinning
-        horizontal_mesh: 75
-        use_reduced_horizontal_grid: true
-        round_horizontal_bin_count_to_nearest: true
-        partition_longitude_bins_using_mesh: true
-        action:
-          name: reduce obs space
+        name: Identity
+        variables:
+        - name: stationPressure
       obs prior filters:
-      - filter: Variable Transforms
-        Transform: AdjustedHeightCoordinate
-        SkipWhenNoObs: false
-      - filter: Variable Transforms
-        Transform: SurfaceWindScalingHeight
-        SkipWhenNoObs: false
       - filter: Perform Action
         filter variables:
-        - name: windEastward
-        - name: windNorthward
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 181
         action:
           name: assign error
-          error parameter: 1.5
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 80000
+              - 75000
+              - 70000
+              - 65000
+              - 60000
+              - 55000
+              errors:
+              - 110
+              - 120
+              - 120
+              - 120
+              - 120
+              - 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 187
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 85000
+              - 80000
+              - 75000
+              - 70000
+              - 65000
+              - 60000
+              - 55000
+              errors:
+              - 120
+              - 140
+              - 140
+              - 140
+              - 140
+              - 140
+              - 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 180
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 60000
+              - 55000
+              errors:
+              - 130
+              - 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 183
+        action:
+          name: assign error
+          error parameter: 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 120
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 80000
+              - 75000
+              - 70000
+              - 65000
+              - 60000
+              - 55000
+              errors:
+              - 110
+              - 120
+              - 120
+              - 120
+              - 120
+              - 100000000000.0
+      - filter: Variable Assignment
+        assignments:
+        - name: InputObsError/stationPressure
+          type: float
+          source variable: ObsErrorData/stationPressure
+      - filter: Variable Assignment
+        assignments:
+        - name: PreQC/stationPressure
+          type: int
+          source variable: QualityMarker/stationPressure
+      - filter: Variable Assignment
+        assignments:
+        - name: PreUseFlag/stationPressure
+          type: int
+          source variable: PreQC/stationPressure
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: PreUseFlag/stationPressure
+          is_in: 1-15
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 0
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: ObsType/stationPressure
+          is_in: 183
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 100
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: ObsValue/stationPressure
+          is_defined: null
+        - variable:
+            name: ObsValue/stationPressure
+          maxvalue: 50000.0
+        where operator: and
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 100
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: PreQC/stationPressure
+          is_in: 9, 12, 15
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 100
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: PreQC/stationPressure
+          is_in: 4-15
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 101
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreQC/stationPressure
+          is_in: 3, 7
+        action:
+          name: inflate error
+          inflation factor: 1.2
       obs post filters:
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorDuplicateCheck/stationPressure
+          type: float
+          function:
+            name: ObsFunction/ObsErrorFactorDuplicateCheck
+            options:
+              use_air_pressure: false
+              variable: stationPressure
       - filter: Perform Action
         filter variables:
-        - name: windEastward
-        - name: windNorthward
-        where:
-        - variable: ObsType/windEastward
-          is_in: 290
-        - variable: GeoVaLs/skin_temperature_at_surface_where_land
-          maxvalue: 273.0
-        action:
-          name: reject
-      - filter: Perform Action
-        filter variables:
-        - name: windEastward
-        - name: windNorthward
-        where:
-        - variable: ObsType/windEastward
-          is_in: 290
-        - variable: GeoVaLs/water_area_fraction
-          maxvalue: 0.99
-        action:
-          name: reject
-      - filter: Bounds Check
-        filter variables:
-        - name: windEastward
-        - name: windNorthward
-        test variables:
-        - name: ObsFunction/Arithmetic
-          options:
-            variables:
-            - name: ObsValue/windEastward
-            - name: HofX/windEastward
-            coefs:
-            - 1.0
-            - -1.0
-        minvalue: -5.0
-        maxvalue: 5.0
-      - filter: Bounds Check
-        filter variables:
-        - name: windEastward
-        - name: windNorthward
-        test variables:
-        - name: ObsFunction/Arithmetic
-          options:
-            variables:
-            - name: ObsValue/windNorthward
-            - name: HofX/windNorthward
-            coefs:
-            - 1.0
-            - -1.0
-        minvalue: -5.0
-        maxvalue: 5.0
-      - filter: Background Check
-        filter variables:
-        - name: windEastward
-        - name: windNorthward
-        threshold: 6.0
-        absolute threshold: 6.0
-        where:
-        - variable: ObsType/windEastward
-          is_in: 291
-        action:
-          name: reject
-      - filter: Bounds Check
-        filter variables:
-        - name: windEastward
-        - name: windNorthward
-        where:
-        - variable: ObsType/windEastward
-          is_in: 290
-        test variables:
-        - name: ObsFunction/ScatWindsAmbiguityCheck
-          options:
-            minimum_uv: 0.0001
-        maxvalue: 0.0
-        action:
-          name: reject
-      - filter: Perform Action
-        filter variables:
-        - name: windEastward
+        - name: stationPressure
         where:
         - variable:
-            name: ObsType/windEastward
-          is_in: 290-291
+            name: ObsType/stationPressure
+          is_in: 180
+        - variable:
+            name: ObsSubType/stationPressure
+          is_in: 0
+        action:
+          name: inflate error
+          inflation factor: 0.7
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorSfcPressure/stationPressure
+          type: float
+          function:
+            name: ObsFunction/ObsErrorFactorSfcPressure
+            options:
+              geovar_sfc_geomz: height_above_mean_sea_level_at_surface
+              geovar_geomz: geopotential_height
+              station_altitude: height
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
         action:
           name: inflate error
           inflation variable:
-            name: ObsFunction/ObsErrorFactorPressureCheck
+            name: ObsErrorFactorSfcPressure/stationPressure
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/Innovation
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
             options:
-              variable: windEastward
-              inflation factor: 4.0
+              variables:
+              - name: ObsValue/stationPressure
+              - name: HofX/stationPressure
+              coefs:
+              - 1
+              - -1
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure1
+          type: float
+          function:
+            name: ObsFunction/ObsErrorBoundConventional
+            options:
+              obsvar: stationPressure
+              obserr_bound_min: 100
+              obserr_bound_max: 300
+              obserr_bound_factor: 5.0
+      - filter: Background Check
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreQC/stationPressure
+          is_not_in: 3
+        function absolute threshold:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure1
+        action:
+          name: reject
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure2
+          type: float
+          function:
+            name: ObsFunction/ObsErrorBoundConventional
+            options:
+              obsvar: stationPressure
+              obserr_bound_min: 100
+              obserr_bound_max: 300
+              obserr_bound_factor: 3.5
+      - filter: Background Check
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreQC/stationPressure
+          is_in: 3
+        function absolute threshold:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure2
+        action:
+          name: reject
       - filter: Perform Action
         filter variables:
-        - name: windNorthward
-        where:
-        - variable:
-            name: ObsType/windNorthward
-          is_in: 290-291
+        - name: stationPressure
         action:
           name: inflate error
           inflation variable:
-            name: ObsFunction/ObsErrorFactorPressureCheck
-            options:
-              variable: windNorthward
-              inflation factor: 4.0
-      - filter: Background Check
+            name: ObsErrorFactorDuplicateCheck/stationPressure
+      - filter: Perform Action
         filter variables:
-        - name: windEastward
-        function absolute threshold:
-        - name: ObsFunction/WindsSPDBCheck
-          options:
-            wndtype:
-            - 290
-            - 291
-            cgross:
-            - 5.0
-            - 5.0
-            error_min:
-            - 1.4
-            - 1.4
-            error_max:
-            - 6.1
-            - 6.1
-            variable: windEastward
+        - name: stationPressure
+        where:
+        - variable: PreUseFlag/stationPressure
+          is_not_in: 0, 1
         action:
           name: reject
-      - filter: Background Check
+    - obs space:
+        name: gnssro_cosmic2
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: ./obs/obs.20240224.t00z.gnssro_cosmic2.nc
+            missing file action: warn
+          obsgrouping:
+            group variables:
+            - sequenceNumber
+            sort variable: impactHeightRO
+            sort order: ascending
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: ./output/diag.gnssro_cosmic2_2024022400.nc
+        simulated variables:
+        - bendingAngle
+      obs operator:
+        name: GnssroBndNBAM
+        obs options:
+          use_compress: 1
+          sr_steps: 2
+          vertlayer: full
+          super_ref_qc: NBAM
+          output_diags: true
+      obs filters:
+      - filter: Create Diagnostic Flags
         filter variables:
-        - name: windNorthward
-        function absolute threshold:
-        - name: ObsFunction/WindsSPDBCheck
-          options:
-            wndtype:
-            - 290
-            - 291
-            cgross:
-            - 5.0
-            - 5.0
-            error_min:
-            - 1.4
-            - 1.4
-            error_max:
-            - 6.1
-            - 6.1
-            variable: windNorthward
+        - name: bendingAngle
+        flags:
+        - name: pccfCheckReject
+          initial value: false
+          force reinitialization: true
+      - filter: Bounds Check
+        filter variables:
+        - name: bendingAngle
+        where:
+        - variable:
+            name: MetaData/satelliteIdentifier
+          is_in: 265-269,750-755,44,786,820,825
+        test variables:
+        - name: MetaData/pccf
+        minvalue: 0.1
+        maxvalue: 100.1
+        actions:
+        - name: set
+          flag: pccfCheckReject
+        - name: reject
+      - filter: Domain Check
+        filter variables:
+        - name: bendingAngle
+        where:
+        - variable:
+            name: MetaData/impactHeightRO
+          minvalue: 0
+          maxvalue: 55000.1
         action:
           name: reject
+      - filter: Background Check RONBAM
+        filter variables:
+        - name: bendingAngle
+        action:
+          name: reject
+        defer to post: true
+      - filter: ROobserror
+        filter variables:
+        - name: bendingAngle
+        errmodel: NBAM
+        defer to post: true
+      - filter: Perform Action
+        filter variables:
+        - name: bendingAngle
+        action:
+          name: RONBAMErrInflate
+        defer to post: true
     - obs space:
         name: ATMS N20
         obsdatain:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.atms_n20.nc
+            obsfile: ./obs/obs.20240224.t00z.atms_n20.nc
             missing file action: warn
         obsdataout:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_atms_n20_2024022400.nc
+            obsfile: ./output/diag.atms_n20_2024022400.nc
         io pool:
           max pool size: 1
         simulated variables:
@@ -628,7 +830,7 @@ cost function:
         obs options:
           Sensor_ID: atms_n20
           EndianType: little_endian
-          CoefficientPath: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/crtm/
+          CoefficientPath: ./crtm/
         do fov average: true
         fov sample points per semimajor axis: 4
         linear obs operator:
@@ -636,8 +838,8 @@ cost function:
           - H2O
           - O3
       obs bias:
-        input file: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs//gdas.t18z.atms_n20.satbias.nc
-        output file: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/bc//gdas.t00z.atms_n20.satbias.nc
+        input file: ./obs/obs.20240223.t18z.atms_n20.satbias.nc
+        output file: ./output/obs.20240224.t00z.atms_n20.satbias.nc
         variables without bc:
         - brightnessTemperature
         channels: 15
@@ -646,9 +848,9 @@ cost function:
           - name: constant
           - name: lapseRate
             order: 2
-            tlapse: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs//gdas.t18z.atms_n20.tlapse.txt
+            tlapse: ./obs/obs.20240223.t18z.atms_n20.tlapse.txt
           - name: lapseRate
-            tlapse: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs//gdas.t18z.atms_n20.tlapse.txt
+            tlapse: ./obs/obs.20240223.t18z.atms_n20.tlapse.txt
           - name: emissivityJacobian
           - name: sensorScanAngle
             order: 4
@@ -665,11 +867,11 @@ cost function:
           step size: 0.0001
           largest analysis variance: 10000.0
           prior:
-            input file: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs//gdas.t18z.atms_n20.satbias_cov.nc
+            input file: ./obs/obs.20240223.t18z.atms_n20.satbias_cov.nc
             inflation:
               ratio: 1.1
               ratio for small dataset: 2.0
-          output file: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/bc//gdas.t00z.atms_n20.satbias_cov.nc
+          output file: ./output/obs.20240224.t00z.atms_n20.satbias_cov.nc
       obs pre filters:
       - filter: Domain Check
         filter variables:
@@ -1378,794 +1580,203 @@ cost function:
         action:
           name: reject
     - obs space:
-        name: surface_ps
+        name: ascatw_ascat_metop-b
         obsdatain:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.conventional_ps.nc
+            obsfile: ./obs/obs.20240224.t00z.scatwnd.ascat_metop-b.nc
             missing file action: warn
         obsdataout:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_conventional_ps_2024022400.nc
+            obsfile: ./output/diag.scatwnd.ascat_metop-b_2024022400.nc
         io pool:
           max pool size: 1
         simulated variables:
-        - stationPressure
+        - windEastward
+        - windNorthward
       obs operator:
-        name: SfcCorrected
-        variables:
-        - name: stationPressure
-        correction scheme to use: GSL
-        station_altitude: height
-        geovar_sfc_geomz: height_above_mean_sea_level_at_surface
-        geovar_geomz: geopotential_height
+        name: VertInterp
+        vertical coordinate: geopotential_height
+        observation vertical coordinate group: DerivedVariables
+        observation vertical coordinate: adjustedHeight
+        interpolation method: linear
+        hofx scaling field: SurfaceWindScalingHeight
+        hofx scaling field group: DerivedVariables
       linear obs operator:
-        name: Identity
-        variables:
-        - name: stationPressure
-      obs prior filters:
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: ObsType/stationPressure
-          is_in:
-          - 181
-        action:
-          name: assign error
-          error function:
-            name: ObsFunction/ObsErrorModelStepwiseLinear
-            options:
-              round_to_the_nearest_integer: true
-              xvar:
-                name: ObsValue/stationPressure
-              xvals:
-              - 80000
-              - 75000
-              - 70000
-              - 65000
-              - 60000
-              - 55000
-              errors:
-              - 110
-              - 120
-              - 120
-              - 120
-              - 120
-              - 100000000000.0
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: ObsType/stationPressure
-          is_in:
-          - 187
-        action:
-          name: assign error
-          error function:
-            name: ObsFunction/ObsErrorModelStepwiseLinear
-            options:
-              round_to_the_nearest_integer: true
-              xvar:
-                name: ObsValue/stationPressure
-              xvals:
-              - 85000
-              - 80000
-              - 75000
-              - 70000
-              - 65000
-              - 60000
-              - 55000
-              errors:
-              - 120
-              - 140
-              - 140
-              - 140
-              - 140
-              - 140
-              - 100000000000.0
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: ObsType/stationPressure
-          is_in:
-          - 180
-        action:
-          name: assign error
-          error function:
-            name: ObsFunction/ObsErrorModelStepwiseLinear
-            options:
-              round_to_the_nearest_integer: true
-              xvar:
-                name: ObsValue/stationPressure
-              xvals:
-              - 60000
-              - 55000
-              errors:
-              - 130
-              - 100000000000.0
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: ObsType/stationPressure
-          is_in:
-          - 183
-        action:
-          name: assign error
-          error parameter: 100000000000.0
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: ObsType/stationPressure
-          is_in:
-          - 120
-        action:
-          name: assign error
-          error function:
-            name: ObsFunction/ObsErrorModelStepwiseLinear
-            options:
-              round_to_the_nearest_integer: true
-              xvar:
-                name: ObsValue/stationPressure
-              xvals:
-              - 80000
-              - 75000
-              - 70000
-              - 65000
-              - 60000
-              - 55000
-              errors:
-              - 110
-              - 120
-              - 120
-              - 120
-              - 120
-              - 100000000000.0
-      - filter: Variable Assignment
-        assignments:
-        - name: InputObsError/stationPressure
-          type: float
-          source variable: ObsErrorData/stationPressure
-      - filter: Variable Assignment
-        assignments:
-        - name: PreQC/stationPressure
-          type: int
-          source variable: QualityMarker/stationPressure
-      - filter: Variable Assignment
-        assignments:
-        - name: PreUseFlag/stationPressure
-          type: int
-          source variable: PreQC/stationPressure
-      - filter: Variable Assignment
-        where:
-        - variable:
-            name: PreUseFlag/stationPressure
-          is_in: 1-15
-        assignments:
-        - name: PreUseFlag/stationPressure
-          value: 0
-      - filter: Variable Assignment
-        where:
-        - variable:
-            name: ObsType/stationPressure
-          is_in: 183
-        assignments:
-        - name: PreUseFlag/stationPressure
-          value: 100
-      - filter: Variable Assignment
-        where:
-        - variable:
-            name: ObsValue/stationPressure
-          is_defined: null
-        - variable:
-            name: ObsValue/stationPressure
-          maxvalue: 50000.0
-        where operator: and
-        assignments:
-        - name: PreUseFlag/stationPressure
-          value: 100
-      - filter: Variable Assignment
-        where:
-        - variable:
-            name: PreQC/stationPressure
-          is_in: 9, 12, 15
-        assignments:
-        - name: PreUseFlag/stationPressure
-          value: 100
-      - filter: Variable Assignment
-        where:
-        - variable:
-            name: PreQC/stationPressure
-          is_in: 4-15
-        assignments:
-        - name: PreUseFlag/stationPressure
-          value: 101
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: PreQC/stationPressure
-          is_in: 3, 7
-        action:
-          name: inflate error
-          inflation factor: 1.2
-      obs post filters:
-      - filter: Variable Assignment
-        assignments:
-        - name: ObsErrorFactorDuplicateCheck/stationPressure
-          type: float
-          function:
-            name: ObsFunction/ObsErrorFactorDuplicateCheck
-            options:
-              use_air_pressure: false
-              variable: stationPressure
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable:
-            name: ObsType/stationPressure
-          is_in: 180
-        - variable:
-            name: ObsSubType/stationPressure
-          is_in: 0
-        action:
-          name: inflate error
-          inflation factor: 0.7
-      - filter: Variable Assignment
-        assignments:
-        - name: ObsErrorFactorSfcPressure/stationPressure
-          type: float
-          function:
-            name: ObsFunction/ObsErrorFactorSfcPressure
-            options:
-              geovar_sfc_geomz: height_above_mean_sea_level_at_surface
-              geovar_geomz: geopotential_height
-              station_altitude: height
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        action:
-          name: inflate error
-          inflation variable:
-            name: ObsErrorFactorSfcPressure/stationPressure
-      - filter: Variable Assignment
-        assignments:
-        - name: DerivedMetaData/Innovation
-          type: float
-          function:
-            name: ObsFunction/Arithmetic
-            options:
-              variables:
-              - name: ObsValue/stationPressure
-              - name: HofX/stationPressure
-              coefs:
-              - 1
-              - -1
-      - filter: Variable Assignment
-        assignments:
-        - name: DerivedMetaData/ObsErrorBoundSfcPressure1
-          type: float
-          function:
-            name: ObsFunction/ObsErrorBoundConventional
-            options:
-              obsvar: stationPressure
-              obserr_bound_min: 100
-              obserr_bound_max: 300
-              obserr_bound_factor: 5.0
-      - filter: Background Check
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: PreQC/stationPressure
-          is_not_in: 3
-        function absolute threshold:
-        - name: DerivedMetaData/ObsErrorBoundSfcPressure1
-        action:
-          name: reject
-      - filter: Variable Assignment
-        assignments:
-        - name: DerivedMetaData/ObsErrorBoundSfcPressure2
-          type: float
-          function:
-            name: ObsFunction/ObsErrorBoundConventional
-            options:
-              obsvar: stationPressure
-              obserr_bound_min: 100
-              obserr_bound_max: 300
-              obserr_bound_factor: 3.5
-      - filter: Background Check
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: PreQC/stationPressure
-          is_in: 3
-        function absolute threshold:
-        - name: DerivedMetaData/ObsErrorBoundSfcPressure2
-        action:
-          name: reject
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        action:
-          name: inflate error
-          inflation variable:
-            name: ObsErrorFactorDuplicateCheck/stationPressure
-      - filter: Perform Action
-        filter variables:
-        - name: stationPressure
-        where:
-        - variable: PreUseFlag/stationPressure
-          is_not_in: 0, 1
-        action:
-          name: reject
-    - obs space:
-        name: gnssrobndnbam_cosmic2
-        obsdatain:
-          engine:
-            type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.gnssro_cosmic2.nc
-            missing file action: warn
-          obsgrouping:
-            group variables:
-            - sequenceNumber
-            sort variable: impactHeightRO
-            sort order: ascending
-        obsdataout:
-          engine:
-            type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_gnssro_cosmic2_2024022400.nc
-        simulated variables:
-        - bendingAngle
-      obs operator:
-        name: GnssroBndNBAM
-        obs options:
-          use_compress: 1
-          sr_steps: 2
-          vertlayer: full
-          super_ref_qc: NBAM
-          output_diags: true
-      obs filters:
-      - filter: Create Diagnostic Flags
-        filter variables:
-        - name: bendingAngle
-        flags:
-        - name: pccfCheckReject
-          initial value: false
-          force reinitialization: true
-      - filter: Bounds Check
-        filter variables:
-        - name: bendingAngle
-        where:
-        - variable:
-            name: MetaData/satelliteIdentifier
-          is_in: 265-269,750-755,44,786,820,825
-        test variables:
-        - name: MetaData/pccf
-        minvalue: 0.1
-        maxvalue: 100.1
-        actions:
-        - name: set
-          flag: pccfCheckReject
-        - name: reject
-      - filter: Domain Check
-        filter variables:
-        - name: bendingAngle
-        where:
-        - variable:
-            name: MetaData/impactHeightRO
-          minvalue: 0
-          maxvalue: 55000.1
-        action:
-          name: reject
-      - filter: Background Check RONBAM
-        filter variables:
-        - name: bendingAngle
-        action:
-          name: reject
-        defer to post: true
-      - filter: ROobserror
-        filter variables:
-        - name: bendingAngle
-        errmodel: NBAM
-        defer to post: true
-      - filter: Perform Action
-        filter variables:
-        - name: bendingAngle
-        action:
-          name: RONBAMErrInflate
-        defer to post: true
-    - obs space:
-        name: ompsnp_npp
-        obsdatain:
-          engine:
-            type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.ozone.ompsnp_npp.nc
-            missing file action: warn
-          obsgrouping:
-            group variables:
-            - latitude
-            sort variable: pressure
-            sort order: ascending
-        obsdataout:
-          engine:
-            type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_ozone.ompsnp_npp_2024022400.nc
-        io pool:
-          max pool size: 1
-        simulated variables:
-        - ozoneLayer
-      obs operator:
-        name: ColumnRetrieval
-        nlayers_retrieval: 1
-        tracer variables:
-        - mole_fraction_of_ozone_in_air
-        isApriori: false
-        isAveragingKernel: false
-        totalNoVertice: false
-        stretchVertices: none
-        model units coeff: 0.002241398632746
+        name: VertInterp
+        vertical coordinate: geopotential_height
+        observation vertical coordinate group: DerivedVariables
+        observation vertical coordinate: adjustedHeight
+        interpolation method: linear
       obs pre filters:
-      - filter: Perform Action
-        filter variables:
-        - name: ozoneLayer
-        action:
-          name: assign error
-          error function:
-            name: ObsFunction/ObsErrorModelStepwiseLinear
-            options:
-              xvar:
-                name: MetaData/pressure
-              xvals:
-              - 0.001
-              - 10.1325
-              - 16.00935
-              - 25.43258
-              - 40.32735
-              - 63.93607
-              - 101.325
-              - 160.0935
-              - 254.3257
-              - 403.2735
-              - 639.3608
-              - 1013.25
-              - 1600.935
-              - 2543.258
-              - 4032.735
-              - 6393.607
-              - 10132.5
-              - 16009.35
-              - 25432.57
-              - 40327.35
-              - 63936.07
-              - 101325
-              errors:
-              - 7.7236
-              - 0.02
-              - 0.02
-              - 0.025
-              - 0.04
-              - 0.08
-              - 0.156
-              - 0.245
-              - 0.51
-              - 1.098
-              - 3.917
-              - 6.124
-              - 6.347
-              - 5.798
-              - 6.843
-              - 9.253
-              - 10.091
-              - 10.967
-              - 8.478
-              - 5.572
-              - 2.638
-              - 3.525
-      obs prior filters:
-      - filter: RejectList
-        filter variables:
-        - name: ozoneLayer
-        where:
-        - variable:
-            name: MetaData/pressure
-          maxvalue: 0.0001
-      - filter: Bounds Check
-        filter variables:
-        - name: ozoneLayer
-        minvalue: 0
-        maxvalue: 1000
-        action:
-          name: reject
-      - filter: RejectList
-        filter variables:
-        - name: ozoneLayer
-        where:
-        - variable:
-            name: MetaData/totalOzoneQuality
-          is_not_in: 0, 2
-      - filter: RejectList
-        filter variables:
-        - name: ozoneLayer
-        where:
-        - variable:
-            name: MetaData/profileOzoneQuality
-          is_not_in: 0, 1, 7
-      obs post filters:
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 120
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          maxvalue: 0.001
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 30
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 30000.0
-          maxvalue: 110000.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 40
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 20000.0
-          maxvalue: 30000.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 44.42
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 10100.0
-          maxvalue: 20000.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 57.52
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 6400.0
-          maxvalue: 10100.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 69.4
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 4000.0
-          maxvalue: 6400.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 70
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 2600.0
-          maxvalue: 4000.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 62.73
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 1600.0
-          maxvalue: 2600.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 50.52
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 1100.0
-          maxvalue: 1600.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 35.9
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 700.0
-          maxvalue: 1100.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 26.41
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 400.0
-          maxvalue: 700.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 20.51
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 300.0
-          maxvalue: 400.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 12.82
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 200.0
-          maxvalue: 300.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 10
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 70.0
-          maxvalue: 200.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 5
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 40.0
-          maxvalue: 70.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 2
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          minvalue: 30.0
-          maxvalue: 40.0
-      - filter: Background Check
-        filter variables:
-        - name: ozoneLayer
-        absolute threshold: 1
-        action:
-          name: reject
-        where:
-        - variable:
-            name: MetaData/pressure
-          maxvalue: 30.0
-    - obs space:
-        name: ompstc_npp
-        obsdatain:
-          engine:
-            type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.ozone.ompstc_npp.nc
-            missing file action: warn
-        obsdataout:
-          engine:
-            type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_ozone.ompstc_npp_2024022400.nc
-        io pool:
-          max pool size: 1
-        simulated variables:
-        - ozoneTotal
-      obs operator:
-        name: ColumnRetrieval
-        nlayers_retrieval: 1
-        tracer variables:
-        - mole_fraction_of_ozone_in_air
-        isApriori: false
-        isAveragingKernel: false
-        totalNoVertice: true
-        stretchVertices: topbottom
-        model units coeff: 0.002241398632746
-      obs pre filters:
-      - filter: Perform Action
-        filter variables:
-        - name: ozoneTotal
-        action:
-          name: assign error
-          error parameter: 6.0
-      - filter: Bounds Check
-        filter variables:
-        - name: ozoneTotal
-        minvalue: 0
-        maxvalue: 1000
-        action:
-          name: reject
-      - filter: RejectList
-        filter variables:
-        - name: ozoneTotal
-        where:
-        - variable:
-            name: MetaData/totalOzoneQualityCode
-          is_not_in: 0, 1
-      - filter: RejectList
-        filter variables:
-        - name: ozoneTotal
-        where:
-        - variable:
-            name: MetaData/bestOzoneAlgorithmFlag
-          is_in: 3, 13
-      - filter: RejectList
-        filter variables:
-        - name: ozoneTotal
-        where:
-        - variable:
-            name: MetaData/sensorScanPosition
-          is_in: 1, 2, 3, 4, 35
-        - variable:
-            name: MetaData/latitude
-          minvalue: 50.0
-      - filter: RejectList
-        filter variables:
-        - name: ozoneTotal
-        where:
-        - variable:
-            name: MetaData/sensorScanPosition
-          is_in: 1, 2, 3, 4, 35
-        - variable:
-            name: MetaData/latitude
-          maxvalue: -50.0
       - filter: Gaussian Thinning
-        horizontal_mesh: 150
+        horizontal_mesh: 75
         use_reduced_horizontal_grid: true
-        distance_norm: geodesic
+        round_horizontal_bin_count_to_nearest: true
+        partition_longitude_bins_using_mesh: true
         action:
           name: reduce obs space
+      obs prior filters:
+      - filter: Variable Transforms
+        Transform: AdjustedHeightCoordinate
+        SkipWhenNoObs: false
+      - filter: Variable Transforms
+        Transform: SurfaceWindScalingHeight
+        SkipWhenNoObs: false
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        action:
+          name: assign error
+          error parameter: 1.5
       obs post filters:
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 290
+        - variable: GeoVaLs/skin_temperature_at_surface_where_land
+          maxvalue: 273.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 290
+        - variable: GeoVaLs/water_area_fraction
+          maxvalue: 0.99
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        test variables:
+        - name: ObsFunction/Arithmetic
+          options:
+            variables:
+            - name: ObsValue/windEastward
+            - name: HofX/windEastward
+            coefs:
+            - 1.0
+            - -1.0
+        minvalue: -5.0
+        maxvalue: 5.0
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        test variables:
+        - name: ObsFunction/Arithmetic
+          options:
+            variables:
+            - name: ObsValue/windNorthward
+            - name: HofX/windNorthward
+            coefs:
+            - 1.0
+            - -1.0
+        minvalue: -5.0
+        maxvalue: 5.0
       - filter: Background Check
         filter variables:
-        - name: ozoneTotal
-        threshold: 10.0
-        absolute threshold: 300.0
+        - name: windEastward
+        - name: windNorthward
+        threshold: 6.0
+        absolute threshold: 6.0
+        where:
+        - variable: ObsType/windEastward
+          is_in: 291
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 290
+        test variables:
+        - name: ObsFunction/ScatWindsAmbiguityCheck
+          options:
+            minimum_uv: 0.0001
+        maxvalue: 0.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        where:
+        - variable:
+            name: ObsType/windEastward
+          is_in: 290-291
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorPressureCheck
+            options:
+              variable: windEastward
+              inflation factor: 4.0
+      - filter: Perform Action
+        filter variables:
+        - name: windNorthward
+        where:
+        - variable:
+            name: ObsType/windNorthward
+          is_in: 290-291
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorPressureCheck
+            options:
+              variable: windNorthward
+              inflation factor: 4.0
+      - filter: Background Check
+        filter variables:
+        - name: windEastward
+        function absolute threshold:
+        - name: ObsFunction/WindsSPDBCheck
+          options:
+            wndtype:
+            - 290
+            - 291
+            cgross:
+            - 5.0
+            - 5.0
+            error_min:
+            - 1.4
+            - 1.4
+            error_max:
+            - 6.1
+            - 6.1
+            variable: windEastward
+        action:
+          name: reject
+      - filter: Background Check
+        filter variables:
+        - name: windNorthward
+        function absolute threshold:
+        - name: ObsFunction/WindsSPDBCheck
+          options:
+            wndtype:
+            - 290
+            - 291
+            cgross:
+            - 5.0
+            - 5.0
+            error_min:
+            - 1.4
+            - 1.4
+            error_max:
+            - 6.1
+            - 6.1
+            variable: windNorthward
         action:
           name: reject
     - obs space:
@@ -2173,12 +1784,12 @@ cost function:
         obsdatain:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/obs/gdas.t00z.satwnd.abi_goes-16.nc
+            obsfile: ./obs/obs.20240224.t00z.satwnd.abi_goes-16.nc
             missing file action: warn
         obsdataout:
           engine:
             type: H5File
-            obsfile: /scratch3/NAGAPE/epic/Chan-hoo.Jeon/global_worklfow_test/STMP/RUNDIRS/C96C48_ufs_hybatmDA_test/gdas.2024022400/gdasatmanl_00/diags/diag_satwnd.abi_goes-16_2024022400.nc
+            obsfile: ./output/diag.satwnd.abi_goes-16_2024022400.nc
         io pool:
           max pool size: 1
         simulated variables:
@@ -2988,7 +2599,7 @@ final:
     output:
       state component:
         filetype: cube sphere history
-        filename: ./anl/cubed_sphere_grid_atminc.jedi.nc
+        filename: ./output/cubed_sphere_grid_atminc.jedi.nc
         provider: ufs
         fields to write:
         - eastward_wind
