@@ -94,13 +94,13 @@ def main():
         if var_list_atm:
             for var_nm in var_list_atm:
                 plot_data(path_data_inc,fn_data_inc_atm,var_nm,zlvlm1_atm,out_title_base,
-                          out_fn_base,glon_atm,glat_atm,work_dir,"real","inc")
+                          out_fn_base,glon_atm,glat_atm,work_dir,colorbar_option,"inc")
     # Plot sfc increment
     if plot_increment_sfc == "YES":
         if var_list_sfc:
             for var_nm in var_list_sfc:
                 plot_data(path_data_inc,fn_data_inc_sfc,var_nm,zlvlm1_atm,out_title_base,
-                          out_fn_base,glon_sfc,glat_sfc,work_dir,"real","inc")
+                          out_fn_base,glon_sfc,glat_sfc,work_dir,colorbar_option,"inc")
 
 
 # geo lon/lat from =================================================== CHJ =====
@@ -179,6 +179,12 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
         else:
             cs_max = max(abs(var_max),abs(var_min))
             cs_min = cs_max*-1.0
+
+        if colorbar_option == "fixed":
+            if var_nm == "tmp" or var_nm == "ugrd" or var_nm == "vgrd":
+                cbar_extend = 'both'
+                cs_max = 0.1
+                cs_min = -0.1
     else:
         # cs_cmap options
         if var_nm == "o3mr":

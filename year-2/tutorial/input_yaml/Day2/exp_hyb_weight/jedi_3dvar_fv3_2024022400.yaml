@@ -160,7 +160,7 @@ cost function:
           - graupel
           - ozone_mass_mixing_ratio
       weight:
-        value: 0.125
+        value: 0.6
     - covariance:
         covariance model: ensemble
         members from template:
@@ -390,7 +390,7 @@ cost function:
           - graupel
           - ozone_mass_mixing_ratio
       weight:
-        value: 0.875
+        value: 0.4
   observations:
     obs perturbations: false
     observers:
