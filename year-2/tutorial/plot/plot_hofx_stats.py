@@ -26,36 +26,45 @@ def get_obs_stats(fname, svar_long):
         ichm1 = ich - 1
         obs=f.groups['ObsValue'].variables[svar_long][:,ichm1]
         omb=f.groups['ombg'].variables[svar_long][:,ichm1]
+        oma=f.groups['oman'].variables[svar_long][:,ichm1]
     else:
         obs=f.groups['ObsValue'].variables[svar_long][:]
         omb=f.groups['ombg'].variables[svar_long][:]
+        oma=f.groups['oman'].variables[svar_long][:]
     logging.debug("ObsValue:",obs)
     logging.debug("OMBG:",omb)
+    logging.debug("OMAN:",oma)
     lat=f.groups['MetaData'].variables['latitude'][:]
     lon=f.groups['MetaData'].variables['longitude'][:]
 
     numpt_omb=len(omb)
+    numpt_oma=len(oma)
     numpt_obs=len(obs)
-    logging.info(f'''Number of points (raw): {numpt_omb}, {numpt_obs}''')
-    if numpt_omb == 0 or numpt_obs == 0:
-        logging.warning(f''' Number of OMB or OBS is zero !!!''')
+    logging.info(f'''Number of points (raw): {numpt_omb}, {numpt_oma}, {numpt_obs}''')
+    if numpt_omb == 0 or numpt_oma == 0 or numpt_obs == 0:
+        logging.warning(f''' Number of OMB or OMA or OBS is zero !!!''')
         sys.exit(0)
 
     obs = [x for x, y in zip(obs, omb) if y>-5000 and y<5000]
     lat = [x for x, y in zip(lat, omb) if y>-5000 and y<5000]
     lon = [x for x, y in zip(lon, omb) if y>-5000 and y<5000]
     omb = [x for x in omb if x>-5000 and x<5000]
+    oma = [x for x in oma if x>-5000 and x<5000]
     numpt_omb=len(omb)
+    numpt_oma=len(oma)
     numpt_obs=len(obs)
-    logging.info(f'''Number of points (excluding zeros): {numpt_omb}, {numpt_obs}''')
+    logging.info(f'''Number of points (excluding zeros): {numpt_omb}, {numpt_oma}, {numpt_obs}''')
     max_omb=np.max(omb)
     min_omb=np.min(omb)
+    max_oma=np.max(oma)
+    min_oma=np.min(oma)
     max_obs=np.max(obs)
     min_obs=np.min(obs)
     logging.info(f'''OMB max/min: {max_omb}, {min_omb}''')
+    logging.info(f'''OMA max/min: {max_oma}, {min_oma}''')
     logging.info(f'''OBS max/min: {max_obs}, {min_obs}''')
 
-    return omb,lat,lon
+    return omb,oma,lat,lon
 
 
 def plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max):
@@ -110,7 +119,7 @@ def plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max):
     plt.close('all')
 
 
-def plot_histogram(omb,svar,hofx_data_path,cdate,title_fig,PDY):
+def plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY):
     logging.info(f''' ========== PLOT: HISTOGRAM ==========''')    
     field_mean=float("{:.2f}".format(np.mean(omb)))
     field_std=float("{:.2f}".format(np.std(omb)))
@@ -120,6 +129,15 @@ def plot_histogram(omb,svar,hofx_data_path,cdate,title_fig,PDY):
     logging.info(f''' STDV OMB= {field_std}''')
     logging.info(f''' Max OMB= {field_max}''')
     logging.info(f''' Min OMB= {field_min}''')
+
+    field_mean_oma=float("{:.2f}".format(np.mean(oma)))
+    field_std_oma=float("{:.2f}".format(np.std(oma)))
+    field_max_oma=float("{:.2f}".format(np.max(oma)))
+    field_min_oma=float("{:.2f}".format(np.min(oma)))
+    logging.info(f''' Mean OMA= {field_mean_oma}''')
+    logging.info(f''' STDV OMA= {field_std_oma}''')
+    logging.info(f''' Max OMA= {field_max_oma}''')
+    logging.info(f''' Min OMA= {field_min_oma}''')
 
     # Print out OMB values to file
     hofx_data_fn=f'''hofx_omb_timehis_{svar}.txt'''
@@ -143,14 +161,24 @@ def plot_histogram(omb,svar,hofx_data_path,cdate,title_fig,PDY):
     fld_max = int(fld_abs)
     fld_min = -fld_max
 
-    xlimit=[fld_min,fld_max]
-    logging.info(f''' xlimit min= {fld_min}''')
-    logging.info(f''' xlimit max= {fld_max}''')
-    logging.info(f''' xlimit= {xlimit}''')
-        
-    plt.hist(omb[:], bins=nbins, range=xlimit, density=True, color ="blue")
-    stitle=title_fig+' \n '+'Mean(OMB) ='+str(field_mean)+', STDV(OMB) ='+str(field_std)
-    plt.title(stitle)
+    fld_abs_oma = max(abs(field_min_oma),abs(field_max_oma))
+    fld_max_oma = int(fld_abs_oma)
+    fld_min_oma = -fld_max_oma
+
+
+    xlimit_min = min(fld_min, fld_min_oma)
+    xlimit_max = max(fld_max, fld_max_oma)
+    xlimit = [xlimit_min, xlimit_max]
+    logging.info(f''' xlimit min = {xlimit_min}''')
+    logging.info(f''' xlimit max = {xlimit_max}''')
+    logging.info(f''' xlimit = {xlimit}''')
+
+    plt.hist(omb[:],bins=nbins,range=xlimit,density=True,color ="blue",label='OMB')
+    plt.hist(oma[:],bins=nbins,range=xlimit,density=True,histtype='step',linewidth=1,color ="red",label='OMA')
+
+    stitle=title_fig+' \n '+'Mean(OMB):'+str(field_mean)+', STDV(OMB):'+str(field_std)+', Mean(OMA):'+str(field_mean_oma)+', STDV(OMA):'+str(field_std_oma)
+    plt.title(stitle, fontsize=10)
+    plt.legend()
     output_fn=f'''hofx_omb_{svar}_{PDY}_histogram.png'''
     plt.savefig(output_fn,dpi=150,bbox_inches='tight')
     plt.close('all')
@@ -283,9 +311,10 @@ if __name__ == '__main__':
         else:
             svar_long = svar
 
-        omb,lat,lon=get_obs_stats(fp_input,svar_long)
+        omb,oma,lat,lon=get_obs_stats(fp_input,svar_long)
 
         title_fig=f'''{svar}::Obs-Bkg::{PDY}'''
-        fld_min,fld_max = plot_histogram(omb,svar,hofx_data_path,cdate,title_fig,PDY)       
+        title_fig_anl=f'''{svar}::Obs-Anl::{PDY}'''
+        fld_min,fld_max = plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY)       
         plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max)
 

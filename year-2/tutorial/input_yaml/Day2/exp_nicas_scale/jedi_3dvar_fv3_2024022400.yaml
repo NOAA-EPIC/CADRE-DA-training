@@ -231,7 +231,7 @@ cost function:
                 horizontal length-scale:
                 - groups:
                   - common
-                  value: 2.0
+                  value: 2000000.0
                 vertical length-scale:
                 - groups:
                   - common

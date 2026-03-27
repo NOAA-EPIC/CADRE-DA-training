@@ -181,10 +181,16 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
             cs_min = cs_max*-1.0
 
         if colorbar_option == "fixed":
-            if var_nm == "tmp" or var_nm == "ugrd" or var_nm == "vgrd":
-                cbar_extend = 'both'
-                cs_max = 0.1
-                cs_min = -0.1
+            cbar_extend = 'both'
+            if var_nm == "tmp":
+                cs_max = 0.15
+            elif var_nm == "ugrd" or var_nm == "vgrd":
+                cs_max = 0.3
+            elif var_nm == "o3mr":
+                cs_max = 1.0e-12
+            elif var_nm == "spfh":
+                cs_max = 1.0e-9
+            cs_min = cs_max*-1.0
     else:
         # cs_cmap options
         if var_nm == "o3mr":
