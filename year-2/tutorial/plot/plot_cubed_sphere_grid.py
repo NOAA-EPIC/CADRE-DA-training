@@ -183,9 +183,9 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
         if colorbar_option == "fixed":
             cbar_extend = 'both'
             if var_nm == "tmp":
-                cs_max = 0.15
+                cs_max = 0.1
             elif var_nm == "ugrd" or var_nm == "vgrd":
-                cs_max = 0.3
+                cs_max = 0.2
             elif var_nm == "o3mr":
                 cs_max = 1.0e-12
             elif var_nm == "spfh":

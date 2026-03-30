@@ -159,8 +159,12 @@ cost function:
           - rain_water
           - graupel
           - ozone_mass_mixing_ratio
+#################################################
+# CADRE 2026, Day2, exp_hyb_weight
+#################################################
       weight:
         value: 0.6
+#################################################
     - covariance:
         covariance model: ensemble
         members from template:
@@ -389,8 +393,12 @@ cost function:
           - rain_water
           - graupel
           - ozone_mass_mixing_ratio
+#################################################
+# CADRE 2026, Day2, exp_hyb_weight
+#################################################
       weight:
         value: 0.4
+#################################################
   observations:
     obs perturbations: false
     observers:

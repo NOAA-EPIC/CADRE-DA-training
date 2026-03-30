@@ -891,22 +891,20 @@ cost function:
         action:
           name: reduce obs space
       obs prior filters:
-      # Window channels (1–4): double obs error
-      - filter: ObsErrorFactor
-        channels: 1-4
-        factor: 2.0  
-      # Lower/mid‑troposphere temperature channels (5–7)
-      - filter: ObsErrorFactor
-        channels: 5-7
-        factor: 2.0
-      # Upper‑troposphere temperature channels (8–14)
-      - filter: ObsErrorFactor
-        channels: 8-14
-        factor: 2.0
-      # Water vapor channels (15–22)
-      - filter: ObsErrorFactor
-        channels: 15-22
-        factor: 2.0
+      - filter: Variable Assignment
+        assignments:
+        - name: MetaData/zeroCloudInCRTM
+          type: int
+          function:
+            name: ObsFunction/Conditional
+            options:
+              defaultvalue: 0
+              cases:
+              - where:
+                - variable:
+                    name: GeoVaLs/water_area_fraction
+                  maxvalue: 0.99
+                value: 1
       obs post filters:
       - filter: Variable Assignment
         assignments:
@@ -1285,6 +1283,17 @@ cost function:
           inflation variable:
             name: ObsErrorFactorSurfJacobian@DerivedMetaData
             channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+#################################################
+# CADRE 2026, Day3, exp_obs_error
+#################################################
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: inflate error
+          inflation factor: 1.2
+#################################################
       - filter: Variable Assignment
         assignments:
         - name: ObsErrorFactorSituDepend@DerivedMetaData

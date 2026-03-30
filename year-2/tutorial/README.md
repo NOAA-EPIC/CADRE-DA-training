@@ -17,12 +17,12 @@ vim jedi_3dvar_fv3inc_2024022400.yaml
 ```
 - Day2:
 ```
-cp Day2/jedi_3dvar* .
+cp Day2/[case_name]/jedi_3dvar* .
+vim jedi_3dvar_fv3_2024022400.yaml
 ```
 - Day3:
 ```
-cp Day3/jedi_3dvar* .
-sed '399r Day3/obs_[option].yaml' jedi_3dvar_fv3_template.yaml > jedi_3dvar_fv3_2024022400.yaml
+cp Day3/[case_name]/jedi_3dvar* .
 vim jedi_3dvar_fv3_2024022400.yaml
 ```
 
