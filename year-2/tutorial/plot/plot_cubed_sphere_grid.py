@@ -46,8 +46,10 @@ def main():
     out_fn_base = yaml_data['out_fn_base']
     path_data = yaml_data['path_data']
     path_data_inc = yaml_data['path_data_inc']
+    path_data_ref = yaml_data['path_data_ref']
     plot_increment_atm = yaml_data['plot_increment_atm']
     plot_increment_sfc = yaml_data['plot_increment_sfc']
+    plot_inc_ref_comp = yaml_data['plot_inc_ref_comp']
     PY_LOG_LEVEL = yaml_data['PY_LOG_LEVEL']
     var_list_atm = yaml_data['var_list_atm']
     var_list_sfc = yaml_data['var_list_sfc']
@@ -82,24 +84,27 @@ def main():
     # plot atm file
     if var_list_atm:
         for var_nm in var_list_atm:
-            plot_data(path_data,fn_data_atm,var_nm,zlvlm1_atm,out_title_base,
+            plot_data(path_data,path_data_ref,fn_data_atm,var_nm,zlvlm1_atm,out_title_base,
                       out_fn_base,glon_atm,glat_atm,work_dir,colorbar_option,"bkg")
     # plot sfc file
     if var_list_sfc:
         for var_nm in var_list_sfc:
-            plot_data(path_data,fn_data_sfc,var_nm,zlvlm1_sfc,out_title_base,
+            plot_data(path_data,path_data_ref,fn_data_sfc,var_nm,zlvlm1_sfc,out_title_base,
                       out_fn_base,glon_sfc,glat_sfc,work_dir,colorbar_option,"bkg")
     # Plot atm increment
     if plot_increment_atm == "YES":
         if var_list_atm:
             for var_nm in var_list_atm:
-                plot_data(path_data_inc,fn_data_inc_atm,var_nm,zlvlm1_atm,out_title_base,
+                plot_data(path_data_inc,path_data_ref,fn_data_inc_atm,var_nm,zlvlm1_atm,out_title_base,
                           out_fn_base,glon_atm,glat_atm,work_dir,colorbar_option,"inc")
+                if plot_inc_ref_comp == "YES":
+                    plot_data(path_data_inc,path_data_ref,fn_data_inc_atm,var_nm,zlvlm1_atm,out_title_base,
+                          out_fn_base,glon_atm,glat_atm,work_dir,colorbar_option,"comp")
     # Plot sfc increment
     if plot_increment_sfc == "YES":
         if var_list_sfc:
             for var_nm in var_list_sfc:
-                plot_data(path_data_inc,fn_data_inc_sfc,var_nm,zlvlm1_atm,out_title_base,
+                plot_data(path_data_inc,path_data_ref,fn_data_inc_sfc,var_nm,zlvlm1_atm,out_title_base,
                           out_fn_base,glon_sfc,glat_sfc,work_dir,colorbar_option,"inc")
 
 
@@ -126,7 +131,7 @@ def get_geo(path_data,fn_data):
 
 
 # Get sfc_data from files and plot ================================== CHJ =====
-def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
+def plot_data(path_data,path_data_ref,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
               glon,glat,work_dir,colorbar_option,inc_opt):
 
     # center of map
@@ -139,6 +144,10 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
     try: data_raw = xr.open_dataset(fp_data)
     except: raise Exception('Could NOT find the file',fp_data)
     logging.info(f''' Variables: {list(data_raw.variables)}''')
+
+    # Check pfull (1->127: high->low altitude: 127=near-surface, 76=505.65mb)
+    pfull = data_raw['pfull']
+    logging.debug(f''' PFULL: {pfull}''')
 
     # Extract valid variable
     var_orig = data_raw[var_nm]
@@ -158,21 +167,44 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
         var_data_2d6 = np.squeeze(var_data_xy)
     else:
         var_data_2d6 = np.squeeze(var_data)
-
     logging.info(f''' Dimension of data = {var_data_2d6.shape}''')
     logging.info(f''' Max = {np.max(var_data_2d6)}''')
     logging.info(f''' Min = {np.min(var_data_2d6)}''')
-
     data_raw.close()
 
+    # Reference data for comparison
+    if inc_opt == "comp":
+        logging.info(f''' ===== REF:: {fn_data}:: '{var_nm}' ========================''')
+        fp_data = os.path.join(path_data_ref,fn_data)
+        try: data_ref = xr.open_dataset(fp_data)
+        except: raise Exception('Could NOT find the file',fp_data)
+        var_ref_orig = data_ref[var_nm]
+        var_data_ref = np.ma.masked_invalid(var_ref_orig.values)    
+        var_data_ref_m1 = np.squeeze(var_data_ref)
+        ndim_var_ref = var_data_ref_m1.ndim
+        if ndim_var_ref == 4:
+            var_data_ref_xy = var_data_ref_m1[:,zlvlm1,:,:]
+            var_data_ref_2d6 = np.squeeze(var_data_ref_xy)
+        else:
+            var_data_ref_2d6 = np.squeeze(var_data_ref)
+        data_ref.close()
+        var_data_2d6_comp = var_data_2d6 - var_data_ref_2d6
+        var_data_plot = var_data_2d6_comp
+    else:
+        var_data_plot = var_data_2d6
+
+    # Plotting
     cbar_extend = 'neither'
     cbar_label = f'''{var_nm_long} ({var_nm_unit})'''
 
-    if inc_opt == "inc":
+    if inc_opt == "inc" or inc_opt == "comp":
         cs_cmap = 'seismic'
         cbar_label = '\u0394'+cbar_label
-        var_max = np.nanmax(var_data_2d6)
-        var_min = np.nanmin(var_data_2d6)
+        var_max = np.nanmax(var_data_plot)
+        var_min = np.nanmin(var_data_plot)
+        logging.info(f'''INC_OPT: {inc_opt}''')
+        logging.info(f'''MAX: {var_max}''')
+        logging.info(f'''MIN: {var_min}''')
         if var_max == var_min:
             cs_max = max(abs(var_max),abs(var_min))+0.1
             cs_min = cs_max*-1.0
@@ -183,13 +215,13 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
         if colorbar_option == "fixed":
             cbar_extend = 'both'
             if var_nm == "tmp":
-                cs_max = 0.1
+                cs_max = 1
             elif var_nm == "ugrd" or var_nm == "vgrd":
-                cs_max = 0.2
+                cs_max = 2
             elif var_nm == "o3mr":
-                cs_max = 1.0e-12
+                cs_max = 1.0e-8
             elif var_nm == "spfh":
-                cs_max = 1.0e-9
+                cs_max = 1.0e-3
             cs_min = cs_max*-1.0
     else:
         # cs_cmap options
@@ -244,11 +276,11 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
                 cs_min = 230.0
                 cbar_extend = 'both'
             else:
-                cs_max = np.nanmax(var_data_2d6)
-                cs_min = np.nanmin(var_data_2d6)
+                cs_max = np.nanmax(var_data_plot)
+                cs_min = np.nanmin(var_data_plot)
         else:
-            cs_max = np.nanmax(var_data_2d6)
-            cs_min = np.nanmin(var_data_2d6)
+            cs_max = np.nanmax(var_data_plot)
+            cs_min = np.nanmin(var_data_plot)
 
     logging.info(f''' colorbar_option = {colorbar_option}''')
     logging.info(f''' cs_max = {cs_max}''')
@@ -259,6 +291,9 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
     if inc_opt == "inc":
         out_title_base = f'''{out_title_base}INC::'''
         out_fn_base = f'''{out_fn_base}inc_'''
+    elif inc_opt == "comp":
+        out_title_base = f'''{out_title_base}COMP::'''
+        out_fn_base = f'''{out_fn_base}comp_'''        
 
     if ndim_var == 4:
         out_title = f'''{out_title_base}{var_nm}::L{zlvl}'''
@@ -277,7 +312,7 @@ def plot_data(path_data,fn_data,var_nm,zlvlm1,out_title_base,out_fn_base,
         if itp == 1:
             glon_tile=(glon_tile+180)%360-180
         glat_tile=np.squeeze(glat[it,:,:])
-        var_tile=np.squeeze(var_data_2d6[it,:,:])
+        var_tile=np.squeeze(var_data_plot[it,:,:])
         cs=ax.pcolormesh(glon_tile,glat_tile,var_tile,cmap=cs_cmap,rasterized=True,
            vmin=cs_min,vmax=cs_max,transform=ccrs.PlateCarree())
     divider=make_axes_locatable(ax)

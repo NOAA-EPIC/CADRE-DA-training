@@ -15,7 +15,10 @@ set -xue
 ulimit -s unlimited; ulimit -a;
 
 # Parameters
+# GDAS
 JEDI_BIN_PATH="/work2/noaa/epic/chjeon/cadre26_hercules/GDASApp/build/bin"
+# JEDI-bundle
+#JEDI_BIN_PATH="/work2/noaa/epic/chjeon/cadre26_hercules/jedi/build/bin"
 JEDI_INPUT_PATH="/work2/noaa/epic/chjeon/cadre26/input_data"
 EXP_NAME_BASE="cadre26"
 

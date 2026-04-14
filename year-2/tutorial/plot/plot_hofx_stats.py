@@ -16,14 +16,10 @@ import matplotlib.ticker
 import matplotlib as mpl
 from matplotlib.colors import ListedColormap
 
-def get_obs_stats(fname, svar_long):
-
+def get_obs_stats(fname, svar_long, ichm1):
     logging.info(f''' === File Name: {fname}''')
     f=netCDF4.Dataset(fname)
     if svar_long == "brightnessTemperature":
-        # Channel number
-        ich = 1
-        ichm1 = ich - 1
         obs=f.groups['ObsValue'].variables[svar_long][:,ichm1]
         omb=f.groups['ombg'].variables[svar_long][:,ichm1]
         oma=f.groups['oman'].variables[svar_long][:,ichm1]
@@ -67,7 +63,7 @@ def get_obs_stats(fname, svar_long):
     return omb,oma,lat,lon
 
 
-def plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max):
+def plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,ch_ext_fn,PDY,fld_min,fld_max):
     logging.info(f''' ========== PLOT: SCATTER ==========''')
     
     # Set the path to Natural Earth dataset
@@ -83,7 +79,7 @@ def plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max):
     logging.info(f''' Min |OMB|= {field_min}''')
 
     # Print out OMB values to file
-    hofx_data_fn=f'''hofx_omb_timehis_abs_{svar}.txt'''
+    hofx_data_fn=f'''hofx_omb_timehis_abs_{svar}{ch_ext_fn}.txt'''
     hofx_data_fp=os.path.join(hofx_data_path,hofx_data_fn)
     if os.path.exists(hofx_data_fp):
         # Remove line for same date
@@ -114,13 +110,13 @@ def plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max):
     cbar=plt.colorbar(sc, orientation="horizontal", shrink=0.5, pad=0.05)
     stitle=title_fig+' \n '+'Mean |OMB| ='+str(field_mean)+', STDV |OMB| ='+str(field_std)
     plt.title(stitle)
-    output_fn=f'''hofx_omb_{svar}_{PDY}_scatter.png'''
+    output_fn=f'''hofx_omb_{svar}_{PDY}_scatter{ch_ext_fn}.png'''
     plt.savefig(output_fn,dpi=200,bbox_inches='tight')
     plt.close('all')
 
 
-def plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY):
-    logging.info(f''' ========== PLOT: HISTOGRAM ==========''')    
+def plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,ch_ext_fn,PDY):
+    logging.info(f''' ========== PLOT: HISTOGRAM ==========''')
     field_mean=float("{:.2f}".format(np.mean(omb)))
     field_std=float("{:.2f}".format(np.std(omb)))
     field_max=float("{:.2f}".format(np.max(omb)))
@@ -140,7 +136,7 @@ def plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY
     logging.info(f''' Min OMA= {field_min_oma}''')
 
     # Print out OMB values to file
-    hofx_data_fn=f'''hofx_omb_timehis_{svar}.txt'''
+    hofx_data_fn=f'''hofx_omb_timehis_{svar}{ch_ext_fn}.txt'''
     hofx_data_fp=os.path.join(hofx_data_path,hofx_data_fn)
     if os.path.exists(hofx_data_fp):
         # Remove line for same date
@@ -179,7 +175,7 @@ def plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY
     stitle=title_fig+' \n '+'Mean(OMB):'+str(field_mean)+', STDV(OMB):'+str(field_std)+', Mean(OMA):'+str(field_mean_oma)+', STDV(OMA):'+str(field_std_oma)
     plt.title(stitle, fontsize=10)
     plt.legend()
-    output_fn=f'''hofx_omb_{svar}_{PDY}_histogram.png'''
+    output_fn=f'''hofx_omb_{svar}_{PDY}_histogram{ch_ext_fn}.png'''
     plt.savefig(output_fn,dpi=150,bbox_inches='tight')
     plt.close('all')
 
@@ -187,7 +183,7 @@ def plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY
 
 
 if __name__ == '__main__':
-    global yaml_data
+    global yaml_data,channel_num
 
     yaml_file="plot_hofx_stats.yaml"
     with open(yaml_file, 'r') as f:
@@ -311,10 +307,23 @@ if __name__ == '__main__':
         else:
             svar_long = svar
 
-        omb,oma,lat,lon=get_obs_stats(fp_input,svar_long)
+        if svar == "atms_n20":
+            num_channel = 22
+        else:
+            num_channel = 1
 
-        title_fig=f'''{svar}::Obs-Bkg::{PDY}'''
-        title_fig_anl=f'''{svar}::Obs-Anl::{PDY}'''
-        fld_min,fld_max = plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,PDY)       
-        plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,PDY,fld_min,fld_max)
+        for ichm1 in range(num_channel):
+            omb,oma,lat,lon=get_obs_stats(fp_input,svar_long,ichm1)
+            if svar == "atms_n20":
+                ich = ichm1+1
+                logging.info(f''' Channel No.: {ich} / {num_channel}''')
+                title_fig=f'''{svar}::Obs-Bkg::{PDY}::CH{ich}'''
+                title_fig_anl=f'''{svar}::Obs-Anl::{PDY}::CH{ich}'''
+                ch_ext_fn=f'''_ch{ich}'''
+            else:
+                title_fig=f'''{svar}::Obs-Bkg::{PDY}'''
+                title_fig_anl=f'''{svar}::Obs-Anl::{PDY}'''
+                ch_ext_fn=""
+            fld_min,fld_max = plot_histogram(omb,oma,svar,hofx_data_path,cdate,title_fig,title_fig_anl,ch_ext_fn,PDY)
+            plot_scatter(omb,svar,hofx_data_path,cdate,title_fig,ch_ext_fn,PDY,fld_min,fld_max)
 
