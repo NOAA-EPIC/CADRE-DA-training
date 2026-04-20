@@ -34,14 +34,17 @@ cp -r ${cdir}/input_yaml/jedi_3dvar_fv3* ${exp_dir_path}
 # Sym-link input directories
 ln -nsf ${JEDI_INPUT_PATH}/* ${exp_dir_path}
 
-# Copy plotting scripts to experimental case directory
-cp -r ${cdir}/plot ${exp_dir_path}
+# Copy diagnostic plotting scripts to experimental case directory
+cp -r ${cdir}/diagnostics ${exp_dir_path}
 
 # Move to experimental case directory
 cd ${exp_dir_path}
 
 # Create output directory
 mkdir -p output
+
+# Create plot_output directory
+mkdir -p plot_output
 
 # Load modules
 module purge

@@ -2,21 +2,20 @@
 #SBATCH --account=epic
 #SBATCH --job-name=fv3jedi
 #SBATCH --output=log.cadre26.%j
-#SBATCH --partition=u1-compute
+#SBATCH --partition=orion
 #SBATCH --qos=batch
-#SBATCH --time=00:10:00
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=96
-#SBATCH --mem=128G
-#SBATCH --exclusive
+#SBATCH --time=00:20:00
+#SBATCH --nodes=3
+#SBATCH --ntasks-per-node=32
+###SBATCH --exclusive
 
 set -xue
 
 ulimit -s unlimited; ulimit -a;
 
 # Parameters
-JEDI_BIN_PATH="/scratch4/NAGAPE/epic/Chan-hoo.Jeon/ufsda_test/jedi/build/bin"
-JEDI_INPUT_PATH="/scratch4/NAGAPE/epic/Chan-hoo.Jeon/cadre26/input_data"
+JEDI_BIN_PATH="/work2/noaa/epic/chjeon/ufsda_orion/jedi/build/bin"
+JEDI_INPUT_PATH="/work2/noaa/epic/chjeon/cadre26/input_data"
 EXP_NAME_BASE="cadre26"
 
 cdir=$(pwd)
@@ -31,8 +30,8 @@ cp -r ${cdir}/input_yaml/jedi_3dvar_fv3* ${exp_dir_path}
 # Sym-link input directories
 ln -nsf ${JEDI_INPUT_PATH}/* ${exp_dir_path}
 
-# Copy plotting scripts to experimental case directory
-cp -r ${cdir}/plot ${exp_dir_path}
+# Copy diagnostic plotting scripts to experimental case directory
+cp -r ${cdir}/diagnostics ${exp_dir_path}
 
 # Move to experimental case directory
 cd ${exp_dir_path}
@@ -40,12 +39,14 @@ cd ${exp_dir_path}
 # Create output directory
 mkdir -p output
 
+# Create plot_output directory
+mkdir -p plot_output
+
 # Load modules
 module purge
-module use /contrib/spack-stack/spack-stack-1.9.2/envs/ue-oneapi-2024.2.1/install/modulefiles/Core
+module use /apps/contrib/spack-stack/spack-stack-1.9.2/envs/ue-oneapi-2024.1.0/install/modulefiles/Core
 module load stack-oneapi/2024.2.1
 module load stack-intel-oneapi-mpi/2021.13
-module load intel-oneapi-mkl/2024.2.1
 module list
 
 # Run FV3-JEDI
