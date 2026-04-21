@@ -1,0 +1,14 @@
+name: plot_pyenv
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy
+  - xarray
+  - netcdf4
+  - matplotlib
+  - cartopy
+  - pytest
+  - PyYAML
+  - scipy
+  - seaborn

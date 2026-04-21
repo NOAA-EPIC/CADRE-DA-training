@@ -37,7 +37,7 @@ cp -r ${cdir}/input_yaml/jedi_3dvar_fv3* ${exp_dir_path}
 ln -nsf ${JEDI_INPUT_PATH}/* ${exp_dir_path}
 
 # Copy diagnostic plotting scripts to experimental case directory
-cp -r ${cdir}/diagnostics ${exp_dir_path}
+#cp -r ${cdir}/diagnostics ${exp_dir_path}
 
 # Move to experimental case directory
 cd ${exp_dir_path}
