@@ -14,12 +14,12 @@ zonal_mean:
 
 experiments:
   - name: ctrl
-    prefix: "/home/jongkim/cadre/diffs/ctrl/ufsda.t00z.atminc.cubed_sphere_grid.tile"
+    prefix: "../output_ref/ufsda.t00z.atminc.cubed_sphere_grid.tile"
 
-  - name: nicas-length
-    prefix: "/home/jongkim/cadre/diffs/ctrl-nicas-profile/exp/ufsda.t00z.atminc.cubed_sphere_grid.tile"
+  - name: expt
+    prefix: "../output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
 
 grid:
-  prefix: "/home/jongkim/cadre/C96_grid.tile"
+  prefix: "../grid/C96_grid.tile"
 
 output_dir: "./plot-outputs"

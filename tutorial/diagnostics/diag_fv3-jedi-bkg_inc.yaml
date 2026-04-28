@@ -1,5 +1,5 @@
 background:
-  atm_file: /home/jongkim/cadre/exps/CADRE2026/cadre26.8434573.day1/bkg/ufsda.t18z.atm.f006.cubed_sphere_grid.nc
+  atm_file: ../bkg/ufsda.t18z.atm.f006.cubed_sphere_grid.nc
   vars:
     - ugrd
     - vgrd
@@ -7,8 +7,8 @@ background:
     - spfh
 
 increments:
-  prefix: /home/jongkim/cadre/diffs/ctrl/ufsda.t00z.atminc.cubed_sphere_grid.tile
-  grid_prefix: /home/jongkim/cadre/C96_grid.tile
+  prefix: ../output/ufsda.t00z.atminc.cubed_sphere_grid.tile
+  grid_prefix: ../grid/C96_grid.tile
   vars:
     - u_inc
     - v_inc

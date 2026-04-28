@@ -8,7 +8,7 @@ observations:
   - label: ATMS
     type: atms
     variable: brightnessTemperature
-    diag: "/home/jongkim/cadre/diffs/ctrl/diag.atms_n20_2024022400.nc"
+    diag: "../output/diag.atms_n20_2024022400.nc"
     outdir: "./plot-outputs-obs"
     diagnostics:
       hist: true
@@ -23,7 +23,7 @@ observations:
   - label: GNSSRO
     type: scalar
     variable: bendingAngle
-    diag: "/home/jongkim/cadre/diffs/ctrl/diag.gnssro_cosmic2_2024022400.nc"
+    diag: "../output/diag.gnssro_cosmic2_2024022400.nc"
     outdir: "./plot-outputs-obs"
     diagnostics:
       hist: true
@@ -34,7 +34,7 @@ observations:
   - label: SATWND
     type: vector
     variable: windSpeed
-    diag: "/home/jongkim/cadre/diffs/ctrl/diag.satwnd.abi_goes-16_2024022400.nc"
+    diag: "../output/diag.satwnd.abi_goes-16_2024022400.nc"
     outdir: "./plot-outputs-obs"
     diagnostics:
       hist: true
@@ -45,7 +45,7 @@ observations:
   - label: SCATWND
     type: vector
     variable: windSpeed
-    diag: "/home/jongkim/cadre/diffs/ctrl/diag.scatwnd.ascat_metop-b_2024022400.nc"
+    diag: "../output/diag.scatwnd.ascat_metop-b_2024022400.nc"
     outdir: "./plot-outputs-obs"
     diagnostics:
       hist: true
@@ -56,7 +56,7 @@ observations:
   - label: CONVENTIONAL_PS
     type: scalar
     variable: stationPressure
-    diag: "/home/jongkim/cadre/diffs/ctrl/diag.conventional_ps_2024022400.nc"
+    diag: "../output/diag.conventional_ps_2024022400.nc"
     outdir: "./plot-outputs-obs"
     diagnostics:
       hist: true
