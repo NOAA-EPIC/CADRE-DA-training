@@ -18,3 +18,4 @@ git submodule update --init --recursive
 # Run build script
 export BUILD_SOCA="OFF"
 ./build.sh -f -a -d -t hercules > build.log 2>&1 &
+date

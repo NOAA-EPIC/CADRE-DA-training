@@ -1,0 +1,25 @@
+vars:
+  - T_inc
+  - sphum_inc
+  - u_inc
+  - v_inc
+
+levels:
+  - 126
+  - 75
+
+zonal_mean:
+  enabled: true
+  full_vertical: true
+
+experiments:
+  - name: ctrl
+    prefix: "/home/jongkim/cadre/diffs/ctrl/ufsda.t00z.atminc.cubed_sphere_grid.tile"
+
+  - name: nicas-length
+    prefix: "/home/jongkim/cadre/diffs/ctrl-nicas-profile/exp/ufsda.t00z.atminc.cubed_sphere_grid.tile"
+
+grid:
+  prefix: "/home/jongkim/cadre/C96_grid.tile"
+
+output_dir: "./plot-outputs"

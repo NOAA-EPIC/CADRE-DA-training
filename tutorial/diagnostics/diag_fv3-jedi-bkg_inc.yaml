@@ -1,0 +1,39 @@
+background:
+  atm_file: /home/jongkim/cadre/exps/CADRE2026/cadre26.8434573.day1/bkg/ufsda.t18z.atm.f006.cubed_sphere_grid.nc
+  vars:
+    - ugrd
+    - vgrd
+    - tmp
+    - spfh
+
+increments:
+  prefix: /home/jongkim/cadre/diffs/ctrl/ufsda.t00z.atminc.cubed_sphere_grid.tile
+  grid_prefix: /home/jongkim/cadre/C96_grid.tile
+  vars:
+    - u_inc
+    - v_inc
+    - T_inc
+    - sphum_inc
+
+mapping:
+  - bkg: ugrd
+    inc: u_inc
+    long_name: "Zonal wind"
+
+  - bkg: vgrd
+    inc: v_inc
+    long_name: "Meridional wind"
+
+  - bkg: tmp
+    inc: T_inc
+    long_name: "Temperature"
+
+  - bkg: spfh
+    inc: sphum_inc
+    long_name: "Specific humidity"
+
+spectra:
+  levels:
+    - 126
+    - 75
+  output_dir: ./spectra_bkg_inc

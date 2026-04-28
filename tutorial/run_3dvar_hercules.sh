@@ -17,8 +17,6 @@ ulimit -s unlimited; ulimit -a;
 # Parameters
 # Path to JEDI bin direcoty: change this if you built this in another directory
 JEDI_BIN_PATH="/work2/noaa/epic/chjeon/cadre26_hercules/GDASApp/build/bin"
-# JEDI-bundle
-#JEDI_BIN_PATH="/work2/noaa/epic/chjeon/cadre26_hercules/jedi/build/bin"
 # Path to input files (pre-staged)
 JEDI_INPUT_PATH="/work2/noaa/epic/chjeon/cadre26/input_data"
 # Prefix of experimental case directory
@@ -36,17 +34,14 @@ cp -r ${cdir}/input_yaml/jedi_3dvar_fv3* ${exp_dir_path}
 # Sym-link input directories
 ln -nsf ${JEDI_INPUT_PATH}/* ${exp_dir_path}
 
-# Copy diagnostic plotting scripts to experimental case directory
-#cp -r ${cdir}/diagnostics ${exp_dir_path}
+# Copy diagnostics to experimental case directory (reference plot dir is excluded)
+rsync -av --exclude 'diag-results' ${cdir}/diagnostics ${exp_dir_path}
 
 # Move to experimental case directory
 cd ${exp_dir_path}
 
 # Create output directory
 mkdir -p output
-
-# Create plot_output directory
-mkdir -p plot_output
 
 # Load modules
 module purge
