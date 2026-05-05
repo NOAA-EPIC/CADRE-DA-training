@@ -1,0 +1,2639 @@
+cost function:
+  cost type: 3D-Var
+  jb evaluation: false
+  time window:
+    begin: '2024-02-23T21:00:00Z'
+    length: PT6H
+    bound to include: begin
+  geometry:
+    fms initialization:
+      namelist filename: ./fv3jedi/fmsmpp.nml
+      field table filename: ./fv3jedi/field_table
+    akbk: ./fv3jedi/akbk.nc4
+    layout:
+    - 4
+    - 4
+    npx: 97
+    npy: 97
+    npz: 127
+  analysis variables:
+  - eastward_wind
+  - northward_wind
+  - air_temperature
+  - air_pressure_at_surface
+  - water_vapor_mixing_ratio_wrt_moist_air
+  - cloud_liquid_ice
+  - cloud_liquid_water
+  - snow_water
+  - rain_water
+  - graupel
+  - ozone_mass_mixing_ratio
+  background:
+    datapath: ./bkg
+    filetype: cube sphere history
+    provider: ufs
+    datetime: '2024-02-24T00:00:00Z'
+    filenames:
+    - ufsda.t18z.atm.f006.cubed_sphere_grid.nc
+    - ufsda.t18z.sfc.f006.cubed_sphere_grid.nc
+    max allowable geometry difference: 1e-4
+    state variables:
+    - eastward_wind
+    - northward_wind
+    - air_temperature
+    - air_pressure_thickness
+    - air_pressure_at_surface
+    - water_vapor_mixing_ratio_wrt_moist_air
+    - cloud_liquid_ice
+    - cloud_liquid_water
+    - snow_water
+    - rain_water
+    - graupel
+    - cloud_ice_number_concentration
+    - rain_number_concentration
+    - ozone_mass_mixing_ratio
+    - geopotential_height_at_surface
+    - slmsk
+    - sheleg
+    - skin_temperature_at_surface
+    - vtype
+    - stype
+    - vfrac
+    - soilt
+    - soilm
+    - totalSnowDepthMeters
+    - eastward_wind_at_surface
+    - northward_wind_at_surface
+    - f10m
+    field io names:
+      eastward_wind: ugrd
+      northward_wind: vgrd
+      air_temperature: tmp
+      layer_thickness: delz
+      air_pressure_thickness: dpres
+      air_pressure_at_surface: pressfc
+      water_vapor_mixing_ratio_wrt_moist_air: spfh
+      cloud_liquid_ice: icmr
+      cloud_liquid_water: clwmr
+      snow_water: snmr
+      rain_water: rwmr
+      graupel: grle
+      cloud_ice_number_concentration: nccice
+      rain_number_concentration: nconrd
+      ozone_mass_mixing_ratio: o3mr
+      geopotential_height_at_surface: hgtsfc
+      slmsk: land
+      sheleg: weasd
+      skin_temperature_at_surface: tmpsfc
+      stype: sotyp
+      vfrac: veg
+      totalSnowDepthMeters: snod
+      eastward_wind_at_surface: ugrd_hyblev1
+      northward_wind_at_surface: vgrd_hyblev1
+      soilm: soilw1
+      soilt: soilt1
+  background error:
+    covariance model: hybrid
+    components:
+    - covariance:
+        covariance model: SABER
+        saber central block:
+          saber block name: gsi static covariance
+          read:
+            gsi akbk: ./fv3jedi/akbk.nc4
+            gsi error covariance file: ./berror/gsi-coeffs-gfs-global.nc
+            gsi berror namelist file: ./berror/gfs_gsi_global.nml
+            processor layout x direction: 12
+            processor layout y direction: 8
+            debugging mode: false
+        saber outer blocks:
+        - saber block name: interpolation
+          inner geometry:
+            function space: StructuredColumns
+            custom grid matching gsi:
+              type: gaussian
+              lats: 98
+              lons: 192
+            custom partitioner matching gsi:
+              bands: 8
+            halo: 1
+          forward interpolator:
+            local interpolator type: oops unstructured grid interpolator
+          inverse interpolator:
+            local interpolator type: oops unstructured grid interpolator
+          state variables to inverse:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - mole_fraction_of_ozone_in_air
+          output variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+      weight:
+        value: 0.125
+    - covariance:
+        covariance model: ensemble
+        members from template:
+          template:
+            datetime: '2024-02-24T00:00:00Z'
+            filetype: cube sphere history
+            provider: ufs
+            state variables:
+            - eastward_wind
+            - northward_wind
+            - air_temperature
+            - air_pressure_at_surface
+            - water_vapor_mixing_ratio_wrt_moist_air
+            - cloud_liquid_ice
+            - cloud_liquid_water
+            - snow_water
+            - rain_water
+            - graupel
+            - ozone_mass_mixing_ratio
+            field io names:
+              eastward_wind: ugrd
+              northward_wind: vgrd
+              air_temperature: tmp
+              air_pressure_at_surface: pressfc
+              water_vapor_mixing_ratio_wrt_moist_air: spfh
+              cloud_liquid_ice: icmr
+              cloud_liquid_water: clwmr
+              snow_water: snmr
+              rain_water: rwmr
+              graupel: grle
+              ozone_mass_mixing_ratio: o3mr
+            datapath: ./ens/mem%mem%
+            filename is datetime templated: true
+            filenames:
+            - ufsda.t18z.enkf.atm.f006.cubed_sphere_grid.nc
+            - ufsda.t18z.enkf.sfc.f006.cubed_sphere_grid.nc
+            max allowable geometry difference: 1e-4
+          pattern: '%mem%'
+          nmembers: 2
+          zero padding: 3
+        localization:
+          localization method: SABER
+          saber central block:
+            saber block name: BUMP_NICAS
+            active variables:
+            - eastward_wind
+            - northward_wind
+            - air_temperature
+            - air_pressure_at_surface
+            - water_vapor_mixing_ratio_wrt_moist_air
+            - cloud_liquid_ice
+            - cloud_liquid_water
+            - snow_water
+            - rain_water
+            - graupel
+            - ozone_mass_mixing_ratio
+            read:
+              general:
+                universe length-scale: 4641.0e3
+              drivers:
+                multivariate strategy: duplicated
+                compute nicas: true
+              model:
+                level for 2d variables: last
+              nicas:
+                resolution: 6
+                explicit length-scales: true
+                horizontal length-scale:
+                - groups:
+                  - common
+                  profile:
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4641000.0
+                  - 4462500.0
+                  - 4462500.0
+                  - 4284000.0
+                  - 4284000.0
+                  - 4105500.0
+                  - 4105500.0
+                  - 3927000.0
+                  - 3927000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3570000.0
+                  - 3391500.0
+                  - 3391500.0
+                  - 3213000.0
+                  - 3213000.0
+                  - 3034500.0
+                  - 3034500.0
+                  - 2856000.0
+                  - 2856000.0
+                  - 2677500.0
+                  - 2677500.0
+                  - 2374050.0
+                  - 2374050.0
+                  - 2088450.0
+                  - 2088450.0
+                  - 1820700.0
+                  - 1820700.0
+                  - 1570800.0
+                  - 1570800.0
+                  - 1392300.0
+                  - 1392300.0
+                  - 1356600.0
+                  - 1356600.0
+                  - 1320900.0
+                  - 1320900.0
+                  - 1285200.0
+                  - 1285200.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                  - 1249500.0
+                vertical length-scale:
+                - groups:
+                  - common
+                  value: 1.8
+        linear variable change:
+          linear variable change name: Control2Analysis
+          input variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+          output variables:
+          - eastward_wind
+          - northward_wind
+          - air_temperature
+          - air_pressure_at_surface
+          - water_vapor_mixing_ratio_wrt_moist_air
+          - cloud_liquid_ice
+          - cloud_liquid_water
+          - snow_water
+          - rain_water
+          - graupel
+          - ozone_mass_mixing_ratio
+      weight:
+        value: 0.875
+  observations:
+    obs perturbations: false
+    observers:
+    - obs space:
+        name: conventional_ps
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: ./obs/obs.20240224.t00z.conventional_ps.nc
+            missing file action: warn
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: ./output/diag.conventional_ps_2024022400.nc
+        io pool:
+          max pool size: 1
+        simulated variables:
+        - stationPressure
+      obs operator:
+        name: SfcCorrected
+        variables:
+        - name: stationPressure
+        correction scheme to use: GSL
+        station_altitude: height
+        geovar_sfc_geomz: height_above_mean_sea_level_at_surface
+        geovar_geomz: geopotential_height
+      linear obs operator:
+        name: Identity
+        variables:
+        - name: stationPressure
+      obs prior filters:
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 181
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 80000
+              - 75000
+              - 70000
+              - 65000
+              - 60000
+              - 55000
+              errors:
+              - 110
+              - 120
+              - 120
+              - 120
+              - 120
+              - 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 187
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 85000
+              - 80000
+              - 75000
+              - 70000
+              - 65000
+              - 60000
+              - 55000
+              errors:
+              - 120
+              - 140
+              - 140
+              - 140
+              - 140
+              - 140
+              - 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 180
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 60000
+              - 55000
+              errors:
+              - 130
+              - 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 183
+        action:
+          name: assign error
+          error parameter: 100000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: ObsType/stationPressure
+          is_in:
+          - 120
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              round_to_the_nearest_integer: true
+              xvar:
+                name: ObsValue/stationPressure
+              xvals:
+              - 80000
+              - 75000
+              - 70000
+              - 65000
+              - 60000
+              - 55000
+              errors:
+              - 110
+              - 120
+              - 120
+              - 120
+              - 120
+              - 100000000000.0
+      - filter: Variable Assignment
+        assignments:
+        - name: InputObsError/stationPressure
+          type: float
+          source variable: ObsErrorData/stationPressure
+      - filter: Variable Assignment
+        assignments:
+        - name: PreQC/stationPressure
+          type: int
+          source variable: QualityMarker/stationPressure
+      - filter: Variable Assignment
+        assignments:
+        - name: PreUseFlag/stationPressure
+          type: int
+          source variable: PreQC/stationPressure
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: PreUseFlag/stationPressure
+          is_in: 1-15
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 0
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: ObsType/stationPressure
+          is_in: 183
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 100
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: ObsValue/stationPressure
+          is_defined: null
+        - variable:
+            name: ObsValue/stationPressure
+          maxvalue: 50000.0
+        where operator: and
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 100
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: PreQC/stationPressure
+          is_in: 9, 12, 15
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 100
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: PreQC/stationPressure
+          is_in: 4-15
+        assignments:
+        - name: PreUseFlag/stationPressure
+          value: 101
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreQC/stationPressure
+          is_in: 3, 7
+        action:
+          name: inflate error
+          inflation factor: 1.2
+      obs post filters:
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorDuplicateCheck/stationPressure
+          type: float
+          function:
+            name: ObsFunction/ObsErrorFactorDuplicateCheck
+            options:
+              use_air_pressure: false
+              variable: stationPressure
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable:
+            name: ObsType/stationPressure
+          is_in: 180
+        - variable:
+            name: ObsSubType/stationPressure
+          is_in: 0
+        action:
+          name: inflate error
+          inflation factor: 0.7
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorSfcPressure/stationPressure
+          type: float
+          function:
+            name: ObsFunction/ObsErrorFactorSfcPressure
+            options:
+              geovar_sfc_geomz: height_above_mean_sea_level_at_surface
+              geovar_geomz: geopotential_height
+              station_altitude: height
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsErrorFactorSfcPressure/stationPressure
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/Innovation
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: ObsValue/stationPressure
+              - name: HofX/stationPressure
+              coefs:
+              - 1
+              - -1
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure1
+          type: float
+          function:
+            name: ObsFunction/ObsErrorBoundConventional
+            options:
+              obsvar: stationPressure
+              obserr_bound_min: 100
+              obserr_bound_max: 300
+              obserr_bound_factor: 5.0
+      - filter: Background Check
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreQC/stationPressure
+          is_not_in: 3
+        function absolute threshold:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure1
+        action:
+          name: reject
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure2
+          type: float
+          function:
+            name: ObsFunction/ObsErrorBoundConventional
+            options:
+              obsvar: stationPressure
+              obserr_bound_min: 100
+              obserr_bound_max: 300
+              obserr_bound_factor: 3.5
+      - filter: Background Check
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreQC/stationPressure
+          is_in: 3
+        function absolute threshold:
+        - name: DerivedMetaData/ObsErrorBoundSfcPressure2
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsErrorFactorDuplicateCheck/stationPressure
+      - filter: Perform Action
+        filter variables:
+        - name: stationPressure
+        where:
+        - variable: PreUseFlag/stationPressure
+          is_not_in: 0, 1
+        action:
+          name: reject
+    - obs space:
+        name: gnssro_cosmic2
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: ./obs/obs.20240224.t00z.gnssro_cosmic2.nc
+            missing file action: warn
+          obsgrouping:
+            group variables:
+            - sequenceNumber
+            sort variable: impactHeightRO
+            sort order: ascending
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: ./output/diag.gnssro_cosmic2_2024022400.nc
+        simulated variables:
+        - bendingAngle
+      obs operator:
+        name: GnssroBndNBAM
+        obs options:
+          use_compress: 1
+          sr_steps: 2
+          vertlayer: full
+          super_ref_qc: NBAM
+          output_diags: true
+      obs filters:
+      - filter: Create Diagnostic Flags
+        filter variables:
+        - name: bendingAngle
+        flags:
+        - name: pccfCheckReject
+          initial value: false
+          force reinitialization: true
+      - filter: Bounds Check
+        filter variables:
+        - name: bendingAngle
+        where:
+        - variable:
+            name: MetaData/satelliteIdentifier
+          is_in: 265-269,750-755,44,786,820,825
+        test variables:
+        - name: MetaData/pccf
+        minvalue: 0.1
+        maxvalue: 100.1
+        actions:
+        - name: set
+          flag: pccfCheckReject
+        - name: reject
+      - filter: Domain Check
+        filter variables:
+        - name: bendingAngle
+        where:
+        - variable:
+            name: MetaData/impactHeightRO
+          minvalue: 0
+          maxvalue: 55000.1
+        action:
+          name: reject
+      - filter: Background Check RONBAM
+        filter variables:
+        - name: bendingAngle
+        action:
+          name: reject
+        defer to post: true
+      - filter: ROobserror
+        filter variables:
+        - name: bendingAngle
+        errmodel: NBAM
+        defer to post: true
+      - filter: Perform Action
+        filter variables:
+        - name: bendingAngle
+        action:
+          name: RONBAMErrInflate
+        defer to post: true
+    - obs space:
+        name: ATMS N20
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: ./obs/obs.20240224.t00z.atms_n20.nc
+            missing file action: warn
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: ./output/diag.atms_n20_2024022400.nc
+        io pool:
+          max pool size: 1
+        simulated variables:
+        - brightnessTemperature
+        channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      obs operator:
+        name: CRTM
+        Absorbers:
+        - H2O
+        - O3
+        - CO2
+        Clouds: &id001
+        - Water
+        - Ice
+        - Rain
+        - Snow
+        - Graupel
+        method for cloud fraction within fov: thompson
+        method for hydrometeor effective radii within fov: thompson
+        Cloud_Seeding: true
+        obs options:
+          Sensor_ID: atms_n20
+          EndianType: little_endian
+          CoefficientPath: ./crtm/
+        do fov average: true
+        fov sample points per semimajor axis: 4
+        linear obs operator:
+          Absorbers:
+          - H2O
+          - O3
+      obs bias:
+        input file: ./obs/obs.20240223.t18z.atms_n20.satbias.nc
+        output file: ./output/obs.20240224.t00z.atms_n20.satbias.nc
+        variables without bc:
+        - brightnessTemperature
+        channels: 15
+        variational bc:
+          predictors:
+          - name: constant
+          - name: lapseRate
+            order: 2
+            tlapse: ./obs/obs.20240223.t18z.atms_n20.tlapse.txt
+          - name: lapseRate
+            tlapse: ./obs/obs.20240223.t18z.atms_n20.tlapse.txt
+          - name: emissivityJacobian
+          - name: sensorScanAngle
+            order: 4
+          - name: sensorScanAngle
+            order: 3
+          - name: sensorScanAngle
+            order: 2
+          - name: sensorScanAngle
+        covariance:
+          minimal required obs number: 20
+          variance range:
+          - 1.0e-06
+          - 10.0
+          step size: 0.0001
+          largest analysis variance: 10000.0
+          prior:
+            input file: ./obs/obs.20240223.t18z.atms_n20.satbias_cov.nc
+            inflation:
+              ratio: 1.1
+              ratio for small dataset: 2.0
+          output file: ./output/obs.20240224.t00z.atms_n20.satbias_cov.nc
+      obs pre filters:
+      - filter: Domain Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1-22
+        where:
+        - variable:
+            name: MetaData/sensorScanPosition
+          is_in: 7-90
+        action:
+          name: reduce obs space
+      - filter: Gaussian Thinning
+        horizontal_mesh: 145
+        use_reduced_horizontal_grid: true
+        distance_norm: geodesic
+        round_horizontal_bin_count_to_nearest: true
+        action:
+          name: reduce obs space
+      obs prior filters:
+      - filter: Variable Assignment
+        assignments:
+        - name: MetaData/zeroCloudInCRTM
+          type: int
+          function:
+            name: ObsFunction/Conditional
+            options:
+              defaultvalue: 0
+              cases:
+              - where:
+                - variable:
+                    name: GeoVaLs/water_area_fraction
+                  maxvalue: 0.99
+                value: 1
+      obs post filters:
+      - filter: Variable Assignment
+        assignments:
+        - name: CLWRetFromObs@DerivedMetaData
+          type: float
+          function:
+            name: CLWRetMW@ObsFunction
+            options:
+              clwret_ch238: 1
+              clwret_ch314: 2
+              clwret_types:
+              - ObsValue
+      - filter: Variable Assignment
+        assignments:
+        - name: CLWRetFromBkg@DerivedMetaData
+          type: float
+          function:
+            name: CLWRetMW@ObsFunction
+            options:
+              clwret_ch238: 1
+              clwret_ch314: 2
+              clwret_types:
+              - HofX
+      - filter: Variable Assignment
+        assignments:
+        - name: CLWRetSymmetric@DerivedMetaData
+          type: float
+          value: 1000.0
+      - filter: Variable Assignment
+        where:
+        - variable:
+            name: CLWRetFromObs@DerivedMetaData
+          minvalue: 0.0
+          maxvalue: 999.0
+        - variable:
+            name: CLWRetFromBkg@DerivedMetaData
+          minvalue: 0.0
+          maxvalue: 999.0
+        where operator: and
+        assignments:
+        - name: CLWRetSymmetric@DerivedMetaData
+          type: float
+          function:
+            name: Arithmetic@ObsFunction
+            options:
+              variables:
+              - name: CLWRetFromObs@DerivedMetaData
+              - name: CLWRetFromBkg@DerivedMetaData
+              total coefficient: 0.5
+      - filter: Variable Assignment
+        assignments:
+        - name: SIRetFromObs@DerivedMetaData
+          type: float
+          function:
+            name: SCATRetMW@ObsFunction
+            options:
+              scatret_ch238: 1
+              scatret_ch314: 2
+              scatret_ch890: 16
+              scatret_types:
+              - ObsValue
+      - filter: Variable Assignment
+        assignments:
+        - name: CLWMatchIndex@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: CLWMatchIndexMW@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              clwobs_function:
+                name: CLWRetFromObs@DerivedMetaData
+              clwbkg_function:
+                name: CLWRetFromBkg@DerivedMetaData
+              clwret_clearsky:
+              - 0.03
+              - 0.03
+              - 0.03
+              - 0.02
+              - 0.03
+              - 0.08
+              - 0.15
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.02
+              - 0.03
+              - 0.03
+              - 0.03
+              - 0.03
+              - 0.05
+              - 0.1
+      - filter: Variable Assignment
+        assignments:
+        - name: InitialObsError@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsErrorModelRamp@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              xvar:
+                name: CLWRetSymmetric@DerivedMetaData
+              x0:
+              - 0.03
+              - 0.03
+              - 0.03
+              - 0.02
+              - 0.03
+              - 0.08
+              - 0.15
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.02
+              - 0.03
+              - 0.03
+              - 0.03
+              - 0.03
+              - 0.05
+              - 0.1
+              x1:
+              - 0.35
+              - 0.38
+              - 0.4
+              - 0.45
+              - 0.5
+              - 1.0
+              - 1.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.0
+              - 0.35
+              - 0.5
+              - 0.5
+              - 0.5
+              - 0.5
+              - 0.5
+              - 0.5
+              err0:
+              - 4.5
+              - 4.5
+              - 4.5
+              - 2.5
+              - 0.55
+              - 0.3
+              - 0.3
+              - 0.4
+              - 0.4
+              - 0.4
+              - 0.45
+              - 0.45
+              - 0.55
+              - 0.8
+              - 4.0
+              - 4.0
+              - 4.0
+              - 3.5
+              - 3.0
+              - 3.0
+              - 3.0
+              - 3.0
+              err1:
+              - 20.0
+              - 25.0
+              - 12.0
+              - 7.0
+              - 3.5
+              - 3.0
+              - 0.8
+              - 0.4
+              - 0.4
+              - 0.4
+              - 0.45
+              - 0.45
+              - 0.55
+              - 0.8
+              - 4.0
+              - 19.0
+              - 30.0
+              - 25.0
+              - 16.5
+              - 12.0
+              - 9.0
+              - 6.5
+      - filter: Variable Assignment
+        assignments:
+        - name: Innovation@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              variables:
+              - name: brightnessTemperature@ObsValue
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              - name: brightnessTemperature@HofX
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              coefs:
+              - 1
+              - -1
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: assign error
+          error function:
+            name: InitialObsError@DerivedMetaData
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Bounds Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1-7, 16-22
+        test variables:
+        - name: CLWRetFromObs@DerivedMetaData
+        maxvalue: 999.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1-7, 16-22
+        test variables:
+        - name: CLWRetFromBkg@DerivedMetaData
+        maxvalue: 999.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1-7, 16, 17-22
+        test variables:
+        - name: Innovation@DerivedMetaData
+          channels: 1, 2, 5-7, 16
+        maxvalue: 200.0
+        minvalue: -200.0
+        flag all filter variables if any test variable is out of bounds: true
+        action:
+          name: reject
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/HydrometeorCheckATMS
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: HydrometeorCheckATMS@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_clearsky:
+              - 4.5
+              - 4.5
+              - 4.5
+              - 2.5
+              - 0.55
+              - 0.3
+              - 0.3
+              - 0.4
+              - 0.4
+              - 0.4
+              - 0.45
+              - 0.45
+              - 0.55
+              - 0.8
+              - 4.0
+              - 4.0
+              - 4.0
+              - 3.5
+              - 3.0
+              - 3.0
+              - 3.0
+              - 3.0
+              clwret_function:
+                name: CLWRetFromObs@DerivedMetaData
+              obserr_function:
+                name: InitialObsError@DerivedMetaData
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              Clouds: *id001
+      - filter: Bounds Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        test variables:
+        - name: DerivedMetaData/HydrometeorCheckATMS
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        maxvalue: 0.0
+        action:
+          name: reject
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorTopo@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsErrorFactorTopoRad@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              sensor: atms_n20
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsErrorFactorTopo@DerivedMetaData
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorTransmitTop@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsErrorFactorTransmitTopRad@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsErrorFactorTransmitTop@DerivedMetaData
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorSurfJacobian@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsErrorFactorSurfJacobianRad@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              sensor: atms_n20
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_demisf:
+              - 0.01
+              - 0.02
+              - 0.015
+              - 0.02
+              - 0.2
+              obserr_dtempf:
+              - 0.5
+              - 2.0
+              - 1.0
+              - 2.0
+              - 4.5
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsErrorFactorSurfJacobian@DerivedMetaData
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorSituDepend@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsErrorFactorSituDependMW@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              sensor: atms_n20
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              clwbkg_function:
+                name: CLWRetFromBkg@DerivedMetaData
+              clwobs_function:
+                name: CLWRetFromObs@DerivedMetaData
+              scatobs_function:
+                name: SIRetFromObs@DerivedMetaData
+              clwmatchidx_function:
+                name: CLWMatchIndex@DerivedMetaData
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_function:
+                name: InitialObsError@DerivedMetaData
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_clearsky:
+              - 4.5
+              - 4.5
+              - 4.5
+              - 2.5
+              - 0.55
+              - 0.3
+              - 0.3
+              - 0.4
+              - 0.4
+              - 0.4
+              - 0.45
+              - 0.45
+              - 0.55
+              - 0.8
+              - 4.0
+              - 4.0
+              - 4.0
+              - 3.5
+              - 3.0
+              - 3.0
+              - 3.0
+              - 3.0
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsErrorFactorSituDepend@DerivedMetaData
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorFactorLat@DerivedMetaData
+          type: float
+          function:
+            name: ObsErrorFactorLatRad@ObsFunction
+            options:
+              latitude_parameters:
+              - 25.0
+              - 0.25
+              - 0.04
+              - 3.0
+      - filter: Variable Assignment
+        assignments:
+        - name: ObsErrorBound@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          type: float
+          function:
+            name: ObsErrorBoundMW@ObsFunction
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            options:
+              sensor: atms_n20
+              channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_bound_latitude:
+                name: ObsErrorFactorLat@DerivedMetaData
+              obserr_bound_transmittop:
+                name: ObsErrorFactorTransmitTop@DerivedMetaData
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+                options:
+                  channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_bound_topo:
+                name: ObsErrorFactorTopo@DerivedMetaData
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              obserr_function:
+                name: InitialObsError@DerivedMetaData
+                channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+              threshold: 3
+              threshold_precip: 2.5
+              obserr_bound_max:
+              - 4.5
+              - 4.5
+              - 3.0
+              - 3.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 1.0
+              - 2.0
+              - 4.5
+              - 4.5
+              - 2.0
+              - 2.0
+              - 2.0
+              - 2.0
+              - 2.0
+              - 2.0
+      - filter: Background Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        function absolute threshold:
+        - name: ObsErrorBound@DerivedMetaData
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        test variables:
+        - name: InterChannelConsistencyCheck@ObsFunction
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          options:
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            use passive_bc: true
+            sensor: atms_n20
+            use_flag:
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 4
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+        maxvalue: 1.0e-12
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+        test variables:
+        - name: ObsFunction/ChannelUseflagCheckRad
+          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          options:
+            channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+            use_flag:
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 4
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+            - 1
+        minvalue: 1.0e-12
+        action:
+          name: reject
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ColumnLiquidIceCloud
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: GeoVaLs/mass_content_of_cloud_liquid_water_in_atmosphere_column
+              - name: GeoVaLs/mass_content_of_cloud_ice_in_atmosphere_column
+              coefs:
+              - 1
+              - 1
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ColumnLiquidIceCloud
+          type: float
+          value: 9.99e-07
+        where:
+        - variable:
+            name: DerivedMetaData/ColumnLiquidIceCloud
+          maxvalue: 9.99e-07
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ColumnRatioLiquidCloud
+          type: float
+          function:
+            name: ObsFunction/ElementMultiply
+            options:
+              variables:
+              - name: GeoVaLs/mass_content_of_cloud_liquid_water_in_atmosphere_column
+              - name: DerivedMetaData/ColumnLiquidIceCloud
+              exponents:
+              - 1
+              - -1
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/ColumnRatioLiquidCloud
+          type: float
+          value: 0.0
+        where:
+        - variable:
+            name: DerivedMetaData/ColumnLiquidIceCloud
+          maxvalue: 1.0e-06
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/TotalColumnVaporGuess
+          type: float
+          function:
+            name: ObsFunction/TotalColumnVaporGuess
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/PotentialTemperatureSurface
+          type: float
+          function:
+            name: PotentialTemperatureFromTemperature@ObsFunction
+            options:
+              use surface pressure: true
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/PotentialTemperatureAt700hPa
+          type: float
+          function:
+            name: PotentialTemperatureFromTemperature@ObsFunction
+            options:
+              use surface pressure: false
+              pressure to evaluate potential temperature: 70000.0
+      - filter: Variable Assignment
+        assignments:
+        - name: DerivedMetaData/PotentialTemperatureDiff
+          type: float
+          function:
+            name: ObsFunction/Arithmetic
+            options:
+              variables:
+              - name: DerivedMetaData/PotentialTemperatureAt700hPa
+              - name: DerivedMetaData/PotentialTemperatureSurface
+              coefs:
+              - 1
+              - -1
+      - filter: BlackList
+        filter variables:
+        - name: brightnessTemperature
+          channels: 1-7, 16-22
+        where:
+        - variable:
+            name: ObsFunction/TotalColumnVaporGuess
+          maxvalue: 8.0
+        - variable:
+            name: DerivedMetaData/ColumnRatioLiquidCloud
+          maxvalue: 0.5
+        - variable:
+            name: DerivedMetaData/PotentialTemperatureDiff
+          maxvalue: 12.0
+        - variable:
+            name: GeoVaLs/water_area_fraction
+          minvalue: 0.99
+        action:
+          name: reject
+    - obs space:
+        name: ascatw_ascat_metop-b
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: ./obs/obs.20240224.t00z.scatwnd.ascat_metop-b.nc
+            missing file action: warn
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: ./output/diag.scatwnd.ascat_metop-b_2024022400.nc
+        io pool:
+          max pool size: 1
+        simulated variables:
+        - windEastward
+        - windNorthward
+      obs operator:
+        name: VertInterp
+        vertical coordinate: geopotential_height
+        observation vertical coordinate group: DerivedVariables
+        observation vertical coordinate: adjustedHeight
+        interpolation method: linear
+        hofx scaling field: SurfaceWindScalingHeight
+        hofx scaling field group: DerivedVariables
+      linear obs operator:
+        name: VertInterp
+        vertical coordinate: geopotential_height
+        observation vertical coordinate group: DerivedVariables
+        observation vertical coordinate: adjustedHeight
+        interpolation method: linear
+      obs pre filters:
+      - filter: Gaussian Thinning
+        horizontal_mesh: 75
+        use_reduced_horizontal_grid: true
+        round_horizontal_bin_count_to_nearest: true
+        partition_longitude_bins_using_mesh: true
+        action:
+          name: reduce obs space
+      obs prior filters:
+      - filter: Variable Transforms
+        Transform: AdjustedHeightCoordinate
+        SkipWhenNoObs: false
+      - filter: Variable Transforms
+        Transform: SurfaceWindScalingHeight
+        SkipWhenNoObs: false
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        action:
+          name: assign error
+          error parameter: 1.5
+      obs post filters:
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 290
+        - variable: GeoVaLs/skin_temperature_at_surface_where_land
+          maxvalue: 273.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 290
+        - variable: GeoVaLs/water_area_fraction
+          maxvalue: 0.99
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        test variables:
+        - name: ObsFunction/Arithmetic
+          options:
+            variables:
+            - name: ObsValue/windEastward
+            - name: HofX/windEastward
+            coefs:
+            - 1.0
+            - -1.0
+        minvalue: -5.0
+        maxvalue: 5.0
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        test variables:
+        - name: ObsFunction/Arithmetic
+          options:
+            variables:
+            - name: ObsValue/windNorthward
+            - name: HofX/windNorthward
+            coefs:
+            - 1.0
+            - -1.0
+        minvalue: -5.0
+        maxvalue: 5.0
+      - filter: Background Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        threshold: 6.0
+        absolute threshold: 6.0
+        where:
+        - variable: ObsType/windEastward
+          is_in: 291
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 290
+        test variables:
+        - name: ObsFunction/ScatWindsAmbiguityCheck
+          options:
+            minimum_uv: 0.0001
+        maxvalue: 0.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        where:
+        - variable:
+            name: ObsType/windEastward
+          is_in: 290-291
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorPressureCheck
+            options:
+              variable: windEastward
+              inflation factor: 4.0
+      - filter: Perform Action
+        filter variables:
+        - name: windNorthward
+        where:
+        - variable:
+            name: ObsType/windNorthward
+          is_in: 290-291
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorPressureCheck
+            options:
+              variable: windNorthward
+              inflation factor: 4.0
+      - filter: Background Check
+        filter variables:
+        - name: windEastward
+        function absolute threshold:
+        - name: ObsFunction/WindsSPDBCheck
+          options:
+            wndtype:
+            - 290
+            - 291
+            cgross:
+            - 5.0
+            - 5.0
+            error_min:
+            - 1.4
+            - 1.4
+            error_max:
+            - 6.1
+            - 6.1
+            variable: windEastward
+        action:
+          name: reject
+      - filter: Background Check
+        filter variables:
+        - name: windNorthward
+        function absolute threshold:
+        - name: ObsFunction/WindsSPDBCheck
+          options:
+            wndtype:
+            - 290
+            - 291
+            cgross:
+            - 5.0
+            - 5.0
+            error_min:
+            - 1.4
+            - 1.4
+            error_max:
+            - 6.1
+            - 6.1
+            variable: windNorthward
+        action:
+          name: reject
+    - obs space:
+        name: satwind_goes-16
+        obsdatain:
+          engine:
+            type: H5File
+            obsfile: ./obs/obs.20240224.t00z.satwnd.abi_goes-16.nc
+            missing file action: warn
+        obsdataout:
+          engine:
+            type: H5File
+            obsfile: ./output/diag.satwnd.abi_goes-16_2024022400.nc
+        io pool:
+          max pool size: 1
+        simulated variables:
+        - windEastward
+        - windNorthward
+      obs operator:
+        name: VertInterp
+        hofx scaling field: SurfaceWindScalingPressure
+        hofx scaling field group: DerivedVariables
+      linear obs operator:
+        name: VertInterp
+      obs prior filters:
+      - filter: Variable Transforms
+        Transform: SurfaceWindScalingPressure
+        SkipWhenNoObs: false
+      obs post filters:
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 240
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              xvar:
+                name: MetaData/pressure
+              xvals:
+              - 110000.0
+              - 0.0
+              errors:
+              - 1000000000.0
+              - 1000000000.0
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 245
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              xvar:
+                name: MetaData/pressure
+              xvals:
+              - 110000.0
+              - 105000.0
+              - 100000.0
+              - 95000.0
+              - 90000.0
+              - 85000.0
+              - 80000.0
+              - 75000.0
+              - 70000.0
+              - 65000.0
+              - 60000.0
+              - 55000.0
+              - 50000.0
+              - 45000.0
+              - 40000.0
+              - 35000.0
+              - 30000.0
+              - 25000.0
+              - 20000.0
+              - 15000.0
+              - 10000.0
+              - 7500.0
+              - 5000.0
+              - 4000.0
+              - 3000.0
+              - 2000.0
+              - 1000.0
+              - 500.0
+              - 400.0
+              - 300.0
+              - 200.0
+              - 100.0
+              - 0.0
+              errors:
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.8
+              - 7.8
+              - 8.0
+              - 8.0
+              - 8.2
+              - 10.0
+              - 12.0
+              - 12.6
+              - 13.2
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 246
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              xvar:
+                name: MetaData/pressure
+              xvals:
+              - 110000.0
+              - 105000.0
+              - 100000.0
+              - 95000.0
+              - 90000.0
+              - 85000.0
+              - 80000.0
+              - 75000.0
+              - 70000.0
+              - 65000.0
+              - 60000.0
+              - 55000.0
+              - 50000.0
+              - 45000.0
+              - 40000.0
+              - 35000.0
+              - 30000.0
+              - 25000.0
+              - 20000.0
+              - 15000.0
+              - 10000.0
+              - 7500.0
+              - 5000.0
+              - 4000.0
+              - 3000.0
+              - 2000.0
+              - 1000.0
+              - 500.0
+              - 400.0
+              - 300.0
+              - 200.0
+              - 100.0
+              - 0.0
+              errors:
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.8
+              - 7.8
+              - 8.0
+              - 8.0
+              - 8.2
+              - 10.0
+              - 12.0
+              - 12.6
+              - 13.2
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 247
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              xvar:
+                name: MetaData/pressure
+              xvals:
+              - 110000.0
+              - 105000.0
+              - 100000.0
+              - 95000.0
+              - 90000.0
+              - 85000.0
+              - 80000.0
+              - 75000.0
+              - 70000.0
+              - 65000.0
+              - 60000.0
+              - 55000.0
+              - 50000.0
+              - 45000.0
+              - 40000.0
+              - 35000.0
+              - 30000.0
+              - 25000.0
+              - 20000.0
+              - 15000.0
+              - 10000.0
+              - 7500.0
+              - 5000.0
+              - 4000.0
+              - 3000.0
+              - 2000.0
+              - 1000.0
+              - 500.0
+              - 400.0
+              - 300.0
+              - 200.0
+              - 100.0
+              - 0.0
+              errors:
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.6
+              - 7.8
+              - 7.8
+              - 8.0
+              - 8.0
+              - 8.2
+              - 10.0
+              - 12.0
+              - 12.6
+              - 13.2
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+              - 14.0
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 251
+        action:
+          name: assign error
+          error function:
+            name: ObsFunction/ObsErrorModelStepwiseLinear
+            options:
+              xvar:
+                name: MetaData/pressure
+              xvals:
+              - 110000.0
+              - 0.0
+              errors:
+              - 1000000000.0
+              - 1000000000.0
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        minvalue: -130.0
+        maxvalue: 130.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        test variables:
+        - name: ObsFunction/Velocity
+        maxvalue: 130.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 251
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        test variables:
+        - name: MetaData/satelliteZenithAngle
+        maxvalue: 68.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        test variables:
+        - name: MetaData/pressure
+        minvalue: 12500.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 240, 245
+        - variable: MetaData/latitude
+          minvalue: 20.0
+        test variables:
+        - name: GeoVaLs/water_area_fraction
+        minvalue: 0.99
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        test variables:
+        - name: MetaData/qiWithoutForecast
+        minvalue: 90.0
+        maxvalue: 100.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        test variables:
+        - name: MetaData/pressure
+        minvalue: 15000.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        - variable: ObsType/windEastward
+          is_in: 251
+        test variables:
+        - name: MetaData/pressure
+        minvalue: 70000.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        - variable: ObsType/windEastward
+          is_in: 246
+        test variables:
+        - name: MetaData/pressure
+        maxvalue: 30000.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        - variable: GeoVaLs/land_area_fraction
+          minvalue: 0.99
+        test variables:
+        - name: MetaData/pressure
+        maxvalue: 85000.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        - variable: ObsType/windEastward
+          is_in: 240, 245, 246, 251
+        test variables:
+        - name: MetaData/coefficientOfVariation
+        minvalue: 0.04
+        maxvalue: 0.5
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/satelliteIdentifier
+          is_in: 250-299
+        test variables:
+        - name: ObsFunction/SatWindsErrnormCheck
+        maxvalue: 0.9
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 240
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 240-260
+        test variables:
+        - name: MetaData/pressure
+        maxvalue: 95001.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: MetaData/pressure
+          minvalue: 39901.0
+          maxvalue: 80099.0
+        - variable: ObsType/windEastward
+          is_in: 245
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 246, 250, 254
+        test variables:
+        - name: MetaData/pressure
+        maxvalue: 39900.0
+        action:
+          name: reject
+      - filter: Difference Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        reference: GeoVaLs/tropopause_pressure
+        value: MetaData/pressure
+        minvalue: -5000.0
+        action:
+          name: reject
+      - filter: Difference Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable:
+            name: GeoVaLs/water_area_fraction
+          maxvalue: 0.99
+        - variable:
+            name: ObsType/windEastward
+          is_in: 247
+        reference: GeoVaLs/air_pressure_at_surface
+        value: MetaData/pressure
+        maxvalue: -11000.0
+        action:
+          name: reject
+      - filter: Bounds Check
+        filter variables:
+        - name: windEastward
+        - name: windNorthward
+        where:
+        - variable: ObsType/windEastward
+          is_in: 247
+        test variables:
+        - name: ObsFunction/WindDirAngleDiff
+        maxvalue: 50.0
+        action:
+          name: reject
+      - filter: Perform Action
+        filter variables:
+        - name: windEastward
+        where:
+        - variable:
+            name: ObsType/windEastward
+          is_in: 240-260
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorPressureCheck
+            options:
+              surface_obs: false
+              variable: windEastward
+              inflation factor: 4.0
+      - filter: Perform Action
+        filter variables:
+        - name: windNorthward
+        where:
+        - variable:
+            name: ObsType/windNorthward
+          is_in: 240-260
+        action:
+          name: inflate error
+          inflation variable:
+            name: ObsFunction/ObsErrorFactorPressureCheck
+            options:
+              variable: windNorthward
+              inflation factor: 4.0
+      - filter: Background Check
+        filter variables:
+        - name: windEastward
+        function absolute threshold:
+        - name: ObsFunction/WindsSPDBCheck
+          options:
+            wndtype:
+            - 240
+            - 241
+            - 242
+            - 243
+            - 244
+            - 245
+            - 246
+            - 247
+            - 248
+            - 249
+            - 250
+            - 251
+            - 252
+            - 253
+            - 254
+            - 255
+            - 256
+            - 257
+            - 258
+            - 259
+            - 260
+            cgross:
+            - 2.5
+            - 2.5
+            - 2.5
+            - 1.5
+            - 2.5
+            - 1.3
+            - 1.3
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 1.3
+            - 2.5
+            - 1.5
+            - 1.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            error_min:
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            error_max:
+            - 6.1
+            - 6.1
+            - 15.0
+            - 15.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.1
+            - 20.1
+            - 20.1
+            - 20.1
+            - 20.1
+            - 20.1
+            variable: windEastward
+        action:
+          name: reject
+      - filter: Background Check
+        filter variables:
+        - name: windNorthward
+        function absolute threshold:
+        - name: ObsFunction/WindsSPDBCheck
+          options:
+            wndtype:
+            - 240
+            - 241
+            - 242
+            - 243
+            - 244
+            - 245
+            - 246
+            - 247
+            - 248
+            - 249
+            - 250
+            - 251
+            - 252
+            - 253
+            - 254
+            - 255
+            - 256
+            - 257
+            - 258
+            - 259
+            - 260
+            cgross:
+            - 2.5
+            - 2.5
+            - 2.5
+            - 1.5
+            - 2.5
+            - 1.3
+            - 1.3
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 1.3
+            - 2.5
+            - 1.5
+            - 1.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            - 2.5
+            error_min:
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            - 1.4
+            error_max:
+            - 6.1
+            - 6.1
+            - 15.0
+            - 15.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.0
+            - 20.1
+            - 20.1
+            - 20.1
+            - 20.1
+            - 20.1
+            - 20.1
+            variable: windNorthward
+        action:
+          name: reject
+variational:
+  minimizer:
+    algorithm: DRPCG
+  iterations:
+  - ninner: 2
+    gradient norm reduction: 1e-10
+    test: true
+    geometry:
+      fms initialization:
+        namelist filename: ./fv3jedi/fmsmpp.nml
+        field table filename: ./fv3jedi/field_table
+      akbk: ./fv3jedi/akbk.nc4
+      layout:
+      - 4
+      - 4
+      npx: 49
+      npy: 49
+      npz: 127
+      vert coordinate: logp
+    diagnostics:
+      departures: bkgmob
+  - ninner: 4
+    gradient norm reduction: 1e-10
+    test: true
+    geometry:
+      fms initialization:
+        namelist filename: ./fv3jedi/fmsmpp.nml
+        field table filename: ./fv3jedi/field_table
+      akbk: ./fv3jedi/akbk.nc4
+      layout:
+      - 4
+      - 4
+      npx: 49
+      npy: 49
+      npz: 127
+      vert coordinate: logp
+    diagnostics:
+      departures: bkgmob1
+final:
+  diagnostics:
+    departures: anlmob
+  prints:
+    frequency: PT3H
+  increment:
+    output:
+      state component:
+        filetype: cube sphere history
+        filename: ./output/cubed_sphere_grid_atminc.jedi.nc
+        provider: ufs
+        fields to write:
+        - eastward_wind
+        - northward_wind
+        - air_temperature
+        - air_pressure_at_surface
+        - water_vapor_mixing_ratio_wrt_moist_air
+        - cloud_liquid_ice
+        - cloud_liquid_water
+        - snow_water
+        - rain_water
+        - graupel
+        - ozone_mass_mixing_ratio
+        field io names:
+          eastward_wind: ugrd
+          northward_wind: vgrd
+          air_temperature: tmp
+          air_pressure_at_surface: pressfc
+          water_vapor_mixing_ratio_wrt_moist_air: spfh
+          cloud_liquid_ice: icmr
+          cloud_liquid_water: clwmr
+          snow_water: snmr
+          rain_water: rwmr
+          graupel: grle
+          ozone_mass_mixing_ratio: o3mr
+    geometry:
+      fms initialization:
+        namelist filename: ./fv3jedi/fmsmpp.nml
+        field table filename: ./fv3jedi/field_table
+      akbk: ./fv3jedi/akbk.nc4
+      layout:
+      - 4
+      - 4
+      npx: 97
+      npy: 97
+      npz: 127
+final j evaluation: false
