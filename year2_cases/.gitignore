@@ -1,0 +1,4 @@
+log.*
+*.swp
+exp_case/
+input_yaml/*.yaml
