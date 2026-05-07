@@ -1,7 +1,7 @@
 Region: us-east-1
 Image:
   Os: ubuntu2204 
-  CustomAmi: ami-01d0fc722d7244ce3 
+  CustomAmi: ami-0cd6adb85fbe0166d 
 HeadNode:
   InstanceType: c7i.8xlarge
   Networking:
@@ -23,9 +23,9 @@ Scheduling:
   SlurmQueues:
   - Name: compute
     ComputeResources:
-    - Name: c7i16xlarge
+    - Name: c7i24xlarge
       Instances:
-      - InstanceType: c7i.16xlarge
+      - InstanceType: c7i.24xlarge
       MinCount: 0
       MaxCount: 2
       Efa:
