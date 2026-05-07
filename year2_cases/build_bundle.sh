@@ -27,5 +27,5 @@ module list
 mkdir -p ${JEDI_PDIR}/build
 cd ${JEDI_PDIR}/build
 ecbuild "${JEDI_PDIR}/jedi-bundle" 2>&1 | tee log.jedibundle_ecbuild
-make ${MAKE_SETTINGS} 2>&1 | tee log.jedibundle_make
+make -j 4 2>&1 | tee log.jedibundle_make
 
