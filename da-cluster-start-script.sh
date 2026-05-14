@@ -55,7 +55,6 @@ DEBIAN_FRONTEND=noninteractive apt-get update -yq --allow-unauthenticated
 #rm /etc/profile.d/modules.sh
 #dpkg -S /etc/profile.d/modules.sh
 
-
 cd /opt
 git clone -b release/1.9.0 --recurse-submodules https://github.com/jcsda/spack-stack.git
 cd spack-stack
@@ -422,7 +421,12 @@ echo 'export PATH="$PATH:/home/ubuntu/rocoto/bin"' >> .bashrc
 echo 'module use /opt/modulefiles' >> .bashrc
 echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/Core' >> .bashrc
 echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/gcc' >> .bashrc
-echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/intel-oneapi-mpi/2021.13-dsdmcwn/gcc/11.4.0' >> .bashrc
+echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/intel-oneapi-mpi/2021.13-*/gcc/11.4.0' >> .bashrc
 
+cd /tmp/
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh -b -p /home/ubuntu/miniconda3
+/home/ubuntu/miniconda3/bin/conda init
 
 EOF
+
