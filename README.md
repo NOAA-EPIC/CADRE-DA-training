@@ -31,7 +31,6 @@ Slack support for the training program:
 ```bash
 ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 
-
 # Year‑1 (2024–2025) — Legacy Materials
 
 The original CADRE Year‑1 training materials are preserved for reference and will be reorganized
