@@ -12,9 +12,25 @@ The Year‑2 workflow follows the UFS-DA Diagnostics CADRE 2026 session guidelin
 
 👉 https://ufs-da-diagnostics.readthedocs.io/en/latest/cadre2026_epic.html
 
+# ⚠️ Hercules System Access Before EPIC Sessions
+
+Before the EPIC training sessions begin, please make sure you can successfully log into the
+NOAA RDHPCS Hercules system. All hands‑on FV3‑JEDI and diagnostics exercises will be run on
+Hercules, so having access ahead of time will make the sessions smoother.
+
+If you run into **any system access issues** — login problems, SSH configuration, X11 setup,
+module loading, or anything else — please leave a message in the CADRE Slack channel so the
+instructors can help you:
+
 Slack support for the training program:
 
 👉 https://epicworkshops-pza9734.slack.com/archives/C0B3J9BC93Pis
+
+### Login command
+
+```bash
+ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
+
 
 # Year‑1 (2024–2025) — Legacy Materials
 
