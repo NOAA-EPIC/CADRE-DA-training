@@ -1286,13 +1286,49 @@ cost function:
 #################################################
 # CADRE 2026, Day3, exp_obs_error
 #################################################
+      #- filter: Perform Action
+      #  filter variables:
+      #  - name: brightnessTemperature
+      #    channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+      #  action:
+      #    name: inflate error
+      #    inflation factor: 0.8
+####################
+      # Window channels (1–5)
       - filter: Perform Action
         filter variables:
         - name: brightnessTemperature
-          channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+          channels: 1-5
         action:
           name: inflate error
-          inflation factor: 1.2
+          inflation factor: 0.55
+
+      # Temperature (lower O2) channels (6–11)
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 6-11
+        action:
+          name: inflate error
+          inflation factor: 0.75
+
+      # Temperature (upper O2) channels (12–15)
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 12-15
+        action:
+          name: inflate error
+          inflation factor: 0.95
+
+      # Water vapor channels (16–22)
+      - filter: Perform Action
+        filter variables:
+        - name: brightnessTemperature
+          channels: 16-22
+        action:
+          name: inflate error
+          inflation factor: 0.65
 #################################################
       - filter: Variable Assignment
         assignments:

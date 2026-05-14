@@ -1,4 +1,7 @@
-outdir: "./day3_atms_err_03/obs-diag"
+output_dir: "./day3_atms_err/obs-diag"
+
+# Shared prefix for all diag files
+prefix_root: "/work2/noaa/epic/jongkim/CADRE-DA-training/year2_cases/exp_case/cadre26.8900895/output"
 
 observations:
 
@@ -8,7 +11,7 @@ observations:
   - label: ATMS
     type: atms
     variable: brightnessTemperature
-    diag: "/work2/noaa/epic/CADRE2026/cadre26.8697429_atms-err-03/output/diag.atms_n20_2024022400.nc"
+    file: "diag.atms_n20_2024022400.nc"
     diagnostics:
       hist: true
       stats: true
@@ -22,7 +25,7 @@ observations:
   - label: GNSSRO
     type: scalar
     variable: bendingAngle
-    diag: "/work2/noaa/epic/CADRE2026/cadre26.8697429_atms-err-03/output/diag.gnssro_cosmic2_2024022400.nc"
+    file: "diag.gnssro_cosmic2_2024022400.nc"
     diagnostics:
       hist: true
 
@@ -32,7 +35,7 @@ observations:
   - label: SATWND
     type: vector
     variable: windSpeed
-    diag: "/work2/noaa/epic/CADRE2026/cadre26.8697429_atms-err-03/output/diag.satwnd.abi_goes-16_2024022400.nc"
+    file: "diag.satwnd.abi_goes-16_2024022400.nc"
     diagnostics:
       hist: true
 
@@ -42,7 +45,7 @@ observations:
   - label: SCATWND
     type: vector
     variable: windSpeed
-    diag: "/work2/noaa/epic/CADRE2026/cadre26.8697429_atms-err-03/output/diag.scatwnd.ascat_metop-b_2024022400.nc"
+    file: "diag.scatwnd.ascat_metop-b_2024022400.nc"
     diagnostics:
       hist: true
 
@@ -52,6 +55,6 @@ observations:
   - label: CONVENTIONAL_PS
     type: scalar
     variable: stationPressure
-    diag: "/work2/noaa/epic/CADRE2026/cadre26.8697429_atms-err-03/output/diag.conventional_ps_2024022400.nc"
+    file: "diag.conventional_ps_2024022400.nc"
     diagnostics:
       hist: true
