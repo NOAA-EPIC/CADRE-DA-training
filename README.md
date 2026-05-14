@@ -8,7 +8,7 @@ for execution on the **NOAA RDHPCS Hercules** system. It includes:
 - Full diagnostics generation using the UFS‑DA Diagnostics Toolkit  
 - Example outputs and reproducible experiment structure  
 
-The Year‑2 workflow follows the official CADRE 2026 documentation:
+The Year‑2 workflow follows the UFS-DA Diagnostics CADRE 2026 session guideline and documentation:
 
 👉 https://ufs-da-diagnostics.readthedocs.io/en/latest/cadre2026_epic.html
 
