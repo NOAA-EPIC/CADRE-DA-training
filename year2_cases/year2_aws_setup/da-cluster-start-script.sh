@@ -411,7 +411,9 @@ sudo gem install sqlite3
 sudo gem install thread
 sudo gem install pool
 
-git clone https://github.com/christopherwharrop/rocoto.git
+wget https://github.com/christopherwharrop/rocoto/archive/refs/tags/1.3.7.tar.gz
+tar -vxzf 1.3.7.tar.gz
+mv rocoto-1.3.7/ rocoto
 cd rocoto/
 ./INSTALL
 
