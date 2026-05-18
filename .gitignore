@@ -1,0 +1,5 @@
+GDASApp/
+jedi/
+tutorial/py_env/cadre_pyenv/
+*.swp
+*.log
