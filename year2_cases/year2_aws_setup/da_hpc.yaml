@@ -1,0 +1,45 @@
+Region: us-east-1
+Image:
+  Os: ubuntu2204 
+  CustomAmi: <placeholder replace with your generate AMI> 
+HeadNode:
+  InstanceType: c7i.8xlarge
+  Networking:
+    SubnetId: <placeholder replace with your AWS subnet ID>
+  Ssh:
+    KeyName: <placeholder replace with your AWS SSH key name>
+  LocalStorage:
+    RootVolume:
+      Size: 500
+      VolumeType: gp3
+      Iops: 10000
+      Throughput: 1000
+  Iam:
+    AdditionalIamPolicies:
+      - Policy: arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - Policy: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+  - Name: compute
+    ComputeResources:
+    - Name: c7i24xlarge
+      Instances:
+      - InstanceType: c7i.24xlarge
+      MinCount: 0
+      MaxCount: 2
+      Efa:
+        Enabled: false 
+    Networking:
+      PlacementGroup:
+        Enabled: true
+      SubnetIds:
+      - <placeholder replace with your AWS subnet ID>
+SharedStorage:
+  - MountDir: /scratch
+    Name: ebs
+    StorageType: Ebs
+    EbsSettings:
+      VolumeType: gp3
+      DeletionPolicy: Delete
+      Size: 500
