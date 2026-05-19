@@ -1,13 +1,13 @@
 Region: us-east-1
 Image:
   Os: ubuntu2204 
-  CustomAmi: ami-029ad0a80d165074d
+  CustomAmi: <placeholder replace with your generated AMI> 
 HeadNode:
   InstanceType: c7i.8xlarge
   Networking:
-    SubnetId: subnet-088f38370a401610e 
+    SubnetId: <placeholder replace with your AWS subnet ID>
   Ssh:
-    KeyName: epic_workshop 
+    KeyName: <placeholder replace with your AWS SSH key name>
   LocalStorage:
     RootVolume:
       Size: 500
@@ -34,7 +34,7 @@ Scheduling:
       PlacementGroup:
         Enabled: true
       SubnetIds:
-      - subnet-088f38370a401610e
+      - <placeholder replace with your AWS subnet ID>
 SharedStorage:
   - MountDir: /scratch
     Name: ebs

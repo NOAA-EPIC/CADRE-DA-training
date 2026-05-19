@@ -117,7 +117,7 @@ source "amazon-ebs" "base" {
   ssh_timeout                           = "60m"
   ssh_username                          = var.aws_ssh_username
   ssh_interface                         = "private_ip"
-  subnet_id                             = "subnet-04d911e4b55853ef7"
+  subnet_id                             = "<placeholder - put your private subnet id here>"
   tags                                  = { Name = "DA-Cluster-${local.now}" }
   temporary_security_group_source_cidrs = var.aws_temporary_security_group_source_cidrs
 }
