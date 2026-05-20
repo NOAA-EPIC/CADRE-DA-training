@@ -228,6 +228,9 @@ cost function:
               nicas:
                 resolution: 6
                 explicit length-scales: true
+#################################################
+# CADRE 2026, Day2, exp_nicas_length_scale
+#################################################               
                 horizontal length-scale:
                 - groups:
                   - common
