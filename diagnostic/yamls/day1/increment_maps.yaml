@@ -25,8 +25,6 @@ grid:
 output_dir: "./day1_ctrl/inc_plots"
 
 amplify:
-  enabled: true
+  enabled: false
   factor: 8.0
   apply_to_diff: false
-  
-
