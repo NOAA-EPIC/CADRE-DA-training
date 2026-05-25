@@ -27,5 +27,6 @@ output_dir: "./day1_ctrl/inc_plots"
 amplify:
   enabled: true
   factor: 8.0
-  apply_to_diff: false   # recommended: keep DIFF honest
+  apply_to_diff: false
+  
 
