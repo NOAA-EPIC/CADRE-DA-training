@@ -32,7 +32,7 @@ Slack support for the training program:
 ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 ```
 
-# Day‑1 Control Case Summary (Hybrid 3DVar, C96/C48)
+# Control Case Summary (Hybrid 3DVar, C96/C48) and Quick Overview of Session Scope
 
 **Purpose**  
 Baseline *hybrid* 3DVar analysis using FV3‑JEDI for the Day‑1 training session.  
