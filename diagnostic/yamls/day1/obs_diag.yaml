@@ -18,6 +18,8 @@ observations:
       extended: true
       scanpos: true
       latbins: true
+      #scatter_map: false
+      #scatter_map_channels: [1, 2]
 
   # ------------------------------------------------------------
   # GNSSRO Bending Angle (scalar)
@@ -28,6 +30,7 @@ observations:
     file: "diag.gnssro_cosmic2_2024022400.nc"
     diagnostics:
       hist: true
+      #scatter_map: false
 
   # ------------------------------------------------------------
   # SATWND Vector Winds (QC1)
@@ -38,6 +41,7 @@ observations:
     file: "diag.satwnd.abi_goes-16_2024022400.nc"
     diagnostics:
       hist: true
+      #scatter_map: false
 
   # ------------------------------------------------------------
   # SCATWND Vector Winds (QC1)
@@ -48,6 +52,7 @@ observations:
     file: "diag.scatwnd.ascat_metop-b_2024022400.nc"
     diagnostics:
       hist: true
+      #scatter_map: false
 
   # ------------------------------------------------------------
   # Conventional Surface Pressure (scalar)
@@ -58,3 +63,4 @@ observations:
     file: "diag.conventional_ps_2024022400.nc"
     diagnostics:
       hist: true
+      #scatter_map: false
