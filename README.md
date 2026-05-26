@@ -36,7 +36,7 @@ ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 
 **Purpose**  
 Baseline *hybrid* 3DVar analysis using FV3‑JEDI for the Day‑1 training session.  
-This configuration is **one of the GDASApp UFS FV3‑JEDI global‑workflow canned cases**, adapted for stand‑alone FV3‑JEDI execution.
+This configuration is **one of the GDASApp UFS FV3‑JEDI global‑workflow canned cases**, adapted for stand‑alone execution.
 
 ---
 
