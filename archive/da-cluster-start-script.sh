@@ -422,7 +422,7 @@ cd /home/ubuntu
 echo 'export PATH="$PATH:/home/ubuntu/rocoto/bin"' >> .bashrc
 echo 'module use /opt/modulefiles' >> .bashrc
 echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/Core' >> .bashrc
-echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/gcc' >> .bashrc
+echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/gcc/11.4.0' >> .bashrc
 echo 'module use /opt/spack-stack/envs/ue-oneapi-2024.2.1/install/modulefiles/intel-oneapi-mpi/2021.13-*/gcc/11.4.0' >> .bashrc
 
 cd /tmp/
