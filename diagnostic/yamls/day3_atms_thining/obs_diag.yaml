@@ -18,6 +18,8 @@ observations:
       extended: true
       scanpos: true
       latbins: true
+      #scatter_map: false
+      #scatter_map_channels: [1, 2]     
 
   # ------------------------------------------------------------
   # GNSSRO Bending Angle (scalar)

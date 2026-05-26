@@ -32,20 +32,113 @@ Slack support for the training program:
 ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 ```
 
-# Year‑1 (2024–2025) — Legacy Materials
+# Control Case Summary (Hybrid 3DVar, C96/C48) and Quick Overview of Session Scope
 
-The original CADRE Year‑1 training materials are preserved for reference and will be reorganized
-into a dedicated section.
+**Purpose**  
+Baseline *hybrid* 3DVar analysis using FV3‑JEDI for the Day‑1 training session.  
+This configuration is **one of the GDASApp UFS FV3‑JEDI global‑workflow canned cases**, adapted for stand‑alone execution.
 
-**Documentation:**
-- Simplified [documentation for the CADRE DA Training 2025](https://cadre-da-training.readthedocs.io/en/main/BuildingRunningTesting/CADRE-Container.html)
-- Commands listed in [cadre-epic-commands.md](https://github.com/NOAA-EPIC/CADRE-DA-training/blob/main/Day2/cadre-epic-commands.md)
+---
 
-**Hands-On Training Slides:**
-- [SSH Slides (for Mac, Windows, PuTTy)](https://github.com/NOAA-EPIC/CADRE-DA-training/tree/main/Day1)
-- [Containers](https://github.com/NOAA-EPIC/CADRE-DA-training/blob/main/Day1/CADRE_Workshop_Container.pdf)
-- [Running the Land DA System](https://github.com/NOAA-EPIC/CADRE-DA-training/blob/main/Day2/LandDAPracticalTraining_Day2_Petro.pdf)
+## 1. Core Configuration
+- **DA Method:** Hybrid 3DVar  
+- **Hybrid B Weights:** **12.5% static B**, **87.5% ensemble B**  
+- **Analysis Resolution:** **C96**  
+- **Background Resolution:** **C96**  
+- **Ensemble Perturbation Resolution:** **C48**  
+- **Cycle Time:** 2024‑02‑24 00Z  
+- **Assimilation Window:** **6 hours** (±3 hours)  
+- **Model:** FV3‑JEDI (UFS)
 
-**Relevant Repositories:**
-- CADRE-DA-training: https://github.com/NOAA-EPIC/CADRE-DA-training
+---
+
+## 2. Observations Assimilated
+- **Surface pressure** (SYNOP/METAR/ships/buoys)  
+- **Satellite Winds:** SATWND, SCATWND  
+- **GNSSRO:** bending angle  
+- **ATMS Radiances:** all channels (QC‑filtered)
+
+---
+
+## 3. QC and Bias Correction
+- Universal QC  
+- Radiance QC  
+- CRTM bias correction for ATMS  
+- Gross check + buddy check  
+
+---
+
+## 4. Outputs
+- Analysis increments (**C96**)  
+- OMB/OMA diagnostics  
+- Scan‑position diagnostics  
+- Latitude‑binned statistics  
+- Pre‑computed plots (increments, zonal means, histograms, scatter maps, spectra)
+
+---
+
+## 5. Training Focus (Day‑1 → Day‑3)
+
+### **Day‑1: Control Experiment**
+We begin with the baseline hybrid 3DVar configuration.  
+This serves as the reference for all diagnostics and comparisons in Days 2–3.
+
+---
+
+### **Day‑2: Background‑Error Modeling**
+We explore:
+- Hybrid B weights (static vs ensemble contribution)  
+- NICAS horizontal length‑scale parameters  
+- How background‑error structure shapes increment patterns and flow dependence  
+
+---
+
+### **Day‑3: ATMS Observation Thinning & Error Inflation**
+We examine:
+- ATMS Gaussian thinning  
+- ATMS observation‑error inflation  
+- Channel grouping and error specification  
+- Jo/p and chi‑squared diagnostics  
+
+---
+
+## 6. ATMS Single‑Observation Case
+A dedicated **single‑observation experiment** is also provided:
+
+- One randomly selected **tropical** ATMS footprint  
+- **22 ATMS channels** assimilated  
+- Input FV3‑JEDI and GDASApp YAMLs are prepared under: year2_cases/input_yaml/single_obs/
+- 
+The **experiment procedure is identical** to the full‑observation cases.
+
+This single‑obs setup provides a **direct, intuitive view** of:
+- How the **background‑error model (B‑model)** controls the *horizontal and vertical spread* of increments  
+- How **observation‑error settings** (per‑channel error, inflation) control the *magnitude* of increments  
+- How a single radiance produces a physically interpretable increment pattern  
+
+This case is used in Days 2–3 to illustrate the impact of:
+- Hybrid B weights and NICAS length scales  
+- ATMS thinning and observation‑error inflation  
+
+---
+
+## 7. Pre‑Run Diagnostic Outputs (Reference)
+
+Pre‑computed diagnostic outputs for all Year‑2 cases are available in the feature branch:
+
+https://github.com/jkbk2004/CADRE-DA-training/tree/diag-results/diagnostic/results/year2_cases
+
+These include:
+- **Spectral analysis**  
+- **Increment maps**  
+- **Observation‑space diagnostics** (OMB/OMA, scan‑position, lat‑binned)  
+- **OMB scatter plots**  
+- **JEDI log summaries** (Jo/Jb breakdown, QC counts)
+
+These reference outputs allow participants to:
+- Verify their own runs  
+- Compare Day‑1 control results with Days 2–3 sensitivity experiments  
+- Understand how B‑model settings and observation‑error choices affect increments and diagnostics  
+
+---
 

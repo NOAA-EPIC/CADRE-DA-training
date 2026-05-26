@@ -19,7 +19,7 @@ ulimit -s unlimited; ulimit -a;
 JEDI_BIN_PATH="/work2/noaa/epic/chjeon/cadre26_hercules/GDASApp/build/bin"
 
 # Path to input files (pre-staged)
-JEDI_INPUT_PATH="/work2/noaa/epic/chjeon/cadre26/input_data"
+JEDI_INPUT_PATH="/work2/noaa/epic-explorer/cadre2026/input_data"
 
 # Prefix of experimental case directory
 EXP_NAME_BASE="cadre26"
