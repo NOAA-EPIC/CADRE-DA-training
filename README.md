@@ -39,9 +39,9 @@ ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 
 After logging into Hercules, confirm that your account is part of the **epic-explorer** project:
 
-\`\`\`bash
+```bash
 groups
-\`\`\`
+```
 
 You should see **epic-explorer** in the output.  
 If it is missing, please notify the instructors via the CADRE Slack channel.
@@ -50,15 +50,15 @@ If it is missing, please notify the instructors via the CADRE Slack channel.
 
 Each user should be able to create their own working directory under the project space:
 
-\`\`\`bash
+```bash
 mkdir -p /work2/noaa/epic-explorer/$USER
-\`\`\`
+```
 
 Verify that it exists and is writable:
 
-\`\`\`bash
+```bash
 ls -ld /work2/noaa/epic-explorer/$USER
-\`\`\`
+```
 
 This directory will be used for all FV3‑JEDI runs and diagnostics during the training.
 
