@@ -12,6 +12,10 @@ The Year‑2 workflow follows the UFS-DA Diagnostics CADRE 2026 session guidelin
 
 👉 https://ufs-da-diagnostics.readthedocs.io/en/latest/cadre2026_epic.html
 
+## EPIC Session Training Slide (PDF)
+
+- [CADRE Year‑2 EPIC FV3‑JEDI Session Slides](docs/CADREYR2-EPIC-UFS-FV3-JEDI-sessions.pdf)
+
 # ⚠️ Hercules System Access Before EPIC Sessions
 
 Before the EPIC training sessions begin, please make sure you can successfully log into the
