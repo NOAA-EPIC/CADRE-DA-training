@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#SBATCH --account=epic
+#SBATCH --account=epic-explorer
 #SBATCH --job-name=fv3jedi
 #SBATCH --output=log.cadre26.%j
 #SBATCH --partition=hercules

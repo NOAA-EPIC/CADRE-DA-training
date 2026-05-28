@@ -12,6 +12,10 @@ The Year‑2 workflow follows the UFS-DA Diagnostics CADRE 2026 session guidelin
 
 👉 https://ufs-da-diagnostics.readthedocs.io/en/latest/cadre2026_epic.html
 
+## EPIC Session Training Slide (PDF)
+
+- [CADRE Year‑2 EPIC FV3‑JEDI Session Slides](docs/CADREYR2-EPIC-UFS-FV3-JEDI-sessions.pdf)
+
 # ⚠️ Hercules System Access Before EPIC Sessions
 
 Before the EPIC training sessions begin, please make sure you can successfully log into the
@@ -31,6 +35,33 @@ Slack support for the training program:
 ```bash
 ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 ```
+### Verify Project Access
+
+After logging into Hercules, confirm that your account is part of the **epic-explorer** project:
+
+```bash
+groups
+```
+
+You should see **epic-explorer** in the output.  
+If it is missing, please notify the instructors via the CADRE Slack channel.
+
+### Create Your Project Workspace
+
+Each user should be able to create their own working directory under the project space:
+
+```bash
+mkdir -p /work2/noaa/epic-explorer/$USER
+```
+
+Verify that it exists and is writable:
+
+```bash
+ls -ld /work2/noaa/epic-explorer/$USER
+```
+
+This directory will be used for all FV3‑JEDI runs and diagnostics during the training.
+
 
 # Control Case Summary (Hybrid 3DVar, C96/C48) and Quick Overview of Session Scope
 
