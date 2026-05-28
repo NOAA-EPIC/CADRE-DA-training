@@ -35,6 +35,33 @@ Slack support for the training program:
 ```bash
 ssh -X YOUR_USERID@hercules-login.hpc.msstate.edu
 ```
+### Verify Project Access
+
+After logging into Hercules, confirm that your account is part of the **epic-explorer** project:
+
+\`\`\`bash
+groups
+\`\`\`
+
+You should see **epic-explorer** in the output.  
+If it is missing, please notify the instructors via the CADRE Slack channel.
+
+### Create Your Project Workspace
+
+Each user should be able to create their own working directory under the project space:
+
+\`\`\`bash
+mkdir -p /work2/noaa/epic-explorer/$USER
+\`\`\`
+
+Verify that it exists and is writable:
+
+\`\`\`bash
+ls -ld /work2/noaa/epic-explorer/$USER
+\`\`\`
+
+This directory will be used for all FV3‑JEDI runs and diagnostics during the training.
+
 
 # Control Case Summary (Hybrid 3DVar, C96/C48) and Quick Overview of Session Scope
 
