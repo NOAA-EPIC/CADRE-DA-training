@@ -1,9 +1,9 @@
 #!/bin/bash -l
-#SBATCH --account=epic
+#SBATCH --account=epic-explorer
 #SBATCH --job-name=fv3jedi
 #SBATCH --output=log.cadre26.%j
 #SBATCH --partition=hercules-2
-#SBATCH --qos=batch
+#SBATCH --qos=cadre
 #SBATCH --time=00:20:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=48
