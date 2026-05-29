@@ -11,7 +11,7 @@ cost function:
       field table filename: ./fv3jedi/field_table
     akbk: ./fv3jedi/akbk.nc4
     layout:
-    - 4
+    - 2
     - 4
     npx: 97
     npy: 97
@@ -103,7 +103,7 @@ cost function:
             gsi akbk: ./fv3jedi/akbk.nc4
             gsi error covariance file: ./berror/gsi-coeffs-gfs-global.nc
             gsi berror namelist file: ./berror/gfs_gsi_global.nml
-            processor layout x direction: 12
+            processor layout x direction: 6
             processor layout y direction: 8
             debugging mode: false
         saber outer blocks:
@@ -2565,7 +2565,7 @@ variational:
         field table filename: ./fv3jedi/field_table
       akbk: ./fv3jedi/akbk.nc4
       layout:
-      - 4
+      - 2
       - 4
       npx: 49
       npy: 49
@@ -2582,7 +2582,7 @@ variational:
         field table filename: ./fv3jedi/field_table
       akbk: ./fv3jedi/akbk.nc4
       layout:
-      - 4
+      - 2
       - 4
       npx: 49
       npy: 49
@@ -2631,7 +2631,7 @@ final:
         field table filename: ./fv3jedi/field_table
       akbk: ./fv3jedi/akbk.nc4
       layout:
-      - 4
+      - 2
       - 4
       npx: 97
       npy: 97
