@@ -28,3 +28,11 @@ amplify:
   enabled: false
   factor: 8.0
   apply_to_diff: false
+
+zoom:
+  enabled: false
+  lat_min: -20
+  lat_max: 20
+  lon_min: -140
+  lon_max: -100
+
