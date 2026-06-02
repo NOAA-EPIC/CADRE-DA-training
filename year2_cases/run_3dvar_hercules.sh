@@ -2,10 +2,10 @@
 #SBATCH --account=epic-explorer
 #SBATCH --job-name=fv3jedi
 #SBATCH --output=log.cadre26.%j
-#SBATCH --partition=hercules
-#SBATCH --qos=batch
+#SBATCH --partition=hercules-2
+#SBATCH --qos=cadre
 #SBATCH --time=00:20:00
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=48
 #SBATCH --mem=128G
 ###SBATCH --exclusive
@@ -54,7 +54,7 @@ module list
 date
 pgm="fv3jedi_var.x"
 jedi_yaml="jedi_3dvar_fv3_2024022400.yaml"
-srun -n 96 ${JEDI_BIN_PATH}/$pgm ${jedi_yaml} >>OUTPUT.fv3jedi 2>errfile_fv3jedi
+srun -n 48 ${JEDI_BIN_PATH}/$pgm ${jedi_yaml} >>OUTPUT.fv3jedi 2>errfile_fv3jedi
 export err=$?
 if [[ $err != 0 ]]; then
   echo "FATAL ERROR: fv3-jedi failed."
@@ -64,7 +64,7 @@ date
 # Run JEDI executable for increment
 pgm="gdas_fv3jedi_fv3inc.x"
 jedi_inc_yaml="jedi_3dvar_fv3inc_2024022400.yaml"
-srun -n 96 ${JEDI_BIN_PATH}/$pgm ${jedi_inc_yaml} >>OUTPUT.fv3inc 2>errfile_inc
+srun -n 48 ${JEDI_BIN_PATH}/$pgm ${jedi_inc_yaml} >>OUTPUT.fv3inc 2>errfile_inc
 export err=$?
 if [[ $err != 0 ]]; then
   echo "FATAL ERROR: fv3-jedi increment failed."

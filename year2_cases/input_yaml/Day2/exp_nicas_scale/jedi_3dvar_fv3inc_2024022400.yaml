@@ -57,7 +57,7 @@ background geometry:
     field table filename: ./fv3jedi/field_table
   akbk: ./fv3jedi/akbk.nc4
   layout:
-  - 4
+  - 2
   - 4
   npx: 97
   npy: 97
@@ -68,7 +68,7 @@ jedi increment geometry:
     field table filename: ./fv3jedi/field_table
   akbk: ./fv3jedi/akbk.nc4
   layout:
-  - 4
+  - 2
   - 4
   npx: 97
   npy: 97
@@ -79,7 +79,7 @@ fv3 increment geometry:
     field table filename: ./fv3jedi/field_table
   akbk: ./fv3jedi/akbk.nc4
   layout:
-  - 4
+  - 2
   - 4
   npx: 97
   npy: 97
