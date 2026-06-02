@@ -1,7 +1,7 @@
 output_dir: "./day3_no_atms/obs-diag"
 
 # Shared prefix for all diag files
-prefix_root: "/work2/noaa/epic/jongkim/CADRE-DA-training/year2_cases/exp_case/cadre26.8900653/output"
+prefix_root: "/work2/noaa/epic-explorer/cadre2026/cadre26.8900653.day3_no_atms/output"
 
 observations:
 
