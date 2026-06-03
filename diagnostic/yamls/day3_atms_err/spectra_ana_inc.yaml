@@ -14,12 +14,12 @@ zonal_mean:
 
 experiments:
   - name: ctrl
-    prefix: "/work2/noaa/epic/jongkim/CADRE-DA-training/year2_cases/exp_case/cadre26.8895896.day1/output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
+    prefix: "/work2/noaa/epic-explorer/cadre2026/cadre26.8895896.day1_ctrl/output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
 
   - name: atms_err
-    prefix: "/work2/noaa/epic/jongkim/CADRE-DA-training/year2_cases/exp_case/cadre26.8900895/output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
+    prefix: "/work2/noaa/epic-explorer/cadre2026/cadre26.8900895.atms_err/output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
 
 grid:
-  prefix: "/work2/noaa/epic/CADRE2026/grid/C96_grid.tile"
+  prefix: "/work2/noaa/epic-explorer/cadre2026/grid/C96_grid.tile"
 
 output_dir: "./day3_atms_err/spectra-inc"

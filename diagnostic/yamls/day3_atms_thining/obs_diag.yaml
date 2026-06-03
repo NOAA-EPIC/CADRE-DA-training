@@ -1,7 +1,7 @@
-output_dir: "./day3_atms_thining/obs-diag"
+output_dir: "./day3_atms_thinning/obs-diag"
 
 # Shared prefix for all diag files
-prefix_root: "/work2/noaa/epic/CADRE2026/cadre26.8487557.day3_thinning/output"
+prefix_root: "/work2/noaa/epic-explorer/cadre2026/cadre26.8896479.day3_atms_thinning/output"
 
 observations:
 

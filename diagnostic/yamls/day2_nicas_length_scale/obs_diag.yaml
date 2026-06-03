@@ -1,7 +1,7 @@
 output_dir: "./day2_nicas_length_scale/obs-diag"
 
 # Shared prefix for all diag files
-prefix_root: "/work2/noaa/epic/CADRE2026/cadre26.8487556.day2_nicas-length-scale/output"
+prefix_root: "/work2/noaa/epic-explorer/cadre2026/cadre26.8896455.day2_nicas_length_scale/output"
 
 observations:
 

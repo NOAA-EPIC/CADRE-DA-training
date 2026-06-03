@@ -1,5 +1,5 @@
 background:
-  atm_file: /work2/noaa/epic/CADRE2026/cadre26.8434573.day1/bkg/ufsda.t18z.atm.f006.cubed_sphere_grid.nc
+  atm_file: /work2/noaa/epic-explorer/cadre2026/cadre26.8895896.day1_ctrl/bkg/ufsda.t18z.atm.f006.cubed_sphere_grid.nc
   vars:
     - ugrd
     - vgrd
@@ -7,8 +7,8 @@ background:
     - spfh
 
 increments:
-  prefix: /work2/noaa/epic/CADRE2026/cadre26.8434573.day1/output/ufsda.t00z.atminc.cubed_sphere_grid.tile
-  grid_prefix: /work2/noaa/epic/CADRE2026/grid/C96_grid.tile
+  prefix: /work2/noaa/epic-explorer/cadre2026/cadre26.8895896.day1_ctrl/output/ufsda.t00z.atminc.cubed_sphere_grid.tile
+  grid_prefix: /work2/noaa/epic-explorer/cadre2026/grid/C96_grid.tile
   vars:
     - u_inc
     - v_inc
