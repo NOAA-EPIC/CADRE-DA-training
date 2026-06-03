@@ -20,7 +20,7 @@ experiments:
     prefix: "/work2/noaa/epic-explorer/cadre2026/cadre26.8900895.atms_err/output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
 
 grid:
-  prefix: "/work2/noaa/epic/CADRE2026/grid/C96_grid.tile"
+  prefix: "/work2/noaa/epic-explorer/cadre2026/grid/C96_grid.tile"
 
 output_dir: "./day3_atms_err/inc_plots"
 
@@ -35,4 +35,3 @@ zoom:
   lat_max: 20
   lon_min: -140
   lon_max: -100
-

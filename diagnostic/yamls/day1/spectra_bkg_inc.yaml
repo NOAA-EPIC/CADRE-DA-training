@@ -8,7 +8,7 @@ background:
 
 increments:
   prefix: /work2/noaa/epic-explorer/cadre2026/cadre26.8895896.day1_ctrl/output/ufsda.t00z.atminc.cubed_sphere_grid.tile
-  grid_prefix: /work2/noaa/epic-explorer/cadre2026/cadre26.8895896.day1_ctrl/grid/C96_grid.tile
+  grid_prefix: /work2/noaa/epic-explorer/cadre2026/grid/C96_grid.tile
   vars:
     - u_inc
     - v_inc
