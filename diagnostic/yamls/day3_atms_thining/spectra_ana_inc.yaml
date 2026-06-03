@@ -20,6 +20,6 @@ experiments:
     prefix: "/work2/noaa/epic-explorer/cadre2026/cadre26.8896479.day3_atms_thinning/output/ufsda.t00z.atminc.cubed_sphere_grid.tile"
 
 grid:
-  prefix: "/work2/noaa/epic/CADRE2026/grid/C96_grid.tile"
+  prefix: "/work2/noaa/epic-explorer/cadre2026/grid/C96_grid.tile"
 
 output_dir: "./day3_atms_thinning/spectra-inc"
