@@ -1,7 +1,7 @@
 output_dir: "./day2_hyb_weight/obs-diag"
 
 # Shared prefix for all diag files
-prefix_root: "/work2/noaa/epic/CADRE2026/cadre26.8487509.day2_hyb_wght/output"
+prefix_root: "/work2/noaa/epic-explorer/cadre2026/cadre26.8895942.day2_hyb_weight/output"
 
 observations:
 
