@@ -1,9 +1,9 @@
 Region: us-east-1
 Image:
   Os: ubuntu2204 
-  CustomAmi: ami-06120ca05e1ef982b 
+  CustomAmi: ami-0e9f0467838ca8f1b 
 HeadNode:
-  InstanceType: c7i.8xlarge
+  InstanceType: c7i.2xlarge
   Networking:
     SubnetId: subnet-088f38370a401610e 
   Ssh:
