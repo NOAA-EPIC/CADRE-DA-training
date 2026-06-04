@@ -2,6 +2,7 @@
 #SBATCH --account=epic-explorer
 #SBATCH --job-name=fv3jedi
 #SBATCH --output=log.cadre26.%j
+#SBATCH --reservation=epic-day4
 #SBATCH --partition=hercules-2
 #SBATCH --qos=cadre
 #SBATCH --time=00:20:00
