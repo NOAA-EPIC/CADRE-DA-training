@@ -107,5 +107,14 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 sh Miniconda3-latest-Linux-x86_64.sh -b -p /home/ubuntu/miniconda3
 /home/ubuntu/miniconda3/bin/conda init
 
+### Download LandDA image
+
+cd /home/ubuntu
+mkdir LandDAtutorial 
+cd LandDAtutorial
+wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/current_land_da_release_data/v3.0.0/ubuntu22.04-intel-landda-release-public-v3.0.0.img
+wget https://noaa-ufs-land-da-pds.s3.amazonaws.com/current_land_da_release_data/v3.0.0/LandDAInputDatav3.0.0.tar.gz
+tar -vxzf LandDAInputDatav3.0.0.tar.gz
+
 EOF
 
